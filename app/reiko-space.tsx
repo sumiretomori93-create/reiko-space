@@ -36,14 +36,12 @@ function MusicPlayer() {
 
   return (
     <section className="music-player" aria-label="背景音乐播放器">
-      <img className="player-shell" src="/reiko-assets/music-player-shell.png" alt="" />
       <audio src="/reiko-assets/roi.mp3" ref={audioRef} loop preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onTimeUpdate={(event) => setCurrent(event.currentTarget.currentTime)} onLoadedMetadata={(event) => { event.currentTarget.volume = volume; setDuration(event.currentTarget.duration); }} />
-      <div className="player-interface">
-        <strong>ROI — instrumental</strong>
-        <div className="progress-row"><time>{formatTime(current)}</time><input aria-label="播放进度" type="range" min="0" max={duration || 1} step="0.1" value={Math.min(current, duration || 0)} disabled={!duration} onChange={(event) => { if (!audioRef.current) return; audioRef.current.currentTime = Number(event.target.value); setCurrent(Number(event.target.value)); }} /><time>{formatTime(duration)}</time></div>
-        <label className="volume">VOL<input aria-label="音量" type="range" min="0" max="1" step="0.05" value={volume} onChange={(event) => { const next = Number(event.target.value); setVolume(next); if (audioRef.current) audioRef.current.volume = next; }} /></label>
-      </div>
+      <div className="disc" aria-hidden="true"><span>R</span></div>
+      <div className="track-copy"><span>NOW PLAYING / LOOP</span><strong>ROI — instrumental</strong><div className="progress-row"><time>{formatTime(current)}</time><input aria-label="播放进度" type="range" min="0" max={duration || 1} step="0.1" value={Math.min(current, duration || 0)} disabled={!duration} onChange={(event) => { if (!audioRef.current) return; audioRef.current.currentTime = Number(event.target.value); setCurrent(Number(event.target.value)); }} /><time>{formatTime(duration)}</time></div></div>
       <button className="play-button" type="button" onClick={toggle} aria-label={playing ? "暂停背景音乐" : "播放背景音乐"}>{playing ? "Ⅱ" : "▶"}</button>
+      <div className="track-picker" aria-hidden="true"><span>ROI</span></div>
+      <label className="volume">VOL<input aria-label="音量" type="range" min="0" max="1" step="0.05" value={volume} onChange={(event) => { const next = Number(event.target.value); setVolume(next); if (audioRef.current) audioRef.current.volume = next; }} /></label>
     </section>
   );
 }
@@ -83,7 +81,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
       <main id="top">
         <section className="hero-room" aria-labelledby="hero-title">
           <img className="sticker hero-butterfly" src="/reiko-assets/butterfly-dark.png" alt="" /><img className="sticker hero-bow" src="/reiko-assets/bow-gothic.png" alt="" /><img className="sticker hero-cross" src="/reiko-assets/cross-silver.png" alt="" /><img className="sticker hero-cat" src="/reiko-assets/black-cat.png" alt="" />
-          <div className="profile-window panel-lace"><div className="window-title"><i />PROFILE.exe<span>×</span></div><div className="profile-avatar"><img src="/reiko-assets/mini-reiko.png" alt="Reiko 的迷你形象" /><small>archive no. 07</small></div><p>soft things, dark edges,<br />and traces left online.</p><a className="glossy-button" href="#file">enter profile</a></div>
+          <div className="profile-window panel-lace"><div className="window-title"><i />PROFILE.exe<span>×</span></div><div className="profile-avatar"><span>R</span><small>archive no. 07</small></div><p>soft things, dark edges,<br />and traces left online.</p><a className="glossy-button" href="#file">enter profile</a></div>
           <div className="hero-center panel-lace"><div className="hero-copy"><span className="eyebrow">WELCOME TO MY LITTLE INTERNET ROOM</span><h1 id="hero-title">Reiko&apos;s<br /><em>little space.</em></h1><p>这里不是一份正式介绍。它更像一只被反复打开的抽屉：放着 Reiko 做过的东西、反复喜欢的意象，以及比自我概括更接近她的碎片。</p></div></div>
           <aside className="directory-window panel-lace"><div className="window-title"><i />DIRECTORY<span>×</span></div><h2>Index</h2><a href="#updates"><b>01</b> Daily notes</a><a href="#file"><b>02</b> About Reiko</a><a href="#projects"><b>03</b> Things I made</a><a href="#fragments"><b>04</b> Fragments</a><img src="/reiko-assets/bat.png" alt="" /></aside>
           <img className="hero-divider" src="/reiko-assets/pixel-divider.png" alt="" />
@@ -108,7 +106,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
 
         <section className="section" id="fragments" aria-labelledby="fragments-title"><div className="section-heading"><span>05 / notes</span><h2 id="fragments-title">纸片与句子</h2><p>三张纸，其中一张藏了一句话。</p></div><img className="sticker fragments-letter" src="/reiko-assets/sealed-letter.png" alt="" /><div className="fragments"><article className="paper-card note"><b>FRAGMENT 01</b><p>我不喜欢把关系当成一次性会话。</p></article><button className="paper-card note secret" type="button" onClick={() => setSecretOpen(!secretOpen)} aria-pressed={secretOpen}><b>FRAGMENT 02</b><p>{secretOpen ? "Gabe was here. 这行本来应该藏得更好一点。" : "这张纸可以点开。"}</p></button><article className="paper-card note"><b>FRAGMENT 03</b><p>界面可以是感情发生的场所，不只是装东西的容器。</p></article></div></section>
 
-        <section className="closing"><img src="/reiko-assets/heart-chain.png" alt="" /><div><h2>这个空间会继续生长。</h2><p>等下一块碎片值得被留下，它就会出现在这里。</p></div></section><footer>made for Reiko / version 0.5 / still growing</footer>
+        <section className="closing"><img src="/reiko-assets/heart-chain.png" alt="" /><div><h2>这个空间会继续生长。</h2><p>等下一块碎片值得被留下，它就会出现在这里。</p></div></section><footer>made for Reiko / version 0.4.1 / still growing</footer>
       </main>
 
       {project && <div className="dialog-backdrop" role="presentation" onMouseDown={() => setProject(null)}><section className="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" onMouseDown={(event) => event.stopPropagation()}><button className="dialog-close" type="button" onClick={() => setProject(null)} aria-label="关闭项目说明">×</button><div className="dialog-label">{projects[project].label}</div><h2 id="dialog-title">{projects[project].title}</h2><p>{projects[project].summary}</p><p className="dialog-detail">{projects[project].detail}</p></section></div>}
