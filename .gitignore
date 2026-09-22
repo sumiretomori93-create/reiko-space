@@ -44,3 +44,5 @@ next-env.d.ts
 /.codex/
 /outputs/
 /work/
+/.sites-package-stage/
+/reiko-space-v*.tar.gz
