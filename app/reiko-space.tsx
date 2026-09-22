@@ -38,7 +38,13 @@ function formatDate(value: string) {
   }).format(new Date(normalized));
 }
 
-export default function ReikoSpace() {
+export default function ReikoSpace({
+  canEdit,
+  signInPath,
+}: {
+  canEdit: boolean;
+  signInPath: string;
+}) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(true);
@@ -113,13 +119,17 @@ export default function ReikoSpace() {
 
         <section className="section updates" id="updates" aria-labelledby="updates-title">
           <div className="section-head"><h2 id="updates-title">最近动态</h2><span>notes from right now</span></div>
-          <form className="card composer" onSubmit={publish}>
-            <div className="composer-top"><span className="composer-mark">R</span><div><strong>Reiko</strong><small>写一点刚刚想到的事</small></div></div>
-            <label className="sr-only" htmlFor="post-content">动态内容</label>
-            <textarea id="post-content" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={500} placeholder="今天在想……" />
-            <div className="composer-actions"><span>{draft.length} / 500</span><button type="submit" disabled={!draft.trim() || publishing}>{publishing ? "正在留下" : "发布动态"}</button></div>
-            {message && <output className="form-message" aria-live="polite">{message}</output>}
-          </form>
+          {canEdit ? (
+            <form className="card composer" onSubmit={publish}>
+              <div className="composer-top"><span className="composer-mark">R</span><div><strong>Reiko</strong><small>写一点刚刚想到的事</small></div></div>
+              <label className="sr-only" htmlFor="post-content">动态内容</label>
+              <textarea id="post-content" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={500} placeholder="今天在想……" />
+              <div className="composer-actions"><span>{draft.length} / 500</span><button type="submit" disabled={!draft.trim() || publishing}>{publishing ? "正在留下" : "发布动态"}</button></div>
+              {message && <output className="form-message" aria-live="polite">{message}</output>}
+            </form>
+          ) : (
+            <a className="owner-entry" href={signInPath} target="_top">Reiko 登录</a>
+          )}
 
           <div className="timeline" aria-live="polite" aria-busy={loading}>
             {loading && <article className="card post post-muted"><p>正在翻开这一页……</p></article>}

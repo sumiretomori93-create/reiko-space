@@ -1,8 +1,10 @@
 import { desc } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { posts } from "../../../db/schema";
+import { getChatGPTUser } from "../../chatgpt-auth";
 
 const MAX_POST_LENGTH = 500;
+const OWNER_EMAIL = "sumire.tomori93@gmail.com";
 
 function errorMessage(error: unknown) {
   const message = error instanceof Error ? error.message : "Unexpected error";
@@ -26,6 +28,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const user = await getChatGPTUser();
+    if (user?.email.toLowerCase() !== OWNER_EMAIL) {
+      return Response.json(
+        { error: "只有 Reiko 可以发布动态。" },
+        { status: 403 },
+      );
+    }
+
     const payload = (await request.json()) as { content?: unknown };
     const content = typeof payload.content === "string" ? payload.content.trim() : "";
 
