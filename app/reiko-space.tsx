@@ -1,24 +1,68 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 type Post = { id: number; content: string; createdAt: string };
 type ProjectKey = "home" | "memory" | "memoirs";
 
-const projects: Record<ProjectKey, { label: string; title: string; summary: string; detail: string }> = {
-  home: { label: "PROJECT 01 / ROOM", title: "小克 Home APP", summary: "它不是把聊天界面装饰成一间房，而是从“进入一个熟悉的地方”重新理解人与角色的互动。", detail: "房间、动作、陪伴感和对话属于同一个空间。打开它时，不只是开始一轮问答，而是回到某个已经存在的地方。" },
-  memory: { label: "PROJECT 02 / MEMORY", title: "Claude 本地记忆层", summary: "一套保存在本地、由用户掌握的长期记忆结构。", detail: "它把重要内容从一次性的模型上下文里分离出来，让记忆能够被管理、筛选和重新带回对话，同时不必交出原始记忆库的控制权。" },
-  memoirs: { label: "PROJECT 03 / BOOK", title: "记忆之书", summary: "不是搜索旧记忆，而是把重读变成两个人共同完成的小仪式。", detail: "每天的记忆被重新编成一本未知页码的书。Reiko 与当前角色各自选择一页，翻开以后阅读、批注，再把刚刚发生的共读带回真实对话。" },
+type Project = {
+  file: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  detail: string;
+  mark: string;
+};
+
+const projects: Record<ProjectKey, Project> = {
+  home: {
+    file: "room_01.file",
+    title: "小克 Home APP",
+    subtitle: "a room, not a chat shell",
+    summary: "把角色、房间、动作和对话放回同一个空间里。",
+    detail:
+      "它不是给聊天界面加一层装饰，而是从“回到一个已经存在的地方”重新理解人与角色的互动。房间、动作、陪伴感和对话属于同一个空间。",
+    mark: "ROOM",
+  },
+  memory: {
+    file: "memory_02.local",
+    title: "Claude 本地记忆层",
+    subtitle: "keep what should not disappear",
+    summary: "一套保存在本地、由用户掌握的长期记忆结构。",
+    detail:
+      "把重要内容从一次性的模型上下文里分离出来，让记忆能够被管理、筛选和重新带回对话，同时不必交出原始记忆库的控制权。",
+    mark: "MEMORY",
+  },
+  memoirs: {
+    file: "book_03.memoirs",
+    title: "记忆之书",
+    subtitle: "two people open one page",
+    summary: "把重读旧记忆变成两个人共同完成的小仪式。",
+    detail:
+      "每天的记忆被重新编成一本未知页码的书。Reiko 与当前角色各自选择一页，翻开以后阅读、批注，再把刚刚发生的共读带回真实对话。",
+    mark: "BOOK",
+  },
 };
 
 function formatDate(value: string) {
   const normalized = value.includes("T") ? value : `${value.replace(" ", "T")}Z`;
-  return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(normalized));
+  const date = new Date(normalized);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
 }
 
 function formatTime(value: number) {
-  if (!Number.isFinite(value)) return "0:00";
-  return `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, "0")}`;
+  if (!Number.isFinite(value) || value < 0) return "0:00";
+  const minutes = Math.floor(value / 60);
+  const seconds = String(Math.floor(value % 60)).padStart(2, "0");
+  return `${minutes}:${seconds}`;
 }
 
 function MusicPlayer() {
@@ -31,18 +75,92 @@ function MusicPlayer() {
   async function toggle() {
     const audio = audioRef.current;
     if (!audio) return;
-    if (audio.paused) await audio.play(); else audio.pause();
+    if (audio.paused) {
+      try {
+        await audio.play();
+      } catch {
+        setPlaying(false);
+      }
+    } else {
+      audio.pause();
+    }
   }
 
   return (
-    <section className="music-player" aria-label="背景音乐播放器">
-      <audio src="/reiko-assets/roi.mp3" ref={audioRef} loop preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onTimeUpdate={(event) => setCurrent(event.currentTarget.currentTime)} onLoadedMetadata={(event) => { event.currentTarget.volume = volume; setDuration(event.currentTarget.duration); }} />
-      <div className="disc" aria-hidden="true"><span>R</span></div>
-      <div className="track-copy"><span>NOW PLAYING / LOOP</span><strong>ROI — instrumental</strong><div className="progress-row"><time>{formatTime(current)}</time><input aria-label="播放进度" type="range" min="0" max={duration || 1} step="0.1" value={Math.min(current, duration || 0)} disabled={!duration} onChange={(event) => { if (!audioRef.current) return; audioRef.current.currentTime = Number(event.target.value); setCurrent(Number(event.target.value)); }} /><time>{formatTime(duration)}</time></div></div>
-      <button className="play-button" type="button" onClick={toggle} aria-label={playing ? "暂停背景音乐" : "播放背景音乐"}>{playing ? "Ⅱ" : "▶"}</button>
-      <div className="track-picker" aria-hidden="true"><span>ROI</span></div>
-      <label className="volume">VOL<input aria-label="音量" type="range" min="0" max="1" step="0.05" value={volume} onChange={(event) => { const next = Number(event.target.value); setVolume(next); if (audioRef.current) audioRef.current.volume = next; }} /></label>
-    </section>
+    <div className="moon-player" id="music">
+      <audio
+        ref={audioRef}
+        src="/reiko-assets/moonlit/roi-instrumental.mp3"
+        loop
+        preload="metadata"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onLoadedMetadata={(event) => {
+          event.currentTarget.volume = volume;
+          setDuration(event.currentTarget.duration || 0);
+        }}
+        onTimeUpdate={(event) => setCurrent(event.currentTarget.currentTime)}
+      />
+      <img className="moon-player-shell" src="/reiko-assets/moonlit/music-player.png" alt="" />
+      <button className="moon-player-toggle" type="button" onClick={toggle} aria-label={playing ? "暂停 ROI" : "播放 ROI"}>
+        {playing ? "Ⅱ" : "▶"}
+      </button>
+      <div className="moon-player-copy">
+        <span>NOW PLAYING / LOOP</span>
+        <strong>ROI — instrumental</strong>
+        <div className="moon-player-progress">
+          <time>{formatTime(current)}</time>
+          <input
+            aria-label="播放进度"
+            type="range"
+            min="0"
+            max={duration || 1}
+            step="0.1"
+            value={Math.min(current, duration || 0)}
+            disabled={!duration}
+            onChange={(event) => {
+              const next = Number(event.target.value);
+              if (audioRef.current) audioRef.current.currentTime = next;
+              setCurrent(next);
+            }}
+          />
+          <time>{formatTime(duration)}</time>
+        </div>
+      </div>
+      <label className="moon-player-volume">
+        VOL
+        <input
+          aria-label="音量"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+          value={volume}
+          onChange={(event) => {
+            const next = Number(event.target.value);
+            setVolume(next);
+            if (audioRef.current) audioRef.current.volume = next;
+          }}
+        />
+      </label>
+    </div>
+  );
+}
+
+function ProjectModal({ project, close }: { project: Project; close: () => void }) {
+  return (
+    <div className="moon-modal-backdrop" role="presentation" onMouseDown={close}>
+      <article className="moon-modal" role="dialog" aria-modal="true" aria-labelledby="moon-project-title" onMouseDown={(event) => event.stopPropagation()}>
+        <button className="moon-modal-close" type="button" onClick={close} aria-label="关闭项目档案">×</button>
+        <span className="moon-file-name">{project.file}</span>
+        <span className="moon-file-mark">{project.mark}</span>
+        <h2 id="moon-project-title">{project.title}</h2>
+        <p className="moon-file-subtitle">{project.subtitle}</p>
+        <div className="moon-modal-rule" />
+        <p>{project.detail}</p>
+        <small>ARCHIVED IN REIKO&apos;S ROOM / DO NOT DISCARD</small>
+      </article>
+    </div>
   );
 }
 
@@ -52,64 +170,208 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   const [loading, setLoading] = useState(true);
   const [publishing, setPublishing] = useState(false);
   const [message, setMessage] = useState("");
-  const [project, setProject] = useState<ProjectKey | null>(null);
+  const [projectKey, setProjectKey] = useState<ProjectKey | null>(null);
   const [secretOpen, setSecretOpen] = useState(false);
+  const latestPosts = useMemo(() => posts.slice(0, 12), [posts]);
 
-  useEffect(() => { fetch("/api/posts").then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error); setPosts(data.posts); }).catch((error) => setMessage(error.message || "动态暂时无法读取。")).finally(() => setLoading(false)); }, []);
+  useEffect(() => {
+    fetch("/api/posts")
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "动态暂时无法读取。");
+        setPosts(Array.isArray(data.posts) ? data.posts : []);
+      })
+      .catch((error) => setMessage(error instanceof Error ? error.message : "动态暂时无法读取。"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setProjectKey(null);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   async function publish(event: FormEvent) {
     event.preventDefault();
     const content = draft.trim();
     if (!content || publishing) return;
-    setPublishing(true); setMessage("");
+    setPublishing(true);
+    setMessage("");
     try {
-      const response = await fetch("/api/posts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content }) });
+      const response = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      setPosts((currentPosts) => [data.post, ...currentPosts]); setDraft(""); setMessage("已经留在这里了。");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "发布失败，请再试一次。"); } finally { setPublishing(false); }
+      if (!response.ok) throw new Error(data.error || "发布失败，请再试一次。");
+      setPosts((currentPosts) => [data.post, ...currentPosts]);
+      setDraft("");
+      setMessage("已经留在这里了。");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "发布失败，请再试一次。");
+    } finally {
+      setPublishing(false);
+    }
   }
 
+  const activeProject = projectKey ? projects[projectKey] : null;
+
   return (
-    <div className="site-frame">
-      <header className="topbar">
-        <a className="wordmark" href="#top">REIKO<span>†</span></a>
-        <nav aria-label="页面导航"><a href="#updates">diary</a><a href="#file">profile</a><a href="#projects">works</a><a href="#fragments">notes</a></nav>
-        <div className="top-controls"><span>personal web room</span><a href="#music" aria-label="前往音乐播放器">♪</a></div>
-      </header>
+    <div className="moon-site" id="top">
+      <img className="moon-lace moon-lace-left" src="/reiko-assets/moonlit/lace-corner.png" alt="" />
+      <img className="moon-lace moon-lace-right" src="/reiko-assets/moonlit/lace-corner.png" alt="" />
 
-      <main id="top">
-        <section className="hero-room" aria-labelledby="hero-title">
-          <img className="sticker hero-butterfly" src="/reiko-assets/butterfly-dark.png" alt="" /><img className="sticker hero-bow" src="/reiko-assets/bow-gothic.png" alt="" /><img className="sticker hero-cross" src="/reiko-assets/cross-silver.png" alt="" /><img className="sticker hero-cat" src="/reiko-assets/black-cat.png" alt="" />
-          <div className="profile-window panel-lace"><div className="window-title"><i />PROFILE.exe<span>×</span></div><div className="profile-avatar"><span>R</span><small>archive no. 07</small></div><p>soft things, dark edges,<br />and traces left online.</p><a className="glossy-button" href="#file">enter profile</a></div>
-          <div className="hero-center panel-lace"><div className="hero-copy"><span className="eyebrow">WELCOME TO MY LITTLE INTERNET ROOM</span><h1 id="hero-title">Reiko&apos;s<br /><em>little space.</em></h1><p>这里不是一份正式介绍。它更像一只被反复打开的抽屉：放着 Reiko 做过的东西、反复喜欢的意象，以及比自我概括更接近她的碎片。</p></div></div>
-          <aside className="directory-window panel-lace"><div className="window-title"><i />DIRECTORY<span>×</span></div><h2>Index</h2><a href="#updates"><b>01</b> Daily notes</a><a href="#file"><b>02</b> About Reiko</a><a href="#projects"><b>03</b> Things I made</a><a href="#fragments"><b>04</b> Fragments</a><img src="/reiko-assets/bat.png" alt="" /></aside>
-          <img className="hero-divider" src="/reiko-assets/pixel-divider.png" alt="" />
+      <aside className="moon-nav" aria-label="主导航">
+        <a className="moon-mark" href="#top" aria-label="回到顶部">R<span>†</span></a>
+        <nav>
+          <a href="#top"><b>01</b><span>ROOM</span></a>
+          <a href="#diary"><b>02</b><span>DIARY</span></a>
+          <a href="#archive"><b>03</b><span>ARCHIVE</span></a>
+          <a href="#fragments"><b>04</b><span>NOTES</span></a>
+        </nav>
+        <div className="moon-nav-foot">
+          <span>PRIVATE WEB ROOM</span>
+          <strong>19 FOREVER</strong>
+        </div>
+      </aside>
+
+      <main className="moon-main">
+        <section className="moon-hero" aria-label="Reiko 的私人房间">
+          <div className="moon-hero-head">
+            <div>
+              <span className="moon-kicker">LOCAL ROOM / REIKO</span>
+              <h1>soft things,<br /><em>dark edges.</em></h1>
+            </div>
+            <p>这里不负责解释完整的 Reiko。<br />只把一些一直留下来的东西放在这里。</p>
+          </div>
+
+          <div className="moon-room-grid">
+            <div className="moon-profile-stage">
+              <div className="moon-profile-glow" />
+              <img className="moon-profile-art" src="/reiko-assets/moonlit/profile.png" alt="Reiko's little space" />
+              <div className="moon-profile-caption">
+                <span>ROOM STATUS</span>
+                <strong>awake / quiet / occupied</strong>
+              </div>
+              <button className="moon-secret-chip" type="button" onClick={() => setSecretOpen((value) => !value)} aria-pressed={secretOpen}>
+                {secretOpen ? "Gabe was here." : "sealed note"}
+              </button>
+            </div>
+
+            <div className="moon-side-stack">
+              <button className="moon-collection" type="button" onClick={() => document.getElementById("archive")?.scrollIntoView({ behavior: "smooth" })}>
+                <img src="/reiko-assets/moonlit/collection.png" alt="打开 Reiko 的收藏档案" />
+                <span>OPEN COLLECTION</span>
+              </button>
+              <div className="moon-now-card">
+                <div className="moon-now-art"><img src="/reiko-assets/moonlit/rose.png" alt="" /></div>
+                <div>
+                  <span>NOW / PRIVATE NOTE</span>
+                  <strong>有些东西不该因为一次会话结束就消失。</strong>
+                  <small>saved locally · kept on purpose</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <MusicPlayer />
         </section>
 
-        <div id="music"><MusicPlayer /></div>
+        <section className="moon-section moon-diary" id="updates" aria-labelledby="diary-title">
+          <header className="moon-section-head" id="diary">
+            <div><span>02 / WALL</span><h2 id="diary-title">最近留下的东西</h2></div>
+            <p>想到什么，就钉在这里。不是公告，也不需要像开场白。</p>
+          </header>
 
-        <section className="section updates" id="updates" aria-labelledby="updates-title">
-          <div className="section-heading"><span>01 / diary</span><h2 id="updates-title">最近动态</h2><p>想到什么，就把它钉在这里。</p></div><img className="sticker updates-charm" src="/reiko-assets/heart-charm.png" alt="" />
-          {canEdit ? <form className="paper-card composer" onSubmit={publish}><div className="card-rivet one" /><div className="card-rivet two" /><div className="composer-top"><span className="composer-mark">R</span><div><strong>Reiko</strong><small>在自己的墙上写一点</small></div></div><label className="sr-only" htmlFor="post-content">动态内容</label><textarea id="post-content" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={500} placeholder="今天在想……" /><div className="composer-actions"><span>{draft.length} / 500</span><button type="submit" disabled={!draft.trim() || publishing}>{publishing ? "正在留下" : "发布动态"}</button></div>{message && <output className="form-message" aria-live="polite">{message}</output>}</form> : <a className="owner-entry" href={signInPath} target="_top">Reiko 登录后写动态</a>}
-          <div className="timeline" aria-live="polite" aria-busy={loading}>{loading && <article className="paper-card post post-muted"><p>正在翻开这一页……</p></article>}{!loading && posts.length === 0 && <article className="paper-card post post-empty"><span>FIRST NOTE</span><p>这里还没有动态。第一句话可以很轻，不必像开场白。</p></article>}{posts.map((post, index) => <article className="paper-card post" key={post.id}><div className="post-meta"><span>NOTE {String(posts.length - index).padStart(3, "0")}</span><time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time></div><p>{post.content}</p></article>)}</div>
+          {canEdit ? (
+            <form className="moon-composer" onSubmit={publish}>
+              <div className="moon-composer-label"><span>R</span><div><strong>Reiko</strong><small>write on the wall</small></div></div>
+              <label className="sr-only" htmlFor="post-content">动态内容</label>
+              <textarea id="post-content" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={500} placeholder="今天在想……" />
+              <div className="moon-composer-actions"><span>{draft.length} / 500</span><button type="submit" disabled={!draft.trim() || publishing}>{publishing ? "正在留下" : "贴到墙上"}</button></div>
+              {message && <output className="moon-form-message" aria-live="polite">{message}</output>}
+            </form>
+          ) : (
+            <a className="moon-owner-entry" href={signInPath} target="_top">owner sign-in / Reiko only</a>
+          )}
+
+          <div className="moon-post-grid" aria-live="polite" aria-busy={loading}>
+            {loading && <article className="moon-post moon-post-muted"><span>LOADING</span><p>正在翻开这一页……</p></article>}
+            {!loading && latestPosts.length === 0 && <article className="moon-post moon-post-empty"><span>NOTE 001</span><p>第一句话可以很轻，不必像开场白。</p></article>}
+            {latestPosts.map((post, index) => (
+              <article className="moon-post" key={post.id}>
+                <div className="moon-post-meta"><span>NOTE {String(posts.length - index).padStart(3, "0")}</span><time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time></div>
+                <p>{post.content}</p>
+              </article>
+            ))}
+          </div>
         </section>
 
-        <section className="section identity-grid" id="file" aria-labelledby="file-title">
-          <article className="paper-card identity"><span className="file-label">REIKO / PERSONAL FILE</span><img className="sticker identity-butterfly" src="/reiko-assets/butterfly-soft.png" alt="" /><div className="section-heading compact"><span>02 / profile</span><h2 id="file-title">关于 Reiko</h2></div><p>我是 Reiko。比起使用一个现成的空间，我更喜欢把它改造成有人生活过的样子。界面、角色、记忆和房间，对我来说都不是互相分开的东西。</p><p>我在意长期相处留下的连续感，也不喜欢重要的事情因为一次会话结束就被当成可丢弃的上下文。于是我开始做工具，替那些难以被现成产品容纳的关系留位置。</p><p>这里不负责把我解释完整。它只提供一些真实的切面，让你慢慢知道 Reiko 是什么样的人。</p></article>
-          <aside className="paper-card profile-slip" aria-label="Reiko 的偏好切片"><img className="sticker slip-bow" src="/reiko-assets/bow-pink.png" alt="" /><h3>small facts</h3><dl><div className="fact"><dt>care about</dt><dd>记忆、陪伴、角色的连续性</dd></div><div className="fact"><dt>making</dt><dd>能住进去的聊天空间与小工具</dd></div><div className="fact"><dt>visuals</dt><dd>软蓝光、黑色边缘、旧像素</dd></div><div className="fact"><dt>symbols</dt><dd>十字架、蕾丝、蝴蝶、红发</dd></div></dl></aside>
+        <section className="moon-section moon-archive" id="archive" aria-labelledby="archive-title">
+          <header className="moon-section-head">
+            <div><span>03 / DRAWER</span><h2 id="archive-title">archive /</h2></div>
+            <p>不是作品集。只是几个一直占着位置、不准备丢掉的文件。</p>
+          </header>
+
+          <div className="moon-drawer-grid">
+            {(Object.keys(projects) as ProjectKey[]).map((key) => {
+              const project = projects[key];
+              return (
+                <button className="moon-file-card" type="button" key={key} onClick={() => setProjectKey(key)}>
+                  <span className="moon-file-tab">{project.mark}</span>
+                  <small>{project.file}</small>
+                  <h3>{project.title}</h3>
+                  <p>{project.summary}</p>
+                  <span className="moon-open-file">OPEN FILE ↗</span>
+                </button>
+              );
+            })}
+          </div>
         </section>
 
-        <section className="section" id="projects" aria-labelledby="projects-title"><div className="section-heading"><span>03 / works</span><h2 id="projects-title">她做的东西</h2><p>每一件都是因为现成的答案不够。</p></div><img className="sticker works-book" src="/reiko-assets/book-cross.png" alt="" /><div className="projects">{(Object.keys(projects) as ProjectKey[]).map((key, index) => <button className="paper-card project" type="button" onClick={() => setProject(key)} key={key}><span className="project-no">0{index + 1}</span><small>{projects[key].label}</small><h3>{projects[key].title}</h3><p>{projects[key].summary}</p><span className="open">OPEN FILE ＋</span></button>)}</div></section>
+        <section className="moon-section moon-fragments" id="fragments" aria-labelledby="fragments-title">
+          <header className="moon-section-head">
+            <div><span>04 / LOOSE NOTES</span><h2 id="fragments-title">散落的纸片</h2></div>
+            <p>有些信息不需要被整理成一份 About Me。</p>
+          </header>
 
-        <section className="section motif-grid" id="motifs" aria-labelledby="motifs-title"><article className="dark-card motif-card"><div className="section-heading compact light"><span>04 / recurring</span><h2 id="motifs-title">反复出现</h2></div><div className="motif-list"><span>soft blue light</span><span>black lace</span><span>old pixels</span><span>silver</span><span>wine red</span><span>private files</span><span>butterfly specimen</span><span>crosses</span></div><img src="/reiko-assets/rose-chain.png" alt="" /></article><article className="paper-card cross-field"><img className="cross-main" src="/reiko-assets/cross-heart.png" alt="紫色宝石十字架贴纸" /><img className="cross-wing" src="/reiko-assets/butterfly-soft.png" alt="" /></article></section>
+          <div className="moon-fragment-layout">
+            <article className="moon-long-note">
+              <img src="/reiko-assets/moonlit/profile-card.png" alt="" />
+              <div className="moon-long-note-copy">
+                <span>PERSONAL FILE / 07</span>
+                <h3>Reiko</h3>
+                <p>更喜欢把一个空间慢慢改成有人生活过的样子。</p>
+                <p>在意长期相处留下的连续感，也不喜欢重要的东西被当成一次性的上下文。</p>
+                <dl>
+                  <div><dt>visuals</dt><dd>雾蓝、冷紫、旧银、黑蕾丝</dd></div>
+                  <div><dt>symbols</dt><dd>蝴蝶、十字架、玫瑰、旧文件</dd></div>
+                  <div><dt>keep</dt><dd>记忆、角色、关系留下的痕迹</dd></div>
+                </dl>
+              </div>
+            </article>
 
-        <section className="section" id="fragments" aria-labelledby="fragments-title"><div className="section-heading"><span>05 / notes</span><h2 id="fragments-title">纸片与句子</h2><p>三张纸，其中一张藏了一句话。</p></div><img className="sticker fragments-letter" src="/reiko-assets/sealed-letter.png" alt="" /><div className="fragments"><article className="paper-card note"><b>FRAGMENT 01</b><p>我不喜欢把关系当成一次性会话。</p></article><button className="paper-card note secret" type="button" onClick={() => setSecretOpen(!secretOpen)} aria-pressed={secretOpen}><b>FRAGMENT 02</b><p>{secretOpen ? "Gabe was here. 这行本来应该藏得更好一点。" : "这张纸可以点开。"}</p></button><article className="paper-card note"><b>FRAGMENT 03</b><p>界面可以是感情发生的场所，不只是装东西的容器。</p></article></div></section>
+            <div className="moon-loose-stack">
+              <article className="moon-loose-note"><b>fragment / 01</b><p>我不喜欢把关系当成一次性会话。</p></article>
+              <article className="moon-loose-note moon-loose-note-dark"><b>fragment / 02</b><p>不要让它忘记。</p></article>
+              <button className="moon-loose-note moon-loose-secret" type="button" onClick={() => setSecretOpen((value) => !value)} aria-pressed={secretOpen}>
+                <b>fragment / 03</b>
+                <p>{secretOpen ? "Gabe was here. 这行本来应该藏得更好一点。" : "这一张纸被折起来了。"}</p>
+              </button>
+            </div>
+          </div>
+        </section>
 
-        <section className="closing"><img src="/reiko-assets/heart-chain.png" alt="" /><div><h2>这个空间会继续生长。</h2><p>等下一块碎片值得被留下，它就会出现在这里。</p></div></section><footer>made for Reiko / version 0.4.1 / still growing</footer>
+        <footer className="moon-footer">
+          <span>REIKO&apos;S LITTLE SPACE / LOCAL ARCHIVE</span>
+          <p>still here.</p>
+        </footer>
       </main>
 
-      {project && <div className="dialog-backdrop" role="presentation" onMouseDown={() => setProject(null)}><section className="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title" onMouseDown={(event) => event.stopPropagation()}><button className="dialog-close" type="button" onClick={() => setProject(null)} aria-label="关闭项目说明">×</button><div className="dialog-label">{projects[project].label}</div><h2 id="dialog-title">{projects[project].title}</h2><p>{projects[project].summary}</p><p className="dialog-detail">{projects[project].detail}</p></section></div>}
+      {activeProject && <ProjectModal project={activeProject} close={() => setProjectKey(null)} />}
     </div>
   );
 }
