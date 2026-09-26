@@ -239,7 +239,8 @@ function PostArchiveModal({ posts, close, openPost }: { posts: Post[]; close: ()
       <article className="moon-comment-modal moon-archive-modal" role="dialog" aria-modal="true" aria-labelledby="moon-post-archive-title" onMouseDown={(event) => event.stopPropagation()}>
         <button className="moon-modal-close" type="button" onClick={close} aria-label="关闭动态 Archive">×</button>
         <span className="moon-file-name">WALL / COMPLETE ARCHIVE</span>
-        <h2 id="moon-post-archive-title">更早的地方</h2>
+        <h2 id="moon-post-archive-title">全部动态</h2>
+        <p className="moon-archive-hint">按最新到最旧排列。每一张卡片都可以继续打开批注。</p>
         <div className="moon-archive-post-list">
           {posts.map((post, index) => <button type="button" key={post.id} onClick={() => openPost(post)}><span>NOTE {String(posts.length - index).padStart(3, "0")}</span><p>{post.content}</p><time>{formatDate(post.createdAt)}</time></button>)}
         </div>
@@ -251,17 +252,49 @@ function PostArchiveModal({ posts, close, openPost }: { posts: Post[]; close: ()
 function MiniReiko() {
   const [frame, setFrame] = useState(1);
   const [line, setLine] = useState<string | null>(null);
+  const bubbleTimer = useRef<number | null>(null);
   const lines = ["随便坐坐", "你又过来了。", "……", "在想一些事。"];
 
   useEffect(() => {
-    const timer = window.setInterval(() => setFrame((current) => current === 31 ? 1 : current + 1), 80);
-    return () => window.clearInterval(timer);
+    const sources = Array.from({ length: 31 }, (_, index) => `/reiko-assets/upgrade/mini_Reiko_idle/Mini_Reiko_idle_${index + 1}.png`);
+    const images = sources.map((source) => {
+      const image = new Image();
+      image.src = source;
+      return image;
+    });
+    let raf = 0;
+    let last = performance.now();
+    let elapsed = 0;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const tick = (now: number) => {
+      if (document.visibilityState === "visible" && !reducedMotion && images.every((image) => image.complete)) {
+        elapsed += now - last;
+        if (elapsed >= 100) {
+          elapsed = 0;
+          setFrame((current) => current === 31 ? 1 : current + 1);
+        }
+      }
+      last = now;
+      raf = window.requestAnimationFrame(tick);
+    };
+    raf = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(raf);
   }, []);
+
+  useEffect(() => () => {
+    if (bubbleTimer.current !== null) window.clearTimeout(bubbleTimer.current);
+  }, []);
+
+  function speak() {
+    setLine(lines[Math.floor(Math.random() * lines.length)]);
+    if (bubbleTimer.current !== null) window.clearTimeout(bubbleTimer.current);
+    bubbleTimer.current = window.setTimeout(() => setLine(null), 2600);
+  }
 
   return (
     <div className="mini-reiko-wrap">
       {line && <div className="mini-reiko-bubble" role="status">{line}</div>}
-      <button className="mini-reiko" type="button" onClick={() => setLine(lines[Math.floor(Math.random() * lines.length)])} aria-label="和迷你 Reiko 说话">
+      <button className="mini-reiko" type="button" onClick={speak} aria-label="和迷你 Reiko 说话">
         <img src={`/reiko-assets/upgrade/mini_Reiko_idle/Mini_Reiko_idle_${frame}.png`} alt="迷你 Reiko" />
       </button>
     </div>
@@ -273,7 +306,6 @@ function ButterflyButton({ label, onClick }: { label: string; onClick: () => voi
   const [animating, setAnimating] = useState(false);
 
   function activate() {
-    onClick();
     if (animating) return;
     setAnimating(true);
     let current = 1;
@@ -282,13 +314,21 @@ function ButterflyButton({ label, onClick }: { label: string; onClick: () => voi
       setFrame(current);
       if (current >= 16) {
         window.clearInterval(timer);
+        onClick();
         setAnimating(false);
         setFrame(1);
       }
     }, 75);
   }
 
-  return <button type="button" onClick={activate}><img className="moon-butterfly-mark" src={`/reiko-assets/upgrade/butterfly_idle/butterfly_idle_${frame}.png`} alt="" />{label}</button>;
+  return <>
+    <button type="button" onClick={activate} disabled={animating} aria-busy={animating}>
+      <img className="moon-butterfly-mark" src={`/reiko-assets/upgrade/butterfly_idle/butterfly_idle_1.png`} alt="" />{label}
+    </button>
+    {animating && <div className="moon-butterfly-transition" role="status" aria-live="polite">
+      <img src={`/reiko-assets/upgrade/butterfly_idle/butterfly_idle_${frame}.png`} alt="" />
+    </div>}
+  </>;
 }
 
 export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; signInPath: string }) {
@@ -418,9 +458,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
 
           <MusicPlayer />
           <div className="moon-chain-divider" aria-hidden="true">
-            <img src="/reiko-assets/upgrade/asset-E-cropped.png" alt="" />
-            <img src="/reiko-assets/upgrade/asset-E-cropped.png" alt="" />
-            <img src="/reiko-assets/upgrade/asset-E-cropped.png" alt="" />
+            <img src="/reiko-assets/upgrade/chain-full-trim.png" alt="" />
           </div>
         </section>
 
@@ -460,7 +498,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
                 : <button className="moon-post-expand-disabled" type="button" disabled><img className="moon-butterfly-mark" src="/reiko-assets/upgrade/butterfly_idle/butterfly_idle_1.png" alt="" />还没有更早的地方</button>
             ) : (
               <div className="moon-post-expand-open">
-                <ButterflyButton label="蝴蝶飞回去了" onClick={() => setPostsExpanded(false)} />
+                <ButterflyButton label="蝴蝶飞回去了" onClick={() => { setPostsExpanded(false); document.getElementById("updates")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} />
                 <button className="moon-archive-link" type="button" onClick={() => setArchiveOpen(true)}>去更早的地方 →</button>
               </div>
             )}

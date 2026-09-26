@@ -99,8 +99,8 @@ img{max-width:100%;display:block}
 .moon-player-progress input,.moon-player-volume input{accent-color:#a8a1c7}
 .moon-player-volume{position:absolute;z-index:3;right:28px;top:50%;transform:translateY(-50%);width:145px;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;color:#918c9d;font:.55rem var(--moon-mono);letter-spacing:.08em}
 .moon-player-volume input{width:100%}
-.moon-chain-divider{position:relative;width:100%;height:clamp(72px,8vw,112px);margin:8px 0 -2px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;overflow:hidden;pointer-events:none;transform:translateY(clamp(42px,6vw,82px));}
-.moon-chain-divider img{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 9px rgba(0,0,0,.28));}
+.moon-chain-divider{position:relative;width:100%;height:clamp(90px,10vw,170px);margin:8px 0 -2px;display:grid;place-items:center;overflow:hidden;pointer-events:none;transform:translateY(clamp(42px,6vw,82px));}
+.moon-chain-divider img{width:100%;height:100%;display:block;object-fit:contain;filter:drop-shadow(0 8px 9px rgba(0,0,0,.28));}
 
 .moon-section{scroll-margin-top:28px;padding:108px 8px 24px}
 .moon-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:34px;margin-bottom:34px}
@@ -141,6 +141,8 @@ img{max-width:100%;display:block}
 .moon-butterfly-mark{display:inline-block;width:28px;height:28px;vertical-align:middle;margin:-7px 8px -7px 0;object-fit:contain;filter:drop-shadow(0 3px 4px rgba(0,0,0,.24))}
 .moon-post-expand-open{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
 .moon-post-expand .moon-archive-link{border:0;background:transparent;color:#9b95ab}
+.moon-butterfly-transition{position:fixed;inset:0;z-index:120;display:grid;place-items:center;background:rgba(12,11,20,.24);pointer-events:none}
+.moon-butterfly-transition img{width:clamp(104px,16vw,156px);height:auto;filter:none}
 
 .moon-drawer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .moon-file-card{position:relative;min-height:300px;padding:35px 27px 25px;border:1px solid rgba(236,232,245,.2);border-radius:22px;background:
@@ -203,6 +205,7 @@ button.moon-loose-note{cursor:pointer}
 .moon-comment-form>div{display:flex;justify-content:center;align-items:center;margin-top:9px;color:#6f687a;font:.52rem var(--moon-mono)}
 .moon-comment-form button{padding:5px 8px;border:0;border-bottom:1px solid rgba(55,49,70,.28);border-radius:0;background:transparent;color:#514d61;cursor:pointer;font:.58rem var(--moon-mono);letter-spacing:.08em}
 .moon-comment-form button:disabled{opacity:.45;cursor:not-allowed}
+.moon-archive-hint{position:relative;max-width:360px;margin:12px 0 0;color:#6f687a;font:.72rem/1.65 var(--moon-serif)}
 .moon-archive-post-list{position:relative;display:grid;gap:10px;margin-top:20px}
 .moon-archive-post-list button{display:grid;grid-template-columns:92px 1fr auto;gap:14px;align-items:center;padding:13px 14px;border:1px solid rgba(57,51,71,.16);border-radius:12px;background:rgba(255,255,255,.13);color:#403a4b;text-align:left;cursor:pointer}
 .moon-archive-post-list button:hover{background:rgba(255,255,255,.24)}
@@ -221,7 +224,7 @@ button.moon-loose-note{cursor:pointer}
 .mini-reiko-bubble{max-width:180px;margin:0 12px 4px;padding:8px 12px;border:1px solid rgba(228,224,242,.25);border-radius:13px 13px 3px 13px;background:rgba(35,32,49,.9);box-shadow:0 12px 25px rgba(0,0,0,.25);color:#e4dfef;font:.72rem/1.5 var(--moon-serif);pointer-events:none}
 
 @media (max-width:980px){
-  .moon-upgrade-corner{display:none}
+  .moon-upgrade-corner{display:block;width:34%;opacity:.24;filter:brightness(.68) saturate(.68) drop-shadow(0 6px 9px rgba(0,0,0,.24))}
   .moon-nav{position:sticky;top:0;width:100%;height:66px;padding:0 16px;flex-direction:row;justify-content:space-between;border-right:0;border-bottom:1px solid rgba(227,222,244,.15)}
   .moon-mark{width:42px;height:42px;font-size:1.05rem}
   .moon-nav nav{width:auto;margin:0;display:flex;gap:3px}
@@ -265,6 +268,7 @@ button.moon-loose-note{cursor:pointer}
   .moon-player-toggle{left:50%;top:42px;width:45px;height:45px}
   .moon-player-copy{left:28px;right:28px;top:93px;transform:none}
   .moon-player-volume{display:none}
+  .moon-chain-divider{height:clamp(82px,18vw,118px);margin-top:0;transform:translateY(28px)}
   .moon-section{padding-top:82px}
   .moon-section-head{display:block}
   .moon-section-head>p{margin-top:14px;text-align:left}
@@ -282,6 +286,8 @@ button.moon-loose-note{cursor:pointer}
   .moon-comment-modal{width:calc(100vw - 28px);height:calc((100vw - 28px) * 1.243);max-height:calc(100vh - 28px);padding:70px 42px 58px}
   .moon-comment-modal h2{margin-left:0;font-size:.66rem}
   .moon-comment-form{left:42px;right:42px;bottom:82px}
+  .moon-archive-hint{font-size:.78rem}
+  .moon-butterfly-transition img{width:128px}
   .moon-archive-post-list button{grid-template-columns:1fr auto}
   .moon-archive-post-list p{grid-column:1/-1;grid-row:2}
   .moon-elsewhere-grid{grid-template-columns:1fr}
