@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 type Post = { id: number; content: string; createdAt: string };
+type Comment = { id: number; postId: number; content: string; createdAt: string };
 type ProjectKey = "home" | "memory" | "memoirs";
 
 type Project = {
@@ -164,6 +165,132 @@ function ProjectModal({ project, close }: { project: Project; close: () => void 
   );
 }
 
+function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; canEdit: boolean; signInPath: string; close: () => void }) {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [draft, setDraft] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetch(`/api/posts/${post.id}/comments`)
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "批注暂时无法读取。");
+        setComments(Array.isArray(data.comments) ? data.comments : []);
+      })
+      .catch((error) => setMessage(error instanceof Error ? error.message : "批注暂时无法读取。"))
+      .finally(() => setLoading(false));
+  }, [post.id]);
+
+  async function saveComment(event: FormEvent) {
+    event.preventDefault();
+    const content = draft.trim();
+    if (!content || saving) return;
+    setSaving(true);
+    setMessage("");
+    try {
+      const response = await fetch(`/api/posts/${post.id}/comments`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "批注保存失败。");
+      setComments((current) => [...current, data.comment]);
+      setDraft("");
+      setMessage("批注已经留下了。");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "批注保存失败。");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="moon-modal-backdrop" role="presentation" onMouseDown={close}>
+      <article className="moon-comment-modal" role="dialog" aria-modal="true" aria-labelledby="moon-comment-title" onMouseDown={(event) => event.stopPropagation()}>
+        <button className="moon-modal-close" type="button" onClick={close} aria-label="关闭批注">×</button>
+        <span className="moon-file-name">NOTE {String(post.id).padStart(3, "0")} / ANNOTATION</span>
+        <h2 id="moon-comment-title">ANNOTATION / 复读的碎片</h2>
+        <div className="moon-comment-list" aria-live="polite">
+          {loading && <p className="moon-comment-muted">正在翻开批注页……</p>}
+          {!loading && comments.length === 0 && <p className="moon-comment-muted">还没有复读的碎片。</p>}
+          {comments.map((comment) => <div className="moon-comment" key={comment.id}><time>{formatDate(comment.createdAt)}</time><p>{comment.content}</p></div>)}
+        </div>
+        {canEdit ? (
+          <form className="moon-comment-form" onSubmit={saveComment}>
+            <label className="sr-only" htmlFor="comment-content">批注内容</label>
+            <textarea id="comment-content" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={500} placeholder="在这里写一点批注……" />
+            <div><span>{draft.length} / 500</span><button type="submit" disabled={!draft.trim() || saving}>{saving ? "正在写入" : "留下批注"}</button></div>
+          </form>
+        ) : (
+          <a className="moon-owner-entry" href={signInPath} target="_top">owner sign-in / annotate</a>
+        )}
+        {message && <output className="moon-form-message" aria-live="polite">{message}</output>}
+      </article>
+    </div>
+  );
+}
+
+function PostArchiveModal({ posts, close, openPost }: { posts: Post[]; close: () => void; openPost: (post: Post) => void }) {
+  return (
+    <div className="moon-modal-backdrop" role="presentation" onMouseDown={close}>
+      <article className="moon-comment-modal moon-archive-modal" role="dialog" aria-modal="true" aria-labelledby="moon-post-archive-title" onMouseDown={(event) => event.stopPropagation()}>
+        <button className="moon-modal-close" type="button" onClick={close} aria-label="关闭动态 Archive">×</button>
+        <span className="moon-file-name">WALL / COMPLETE ARCHIVE</span>
+        <h2 id="moon-post-archive-title">更早的地方</h2>
+        <div className="moon-archive-post-list">
+          {posts.map((post, index) => <button type="button" key={post.id} onClick={() => openPost(post)}><span>NOTE {String(posts.length - index).padStart(3, "0")}</span><p>{post.content}</p><time>{formatDate(post.createdAt)}</time></button>)}
+        </div>
+      </article>
+    </div>
+  );
+}
+
+function MiniReiko() {
+  const [frame, setFrame] = useState(1);
+  const [line, setLine] = useState<string | null>(null);
+  const lines = ["随便坐坐", "你又过来了。", "……", "在想一些事。"];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setFrame((current) => current === 31 ? 1 : current + 1), 80);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="mini-reiko-wrap">
+      {line && <div className="mini-reiko-bubble" role="status">{line}</div>}
+      <button className="mini-reiko" type="button" onClick={() => setLine(lines[Math.floor(Math.random() * lines.length)])} aria-label="和迷你 Reiko 说话">
+        <img src={`/reiko-assets/upgrade/mini_Reiko_idle/Mini_Reiko_idle_${frame}.png`} alt="迷你 Reiko" />
+      </button>
+    </div>
+  );
+}
+
+function ButterflyButton({ label, onClick }: { label: string; onClick: () => void }) {
+  const [frame, setFrame] = useState(1);
+  const [animating, setAnimating] = useState(false);
+
+  function activate() {
+    onClick();
+    if (animating) return;
+    setAnimating(true);
+    let current = 1;
+    const timer = window.setInterval(() => {
+      current += 1;
+      setFrame(current);
+      if (current >= 16) {
+        window.clearInterval(timer);
+        setAnimating(false);
+        setFrame(1);
+      }
+    }, 75);
+  }
+
+  return <button type="button" onClick={activate}><img className="moon-butterfly-mark" src={`/reiko-assets/upgrade/butterfly_idle/butterfly_idle_${frame}.png`} alt="" />{label}</button>;
+}
+
 export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; signInPath: string }) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [draft, setDraft] = useState("");
@@ -171,8 +298,15 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   const [publishing, setPublishing] = useState(false);
   const [message, setMessage] = useState("");
   const [projectKey, setProjectKey] = useState<ProjectKey | null>(null);
+  const [commentPost, setCommentPost] = useState<Post | null>(null);
+  const [archiveOpen, setArchiveOpen] = useState(false);
+  const [postsExpanded, setPostsExpanded] = useState(false);
   const [secretOpen, setSecretOpen] = useState(false);
-  const latestPosts = useMemo(() => posts.slice(0, 12), [posts]);
+  const orderedPosts = useMemo(() => [...posts].sort((left, right) => {
+    const timeDifference = new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+    return timeDifference || right.id - left.id;
+  }), [posts]);
+  const visiblePosts = useMemo(() => orderedPosts.slice(0, postsExpanded ? 12 : 6), [orderedPosts, postsExpanded]);
 
   useEffect(() => {
     fetch("/api/posts")
@@ -187,7 +321,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") setProjectKey(null);
+      if (event.key === "Escape") { setProjectKey(null); setCommentPost(null); setArchiveOpen(false); }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -231,6 +365,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           <a href="#diary"><b>02</b><span>DIARY</span></a>
           <a href="#archive"><b>03</b><span>ARCHIVE</span></a>
           <a href="#fragments"><b>04</b><span>NOTES</span></a>
+          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a>
         </nav>
         <div className="moon-nav-foot">
           <span>PRIVATE WEB ROOM</span>
@@ -251,6 +386,10 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           <div className="moon-room-grid">
             <div className="moon-profile-stage">
               <div className="moon-profile-glow" />
+              <img className="moon-upgrade-corner moon-upgrade-corner-a" src="/reiko-assets/upgrade/asset-A.png" alt="" />
+              <img className="moon-upgrade-corner moon-upgrade-corner-b" src="/reiko-assets/upgrade/asset-B.png" alt="" />
+              <img className="moon-upgrade-corner moon-upgrade-corner-c" src="/reiko-assets/upgrade/asset-C.png" alt="" />
+              <img className="moon-upgrade-corner moon-upgrade-corner-d" src="/reiko-assets/upgrade/asset-D.png" alt="" />
               <img className="moon-profile-art" src="/reiko-assets/moonlit/profile.png" alt="Reiko's little space" />
               <div className="moon-profile-caption">
                 <span>ROOM STATUS</span>
@@ -278,6 +417,11 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           </div>
 
           <MusicPlayer />
+          <div className="moon-chain-divider" aria-hidden="true">
+            <img src="/reiko-assets/upgrade/asset-E-cropped.png" alt="" />
+            <img src="/reiko-assets/upgrade/asset-E-cropped.png" alt="" />
+            <img src="/reiko-assets/upgrade/asset-E-cropped.png" alt="" />
+          </div>
         </section>
 
         <section className="moon-section moon-diary" id="updates" aria-labelledby="diary-title">
@@ -300,14 +444,27 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
 
           <div className="moon-post-grid" aria-live="polite" aria-busy={loading}>
             {loading && <article className="moon-post moon-post-muted"><span>LOADING</span><p>正在翻开这一页……</p></article>}
-            {!loading && latestPosts.length === 0 && <article className="moon-post moon-post-empty"><span>NOTE 001</span><p>第一句话可以很轻，不必像开场白。</p></article>}
-            {latestPosts.map((post, index) => (
-              <article className="moon-post" key={post.id}>
-                <div className="moon-post-meta"><span>NOTE {String(posts.length - index).padStart(3, "0")}</span><time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time></div>
+            {!loading && visiblePosts.length === 0 && <article className="moon-post moon-post-empty"><span>NOTE 001</span><p>第一句话可以很轻，不必像开场白。</p></article>}
+            {visiblePosts.map((post, index) => (
+              <article className="moon-post" key={post.id} role="button" tabIndex={0} onClick={() => setCommentPost(post)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") setCommentPost(post); }}>
+                <div className="moon-post-meta"><span>NOTE {String(orderedPosts.length - index).padStart(3, "0")}</span><time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time></div>
                 <p>{post.content}</p>
+                <span className="moon-post-action">OPEN ANNOTATION ↗</span>
               </article>
             ))}
           </div>
+          {!loading && posts.length > 0 && <div className="moon-post-expand">
+            {!postsExpanded ? (
+              posts.length > 6
+                ? <ButterflyButton label="让蝴蝶扇动翅膀" onClick={() => setPostsExpanded(true)} />
+                : <button className="moon-post-expand-disabled" type="button" disabled><img className="moon-butterfly-mark" src="/reiko-assets/upgrade/butterfly_idle/butterfly_idle_1.png" alt="" />还没有更早的地方</button>
+            ) : (
+              <div className="moon-post-expand-open">
+                <ButterflyButton label="蝴蝶飞回去了" onClick={() => setPostsExpanded(false)} />
+                <button className="moon-archive-link" type="button" onClick={() => setArchiveOpen(true)}>去更早的地方 →</button>
+              </div>
+            )}
+          </div>}
         </section>
 
         <section className="moon-section moon-archive" id="archive" aria-labelledby="archive-title">
@@ -365,6 +522,18 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           </div>
         </section>
 
+        <section className="moon-section moon-elsewhere" id="elsewhere" aria-labelledby="elsewhere-title">
+          <header className="moon-section-head">
+            <div><span>05 / ELSEWHERE</span><h2 id="elsewhere-title">Reiko elsewhere</h2></div>
+            <p>从这个房间通往外面的几件东西。</p>
+          </header>
+          <div className="moon-elsewhere-grid">
+            <a className="moon-elsewhere-card" href="https://github.com/sumiretomori93-create" target="_blank" rel="noreferrer"><img src="/reiko-assets/upgrade/GitHub.png" alt="GitHub" /><span>things I made.</span></a>
+            <a className="moon-elsewhere-card" href="https://www.douyin.com/user/MS4wLjABAAAAwSv-5mu36fhrx-OkIXknK7OelXyGDblkqZilBdEn3-bi7YU0cTCrLQ5CSSfEzbsm" target="_blank" rel="noreferrer"><img src="/reiko-assets/upgrade/douyin.png" alt="抖音" /><span>things I left outside.</span></a>
+            <a className="moon-elsewhere-card" href="https://m.douban.com/people/141645852/" target="_blank" rel="noreferrer"><img src="/reiko-assets/upgrade/douban.png" alt="豆瓣" /><span>Reiko in real life.</span></a>
+          </div>
+        </section>
+
         <footer className="moon-footer">
           <span>REIKO&apos;S LITTLE SPACE / LOCAL ARCHIVE</span>
           <p>still here.</p>
@@ -372,6 +541,10 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
       </main>
 
       {activeProject && <ProjectModal project={activeProject} close={() => setProjectKey(null)} />}
+      {archiveOpen && <PostArchiveModal posts={orderedPosts} close={() => setArchiveOpen(false)} openPost={(post) => { setArchiveOpen(false); setCommentPost(post); }} />}
+      {commentPost && <PostCommentModal post={commentPost} canEdit={canEdit} signInPath={signInPath} close={() => setCommentPost(null)} />}
+      <MiniReiko />
     </div>
   );
 }
+

@@ -64,7 +64,12 @@ img{max-width:100%;display:block}
 .moon-profile-stage{position:relative;min-height:515px;border:1px solid rgba(229,226,244,.18);border-radius:28px;background:linear-gradient(145deg,rgba(103,99,129,.17),rgba(32,31,48,.42));box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 35px 90px rgba(0,0,0,.31);overflow:hidden;backdrop-filter:blur(10px)}
 .moon-profile-stage:before{content:"";position:absolute;inset:17px;border:1px dashed rgba(217,212,237,.12);border-radius:20px;pointer-events:none}
 .moon-profile-glow{position:absolute;width:430px;height:430px;left:50%;top:52%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(184,177,220,.18),rgba(93,86,126,.08) 45%,transparent 70%);filter:blur(6px)}
-.moon-profile-art{position:absolute;width:min(500px,77%);left:50%;top:49%;transform:translate(-50%,-50%);filter:drop-shadow(0 25px 26px rgba(0,0,0,.36))}
+.moon-upgrade-corner{display:block;position:absolute;z-index:0;width:43%;height:auto;max-width:none;pointer-events:none;opacity:.38;filter:brightness(.72) saturate(.76) drop-shadow(0 8px 12px rgba(0,0,0,.28));}
+.moon-upgrade-corner-a{left:-2%;top:-1%;}
+.moon-upgrade-corner-b{right:-2%;top:-1%;}
+.moon-upgrade-corner-c{left:-2%;bottom:-2%;}
+.moon-upgrade-corner-d{right:-2%;bottom:-2%;}
+.moon-profile-art{position:absolute;z-index:2;width:min(500px,77%);left:50%;top:49%;transform:translate(-50%,-50%);filter:drop-shadow(0 25px 26px rgba(0,0,0,.36))}
 .moon-profile-caption{position:absolute;left:28px;bottom:24px;display:grid;color:#9893a9;font:.58rem var(--moon-mono);letter-spacing:.1em}
 .moon-profile-caption strong{margin-top:3px;color:#d1ccdc;font-size:.64rem;font-weight:500}
 .moon-secret-chip{position:absolute;right:25px;bottom:22px;padding:8px 12px;border:1px solid rgba(220,216,238,.19);border-radius:999px;background:rgba(30,29,44,.58);color:#aaa4ba;font:.57rem var(--moon-mono);letter-spacing:.09em;cursor:pointer;backdrop-filter:blur(10px)}
@@ -94,6 +99,8 @@ img{max-width:100%;display:block}
 .moon-player-progress input,.moon-player-volume input{accent-color:#a8a1c7}
 .moon-player-volume{position:absolute;z-index:3;right:28px;top:50%;transform:translateY(-50%);width:145px;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;color:#918c9d;font:.55rem var(--moon-mono);letter-spacing:.08em}
 .moon-player-volume input{width:100%}
+.moon-chain-divider{position:relative;width:100%;height:clamp(72px,8vw,112px);margin:8px 0 -2px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;overflow:hidden;pointer-events:none;transform:translateY(clamp(42px,6vw,82px));}
+.moon-chain-divider img{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 9px rgba(0,0,0,.28));}
 
 .moon-section{scroll-margin-top:28px;padding:108px 8px 24px}
 .moon-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:34px;margin-bottom:34px}
@@ -117,12 +124,23 @@ img{max-width:100%;display:block}
 
 .moon-post-grid{columns:2 330px;column-gap:18px}
 .moon-post{position:relative;break-inside:avoid;margin:0 0 18px;padding:24px 25px;border:1px solid rgba(231,227,243,.18);border-radius:18px;background:linear-gradient(145deg,rgba(121,116,144,.24),rgba(45,43,58,.48));box-shadow:0 19px 50px rgba(0,0,0,.19);backdrop-filter:blur(11px)}
+.moon-post[role="button"]{cursor:pointer;transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.moon-post[role="button"]:hover,.moon-post[role="button"]:focus-visible{transform:translateY(-3px);border-color:rgba(226,220,246,.38);background:linear-gradient(145deg,rgba(141,133,166,.3),rgba(48,45,64,.55))}
 .moon-post:nth-child(3n+2){background:linear-gradient(145deg,rgba(93,101,128,.28),rgba(42,42,59,.49))}
 .moon-post:nth-child(4n+1){transform:rotate(-.25deg)}
 .moon-post-meta{display:flex;justify-content:space-between;gap:14px;padding-bottom:9px;border-bottom:1px dashed rgba(224,219,236,.13);color:#817c8a;font:.54rem var(--moon-mono);letter-spacing:.07em}
 .moon-post p{margin:14px 0 2px;color:#e5e1eb;font:500 .96rem/1.82 var(--moon-serif);white-space:pre-wrap}
+.moon-post-action{display:block;margin-top:15px;color:#8d88a0;font:600 .52rem var(--moon-mono);letter-spacing:.11em}
 .moon-post-muted,.moon-post-empty{color:#918d9b}
 .moon-post-muted>span,.moon-post-empty>span{color:#777281;font:.55rem var(--moon-mono);letter-spacing:.1em}
+.moon-post-expand{display:flex;justify-content:center;margin:30px auto 0}
+.moon-post-expand button{border:1px solid rgba(222,217,238,.2);border-radius:999px;padding:10px 17px;background:rgba(41,39,55,.55);color:#c0bad2;cursor:pointer;font:.62rem var(--moon-mono);letter-spacing:.08em}
+.moon-post-expand button:hover{border-color:rgba(232,227,247,.42);color:#f1edf8}
+.moon-post-expand .moon-post-expand-disabled{opacity:.58;cursor:default}
+.moon-post-expand .moon-post-expand-disabled:hover{border-color:rgba(222,217,238,.2);color:#c0bad2}
+.moon-butterfly-mark{display:inline-block;width:28px;height:28px;vertical-align:middle;margin:-7px 8px -7px 0;object-fit:contain;filter:drop-shadow(0 3px 4px rgba(0,0,0,.24))}
+.moon-post-expand-open{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+.moon-post-expand .moon-archive-link{border:0;background:transparent;color:#9b95ab}
 
 .moon-drawer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .moon-file-card{position:relative;min-height:300px;padding:35px 27px 25px;border:1px solid rgba(236,232,245,.2);border-radius:22px;background:
@@ -171,8 +189,39 @@ button.moon-loose-note{cursor:pointer}
 .moon-modal-rule{position:relative;height:1px;margin:25px 0;background:linear-gradient(90deg,rgba(45,42,57,.35),transparent)}
 .moon-modal>p:not(.moon-file-subtitle){position:relative;margin:0;color:#383542;font:500 1rem/1.85 var(--moon-serif)}
 .moon-modal>small{position:relative;display:block;margin-top:28px;color:#696373;font:.52rem var(--moon-mono);letter-spacing:.09em}
+.moon-comment-modal{position:relative;width:620px;height:770px;max-width:calc(100vw - 28px);max-height:calc(100vh - 28px);overflow:auto;padding:104px 118px 88px;border:0;border-radius:0;background:transparent url('/reiko-assets/upgrade/profile-card-annotation.png') center/100% 100% no-repeat;box-shadow:0 30px 80px rgba(0,0,0,.5);color:#262431}
+.moon-comment-modal:before{display:none}
+.moon-comment-modal h2{position:relative;margin:17px 0 26px;text-align:left;color:#5d5a70;text-shadow:none;font:600 .7rem/1.4 var(--moon-mono);letter-spacing:.13em}
+.moon-comment-list{position:relative;display:grid;gap:11px;min-height:250px;margin:23px 0;text-align:center;align-content:center}
+.moon-comment{padding:12px 14px;border-top:1px dashed rgba(48,44,61,.2);color:#3f3a4a}
+.moon-comment time{color:#716a7c;font:.52rem var(--moon-mono);letter-spacing:.06em}
+.moon-comment p{margin:5px 0 0;font:.9rem/1.7 var(--moon-serif);white-space:pre-wrap}
+.moon-comment-muted{margin:0;color:#5f5b6d;font:.9rem var(--moon-serif)}
+.moon-comment-form{position:absolute;left:118px;right:118px;bottom:118px;margin:0}
+.moon-comment-form textarea{width:100%;min-height:82px;padding:12px 3px;border:0;border-top:1px dashed rgba(53,48,68,.22);border-bottom:1px dashed rgba(53,48,68,.18);border-radius:0;outline:0;resize:vertical;background:transparent;color:#302c3c;font:.88rem/1.7 var(--moon-serif)}
+.moon-comment-form textarea::placeholder{color:#777081}
+.moon-comment-form>div{display:flex;justify-content:center;align-items:center;margin-top:9px;color:#6f687a;font:.52rem var(--moon-mono)}
+.moon-comment-form button{padding:5px 8px;border:0;border-bottom:1px solid rgba(55,49,70,.28);border-radius:0;background:transparent;color:#514d61;cursor:pointer;font:.58rem var(--moon-mono);letter-spacing:.08em}
+.moon-comment-form button:disabled{opacity:.45;cursor:not-allowed}
+.moon-archive-post-list{position:relative;display:grid;gap:10px;margin-top:20px}
+.moon-archive-post-list button{display:grid;grid-template-columns:92px 1fr auto;gap:14px;align-items:center;padding:13px 14px;border:1px solid rgba(57,51,71,.16);border-radius:12px;background:rgba(255,255,255,.13);color:#403a4b;text-align:left;cursor:pointer}
+.moon-archive-post-list button:hover{background:rgba(255,255,255,.24)}
+.moon-archive-post-list button>span,.moon-archive-post-list time{color:#70697b;font:.5rem var(--moon-mono);letter-spacing:.06em}
+.moon-archive-post-list p{margin:0;font:.82rem/1.55 var(--moon-serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.moon-elsewhere-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.moon-elsewhere-card{position:relative;min-height:240px;display:grid;place-items:center;padding:15px;border:1px solid rgba(231,227,243,.18);border-radius:20px;background:linear-gradient(145deg,rgba(100,95,125,.23),rgba(36,34,50,.48));box-shadow:0 20px 52px rgba(0,0,0,.2);text-decoration:none;overflow:hidden;transition:transform .2s ease,border-color .2s ease}
+.moon-elsewhere-card:hover{transform:translateY(-4px);border-color:rgba(230,225,245,.4)}
+.moon-elsewhere-card img{width:min(280px,100%);filter:drop-shadow(0 18px 18px rgba(0,0,0,.35));transition:transform .25s ease}
+.moon-elsewhere-card:hover img{transform:scale(1.035)}
+.moon-elsewhere-card span{position:absolute;bottom:14px;left:0;right:0;text-align:center;color:#aaa4bb;font:.58rem var(--moon-mono);letter-spacing:.09em}
+.mini-reiko-wrap{position:fixed;z-index:35;right:18px;bottom:12px;display:grid;justify-items:end;pointer-events:none}
+.mini-reiko{width:170px;height:212px;padding:0;border:0;background:transparent;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 13px 16px rgba(0,0,0,.4));transition:transform .18s ease}
+.mini-reiko:hover{transform:translateY(-4px)}
+.mini-reiko img{width:100%;height:100%;object-fit:contain}
+.mini-reiko-bubble{max-width:180px;margin:0 12px 4px;padding:8px 12px;border:1px solid rgba(228,224,242,.25);border-radius:13px 13px 3px 13px;background:rgba(35,32,49,.9);box-shadow:0 12px 25px rgba(0,0,0,.25);color:#e4dfef;font:.72rem/1.5 var(--moon-serif);pointer-events:none}
 
 @media (max-width:980px){
+  .moon-upgrade-corner{display:none}
   .moon-nav{position:sticky;top:0;width:100%;height:66px;padding:0 16px;flex-direction:row;justify-content:space-between;border-right:0;border-bottom:1px solid rgba(227,222,244,.15)}
   .moon-mark{width:42px;height:42px;font-size:1.05rem}
   .moon-nav nav{width:auto;margin:0;display:flex;gap:3px}
@@ -230,7 +279,16 @@ button.moon-loose-note{cursor:pointer}
   .moon-modal{padding:42px 28px 34px}
   .moon-file-mark{display:none}
   .moon-modal h2{font-size:2.05rem}
+  .moon-comment-modal{width:calc(100vw - 28px);height:calc((100vw - 28px) * 1.243);max-height:calc(100vh - 28px);padding:70px 42px 58px}
+  .moon-comment-modal h2{margin-left:0;font-size:.66rem}
+  .moon-comment-form{left:42px;right:42px;bottom:82px}
+  .moon-archive-post-list button{grid-template-columns:1fr auto}
+  .moon-archive-post-list p{grid-column:1/-1;grid-row:2}
+  .moon-elsewhere-grid{grid-template-columns:1fr}
+  .moon-elsewhere-card{min-height:190px}
+  .mini-reiko-wrap{right:5px;bottom:5px;transform:scale(.78);transform-origin:bottom right}
   .moon-footer{margin-top:80px;display:grid;gap:8px}
 }
 
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.moon-collection img,.moon-file-card{transition:none}}
+
