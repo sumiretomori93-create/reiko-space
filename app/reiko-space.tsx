@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import GreenGarden from "./garden-space";
 
 type Post = { id: number; content: string; createdAt: string };
 type Comment = { id: number; postId: number; content: string; createdAt: string };
-type ProjectKey = "home" | "memory" | "memoirs";
+type ProjectKey = "home" | "memory" | "memoirs" | "tidal";
+type Theme = "room" | "garden";
 
 type Project = {
   file: string;
@@ -42,6 +44,15 @@ const projects: Record<ProjectKey, Project> = {
     detail:
       "每天的记忆被重新编成一本未知页码的书。Reiko 与当前角色各自选择一页，翻开以后阅读、批注，再把刚刚发生的共读带回真实对话。",
     mark: "BOOK",
+  },
+  tidal: {
+    file: "tidal_04.complete",
+    title: "Tidal Keeps 潮汐留存",
+    subtitle: "retrieve yesterday from the tide",
+    summary: "把日常沉入海里，再从昨日打捞回来。",
+    detail:
+      "把日常沉入海里，再从昨日打捞回来。一个已经完成、仍会继续保存生活痕迹的记忆项目。",
+    mark: "COMPLETE",
   },
 };
 
@@ -342,6 +353,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [postsExpanded, setPostsExpanded] = useState(false);
   const [secretOpen, setSecretOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>("garden");
   const orderedPosts = useMemo(() => [...posts].sort((left, right) => {
     const timeDifference = new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
     return timeDifference || right.id - left.id;
@@ -357,6 +369,15 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
       })
       .catch((error) => setMessage(error instanceof Error ? error.message : "动态暂时无法读取。"))
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    function onTheme(event: Event) {
+      const nextTheme = (event as CustomEvent<Theme>).detail;
+      if (nextTheme === "room" || nextTheme === "garden") setTheme(nextTheme);
+    }
+    window.addEventListener("reiko-theme", onTheme);
+    return () => window.removeEventListener("reiko-theme", onTheme);
   }, []);
 
   useEffect(() => {
@@ -393,6 +414,10 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
 
   const activeProject = projectKey ? projects[projectKey] : null;
 
+  if (theme === "garden") {
+    return <GreenGarden canEdit={canEdit} signInPath={signInPath} posts={posts} orderedPosts={orderedPosts} visiblePosts={visiblePosts} loading={loading} postsExpanded={postsExpanded} setPostsExpanded={setPostsExpanded} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
+  }
+
   return (
     <div className="moon-site" id="top">
       <img className="moon-lace moon-lace-left" src="/reiko-assets/moonlit/lace-corner.png" alt="" />
@@ -405,7 +430,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           <a href="#diary"><b>02</b><span>DIARY</span></a>
           <a href="#archive"><b>03</b><span>ARCHIVE</span></a>
           <a href="#fragments"><b>04</b><span>NOTES</span></a>
-          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a>
+          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button>
         </nav>
         <div className="moon-nav-foot">
           <span>PRIVATE WEB ROOM</span>
@@ -585,4 +610,9 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
     </div>
   );
 }
+
+
+
+
+
 
