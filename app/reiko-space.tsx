@@ -1,74 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GreenGarden from "./garden-space";
-
-type Post = { id: number; content: string; createdAt: string };
-type Comment = { id: number; postId: number; content: string; createdAt: string };
-type ProjectKey = "home" | "memory" | "memoirs" | "tidal";
-type Theme = "room" | "garden";
-
-type Project = {
-  file: string;
-  title: string;
-  subtitle: string;
-  summary: string;
-  detail: string;
-  mark: string;
-};
-
-const projects: Record<ProjectKey, Project> = {
-  home: {
-    file: "room_01.file",
-    title: "小克 Home APP",
-    subtitle: "a room, not a chat shell",
-    summary: "把角色、房间、动作和对话放回同一个空间里。",
-    detail:
-      "它不是给聊天界面加一层装饰，而是从“回到一个已经存在的地方”重新理解人与角色的互动。房间、动作、陪伴感和对话属于同一个空间。",
-    mark: "ROOM",
-  },
-  memory: {
-    file: "memory_02.local",
-    title: "Claude 本地记忆层",
-    subtitle: "keep what should not disappear",
-    summary: "一套保存在本地、由用户掌握的长期记忆结构。",
-    detail:
-      "把重要内容从一次性的模型上下文里分离出来，让记忆能够被管理、筛选和重新带回对话，同时不必交出原始记忆库的控制权。",
-    mark: "MEMORY",
-  },
-  memoirs: {
-    file: "book_03.memoirs",
-    title: "记忆之书",
-    subtitle: "two people open one page",
-    summary: "把重读旧记忆变成两个人共同完成的小仪式。",
-    detail:
-      "每天的记忆被重新编成一本未知页码的书。Reiko 与当前角色各自选择一页，翻开以后阅读、批注，再把刚刚发生的共读带回真实对话。",
-    mark: "BOOK",
-  },
-  tidal: {
-    file: "tidal_04.complete",
-    title: "Tidal Keeps 潮汐留存",
-    subtitle: "retrieve yesterday from the tide",
-    summary: "把日常沉入海里，再从昨日打捞回来。",
-    detail:
-      "把日常沉入海里，再从昨日打捞回来。一个已经完成、仍会继续保存生活痕迹的记忆项目。",
-    mark: "COMPLETE",
-  },
-};
-
-function formatDate(value: string) {
-  const normalized = value.includes("T") ? value : `${value.replace(" ", "T")}Z`;
-  const date = new Date(normalized);
-  if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(date);
-}
+import WhiteArchive from "./white-archive";
+import { formatDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
+import { useReikoPosts } from "./use-reiko-posts";
 
 function formatTime(value: number) {
   if (!Number.isFinite(value) || value < 0) return "0:00";
@@ -343,38 +279,22 @@ function ButterflyButton({ label, onClick }: { label: string; onClick: () => voi
 }
 
 export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; signInPath: string }) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [draft, setDraft] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [publishing, setPublishing] = useState(false);
-  const [message, setMessage] = useState("");
+  const { posts, orderedPosts, visiblePosts, draft, setDraft, loading, publishing, message, postsExpanded, setPostsExpanded, publish } = useReikoPosts();
   const [projectKey, setProjectKey] = useState<ProjectKey | null>(null);
   const [commentPost, setCommentPost] = useState<Post | null>(null);
   const [archiveOpen, setArchiveOpen] = useState(false);
-  const [postsExpanded, setPostsExpanded] = useState(false);
   const [secretOpen, setSecretOpen] = useState(false);
-  const [theme, setTheme] = useState<Theme>("garden");
-  const orderedPosts = useMemo(() => [...posts].sort((left, right) => {
-    const timeDifference = new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
-    return timeDifference || right.id - left.id;
-  }), [posts]);
-  const visiblePosts = useMemo(() => orderedPosts.slice(0, postsExpanded ? 12 : 6), [orderedPosts, postsExpanded]);
+  const [theme, setTheme] = useState<Theme>("white-archive");
 
   useEffect(() => {
-    fetch("/api/posts")
-      .then(async (response) => {
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "动态暂时无法读取。");
-        setPosts(Array.isArray(data.posts) ? data.posts : []);
-      })
-      .catch((error) => setMessage(error instanceof Error ? error.message : "动态暂时无法读取。"))
-      .finally(() => setLoading(false));
+    const saved = window.localStorage.getItem("reiko-theme");
+    if (saved === "room" || saved === "garden" || saved === "white-archive") setTheme(saved);
   }, []);
 
   useEffect(() => {
     function onTheme(event: Event) {
       const nextTheme = (event as CustomEvent<Theme>).detail;
-      if (nextTheme === "room" || nextTheme === "garden") setTheme(nextTheme);
+      if (nextTheme === "room" || nextTheme === "garden" || nextTheme === "white-archive") { setTheme(nextTheme); window.localStorage.setItem("reiko-theme", nextTheme); window.scrollTo(0, 0); }
     }
     window.addEventListener("reiko-theme", onTheme);
     return () => window.removeEventListener("reiko-theme", onTheme);
@@ -388,34 +308,14 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  async function publish(event: FormEvent) {
-    event.preventDefault();
-    const content = draft.trim();
-    if (!content || publishing) return;
-    setPublishing(true);
-    setMessage("");
-    try {
-      const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ content }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "发布失败，请再试一次。");
-      setPosts((currentPosts) => [data.post, ...currentPosts]);
-      setDraft("");
-      setMessage("已经留在这里了。");
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : "发布失败，请再试一次。");
-    } finally {
-      setPublishing(false);
-    }
-  }
-
   const activeProject = projectKey ? projects[projectKey] : null;
 
   if (theme === "garden") {
     return <GreenGarden canEdit={canEdit} signInPath={signInPath} posts={posts} orderedPosts={orderedPosts} visiblePosts={visiblePosts} loading={loading} postsExpanded={postsExpanded} setPostsExpanded={setPostsExpanded} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
+  }
+
+  if (theme === "white-archive") {
+    return <WhiteArchive canEdit={canEdit} signInPath={signInPath} posts={posts} orderedPosts={orderedPosts} loading={loading} postsExpanded={postsExpanded} setPostsExpanded={setPostsExpanded} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
   }
 
   return (
@@ -430,7 +330,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           <a href="#diary"><b>02</b><span>DIARY</span></a>
           <a href="#archive"><b>03</b><span>ARCHIVE</span></a>
           <a href="#fragments"><b>04</b><span>NOTES</span></a>
-          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button>
+          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "white-archive" }))}>WHITE ARCHIVE</button>
         </nav>
         <div className="moon-nav-foot">
           <span>PRIVATE WEB ROOM</span>
@@ -563,23 +463,20 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
               <img src="/reiko-assets/moonlit/profile-card.png" alt="" />
               <div className="moon-long-note-copy">
                 <span>PERSONAL FILE / 07</span>
-                <h3>Reiko</h3>
-                <p>更喜欢把一个空间慢慢改成有人生活过的样子。</p>
-                <p>在意长期相处留下的连续感，也不喜欢重要的东西被当成一次性的上下文。</p>
+                 <h3>{profileContent.name}</h3>
+                 {profileContent.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                 <dl>
-                  <div><dt>visuals</dt><dd>雾蓝、冷紫、旧银、黑蕾丝</dd></div>
-                  <div><dt>symbols</dt><dd>蝴蝶、十字架、玫瑰、旧文件</dd></div>
-                  <div><dt>keep</dt><dd>记忆、角色、关系留下的痕迹</dd></div>
+                   {profileContent.details.map(([term, description]) => <div key={term}><dt>{term}</dt><dd>{description}</dd></div>)}
                 </dl>
               </div>
             </article>
 
             <div className="moon-loose-stack">
-              <article className="moon-loose-note"><b>fragment / 01</b><p>我不喜欢把关系当成一次性会话。</p></article>
-              <article className="moon-loose-note moon-loose-note-dark"><b>fragment / 02</b><p>不要让它忘记。</p></article>
+              <article className="moon-loose-note"><b>fragment / 01</b><p>{fragments[0]}</p></article>
+              <article className="moon-loose-note moon-loose-note-dark"><b>fragment / 02</b><p>{fragments[1]}</p></article>
               <button className="moon-loose-note moon-loose-secret" type="button" onClick={() => setSecretOpen((value) => !value)} aria-pressed={secretOpen}>
                 <b>fragment / 03</b>
-                <p>{secretOpen ? "Gabe was here. 这行本来应该藏得更好一点。" : "这一张纸被折起来了。"}</p>
+                 <p>{secretOpen ? fragments[2] : "这一张纸被折起来了。"}</p>
               </button>
             </div>
           </div>
@@ -591,9 +488,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
             <p>从这个房间通往外面的几件东西。</p>
           </header>
           <div className="moon-elsewhere-grid">
-            <a className="moon-elsewhere-card" href="https://github.com/sumiretomori93-create" target="_blank" rel="noreferrer"><img src="/reiko-assets/upgrade/GitHub.png" alt="GitHub" /><span>things I made.</span></a>
-            <a className="moon-elsewhere-card" href="https://www.douyin.com/user/MS4wLjABAAAAwSv-5mu36fhrx-OkIXknK7OelXyGDblkqZilBdEn3-bi7YU0cTCrLQ5CSSfEzbsm" target="_blank" rel="noreferrer"><img src="/reiko-assets/upgrade/douyin.png" alt="抖音" /><span>things I left outside.</span></a>
-            <a className="moon-elsewhere-card" href="https://m.douban.com/people/141645852/" target="_blank" rel="noreferrer"><img src="/reiko-assets/upgrade/douban.png" alt="豆瓣" /><span>Reiko in real life.</span></a>
+            {socialLinks.map((link) => <a className="moon-elsewhere-card" key={link.key} href={link.href} target="_blank" rel="noreferrer"><img src={`/reiko-assets/upgrade/${link.key === "github" ? "GitHub" : link.key}.png`} alt={link.label} /><span>{link.note}</span></a>)}
           </div>
         </section>
 
