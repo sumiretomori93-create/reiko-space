@@ -204,6 +204,7 @@ export default function WhiteArchive({ canEdit, signInPath, posts, orderedPosts,
       <img className="white-hero-art" src={`${base}/home screen/home_screen_background.png`} alt="白色蕾丝、烛光与银色十字架" />
       <img className="white-mobile-cross" src={`${base}/asset_cross.png`} alt="" />
       <div className="white-hero-frame" />
+      <nav className="white-hero-menu" aria-label="主屏导航"><a href="#white-top">首页</a><a href="#white-profile">档案</a><a href="#white-works">作品</a><a href="#white-diary">日记</a></nav>
       <div className="white-hero-title"><span>THEME 03 / WHITE ARCHIVE</span><h1>Reiko&apos;s Sanctuary</h1><p>memory · silence · things kept on purpose</p></div>
       <ArchivePlayer onPlayback={(current, playing) => setPlayback({ current, playing })} />
       <button className="white-enter" type="button" onClick={() => document.getElementById("white-diary")?.scrollIntoView({ behavior: "smooth" })}>open the archive</button>
