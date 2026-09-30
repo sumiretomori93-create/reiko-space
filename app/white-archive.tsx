@@ -1,9 +1,30 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { formatShortDate, fragments, profileContent, projects, socialLinks, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
 
 const base = "/reiko-assets/white-archive";
+const butterflyFrameSources = Array.from({ length: 39 }, (_, index) => `${base}/caged_butterfly/caged_butterfly_${index + 1}.png`);
+const birdFrameSources = Array.from({ length: 14 }, (_, index) => `${base}/bird/Bird_${index + 1}.png`);
+const frameSequenceCache = new Map<string, Promise<HTMLImageElement[]>>();
+
+function preloadFrameSequence(sources: string[]) {
+  const cacheKey = sources.join("|");
+  const cached = frameSequenceCache.get(cacheKey);
+  if (cached) return cached;
+  const sequence = Promise.all(sources.map((src) => new Promise<HTMLImageElement>((resolve) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.onload = () => {
+      if (image.decode) image.decode().catch(() => undefined).finally(() => resolve(image));
+      else resolve(image);
+    };
+    image.onerror = () => resolve(image);
+    image.src = src;
+  })));
+  frameSequenceCache.set(cacheKey, sequence);
+  return sequence;
+}
 
 type ArchiveLyricCue = {
   start: number;
@@ -66,46 +87,77 @@ function ArchiveLyric({ current, playing }: { current: number; playing: boolean 
 }
 
 function CagedButterfly() {
-  const [frame, setFrame] = useState(1);
+  const imageRef = useRef<HTMLImageElement>(null);
   useEffect(() => {
-    const sources = Array.from({ length: 39 }, (_, index) => `${base}/caged_butterfly/caged_butterfly_${index + 1}.png`);
-    sources.forEach((src) => { const image = new Image(); image.src = src; });
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setFrame((value) => value === 39 ? 1 : value + 1), 95);
-    return () => window.clearInterval(timer);
+    let cancelled = false;
+    let animationFrame = 0;
+    void preloadFrameSequence(butterflyFrameSources).then((frames) => {
+      if (cancelled) return;
+      const startedAt = performance.now();
+      let shownFrame = -1;
+      const draw = (now: number) => {
+        const nextFrame = Math.floor((now - startedAt) / 95) % frames.length;
+        if (nextFrame !== shownFrame && imageRef.current) {
+          imageRef.current.src = frames[nextFrame].src;
+          shownFrame = nextFrame;
+        }
+        animationFrame = window.requestAnimationFrame(draw);
+      };
+      animationFrame = window.requestAnimationFrame(draw);
+    });
+    return () => { cancelled = true; window.cancelAnimationFrame(animationFrame); };
   }, []);
-  return <img className="white-butterfly" src={`${base}/caged_butterfly/caged_butterfly_${frame}.png`} alt="笼中的蝴蝶" />;
+  return <img ref={imageRef} className="white-butterfly" src={butterflyFrameSources[0]} alt="笼中的蝴蝶" />;
 }
 
 function ArchiveBirdButton({ expanded, hasOlder, transition, disabled }: { expanded: boolean; hasOlder: boolean; transition: () => void; disabled: boolean }) {
-  const [frame, setFrame] = useState(1);
+  const imageRef = useRef<HTMLImageElement>(null);
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => setFrame((value) => value >= 3 ? 1 : value + 1), 680);
-    return () => window.clearInterval(timer);
+    let cancelled = false;
+    let timer = 0;
+    void preloadFrameSequence(birdFrameSources).then((frames) => {
+      if (cancelled) return;
+      let frame = 0;
+      timer = window.setInterval(() => {
+        frame = (frame + 1) % 3;
+        if (imageRef.current) imageRef.current.src = frames[frame].src;
+      }, 680);
+    });
+    return () => { cancelled = true; window.clearInterval(timer); };
   }, []);
   const label = expanded ? "закрыть архив / 让白鸽合上旧页" : hasOlder ? "открыть прошлое / 跟随白鸽翻到更早" : "архив открыт / 白鸽守着全部记录";
-  return <button className="white-bird-more" type="button" onClick={transition} disabled={disabled || !hasOlder} aria-busy={disabled}><img src={`${base}/bird/Bird_${frame}.png`} alt="" /><span>{label}</span></button>;
+  return <button className="white-bird-more" type="button" onClick={transition} disabled={disabled || !hasOlder} aria-busy={disabled}><img ref={imageRef} src={birdFrameSources[0]} alt="" /><span>{label}</span></button>;
 }
 
 function ArchiveBirdTransition({ finish }: { finish: () => void }) {
-  const [frame, setFrame] = useState(1);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const finishRef = useRef(finish);
+  useEffect(() => { finishRef.current = finish; }, [finish]);
   useEffect(() => {
-    let nextFrame = 1;
-    let finishTimer: number | undefined;
-    const timer = window.setInterval(() => {
-      nextFrame += 1;
-      if (nextFrame > 14) {
-        window.clearInterval(timer);
-        finishTimer = window.setTimeout(finish, 70);
-        return;
-      }
-      setFrame(nextFrame);
-    }, 70);
-    return () => { window.clearInterval(timer); if (finishTimer) window.clearTimeout(finishTimer); };
-  }, [finish]);
+    let cancelled = false;
+    let animationFrame = 0;
+    void preloadFrameSequence(birdFrameSources).then((frames) => {
+      if (cancelled) return;
+      const startedAt = performance.now();
+      let shownFrame = -1;
+      const draw = (now: number) => {
+        const elapsed = now - startedAt;
+        const nextFrame = Math.min(frames.length - 1, Math.floor(elapsed / 70));
+        if (nextFrame !== shownFrame && imageRef.current) {
+          imageRef.current.src = frames[nextFrame].src;
+          shownFrame = nextFrame;
+        }
+        if (elapsed >= frames.length * 70) finishRef.current();
+        else animationFrame = window.requestAnimationFrame(draw);
+      };
+      animationFrame = window.requestAnimationFrame(draw);
+    });
+    return () => { cancelled = true; window.cancelAnimationFrame(animationFrame); };
+  }, []);
   return <div className="white-bird-transition" role="status" aria-label="白鸽正在翻开下一页">
-    <img src={`${base}/bird/Bird_${frame}.png`} alt="" />
+    <img ref={imageRef} src={birdFrameSources[0]} alt="" />
   </div>;
 }
 
@@ -131,7 +183,7 @@ export default function WhiteArchive({ canEdit, signInPath, posts, orderedPosts,
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [playback, setPlayback] = useState({ current: 0, playing: false });
   const [transitionAction, setTransitionAction] = useState<ArchiveTransitionAction | null>(null);
-  function finishTransition() {
+  const finishTransition = useCallback(() => {
     const action = transitionAction;
     if (!action) return;
     setTransitionAction(null);
@@ -143,9 +195,10 @@ export default function WhiteArchive({ canEdit, signInPath, posts, orderedPosts,
     } else {
       setPostsExpanded(!postsExpanded);
     }
-  }
+  }, [postsExpanded, setPostsExpanded, transitionAction]);
   const selectedPostClass = selectedPost ? selectedPost.content.length > 360 ? "white-diary-copy is-very-long" : selectedPost.content.length > 200 ? "white-diary-copy is-long" : selectedPost.content.length > 110 ? "white-diary-copy is-medium" : "white-diary-copy" : "white-diary-copy";
   useEffect(() => { if (!selectedPost && orderedPosts.length) setSelectedPost(orderedPosts[0]); }, [orderedPosts, selectedPost]);
+  useEffect(() => { void preloadFrameSequence(birdFrameSources); void preloadFrameSequence(butterflyFrameSources); }, []);
   return <div className="white-site" id="white-top">
     <header className="white-hero">
       <img className="white-hero-art" src={`${base}/home screen/home_screen_background.png`} alt="白色蕾丝、烛光与银色十字架" />
@@ -163,7 +216,7 @@ export default function WhiteArchive({ canEdit, signInPath, posts, orderedPosts,
         <header className="white-heading"><span>01 / ДНЕВНИК</span><h2>Fragments of the day</h2><p>写下以后，就不必再靠记得来保存。</p></header>
         {canEdit ? <form className="white-composer" onSubmit={publish}><textarea value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={500} placeholder="把今天的一小段留在这里……" /><div><span>{draft.length} / 500</span><button type="submit" disabled={!draft.trim() || publishing}>{publishing ? "正在归档" : "归档这段话"}</button></div>{message && <output>{message}</output>}</form> : <a className="white-owner" href={signInPath} target="_top">owner sign-in / write</a>}
         <div className="white-diary-layout">
-          <div className="white-diary-index"><div className="white-diary-list-frame"><div className="white-diary-list" aria-live="polite">{loading && Array.from({ length: 6 }, (_, index) => <div className="white-diary-slip is-placeholder" key={index}><img src={`${base}/note_${["A", "B", "C"][index % 3]}.png`} alt="" /><div><time>ЗАГРУЗКА</time><p>正在翻开档案……</p></div></div>)}{!loading && previewSlots.map((post, index) => post ? <button className={selectedPost?.id === post.id ? "white-diary-slip is-active" : "white-diary-slip"} type="button" key={post.id} onClick={() => setSelectedPost(post)}><img src={`${base}/note_${["A", "B", "C"][index % 3]}.png`} alt="" /><div><time>{formatShortDate(post.createdAt)}</time><p>{post.content.slice(0, 34)}{post.content.length > 34 ? "…" : ""}</p></div></button> : <div className="white-diary-slip is-placeholder" key={`empty-${index}`}><img src={`${base}/note_${["A", "B", "C"][index % 3]}.png`} alt="" /><div><time>ПУСТАЯ ЗАПИСЬ</time><p>尚未写下的白色纸页</p></div></div>)}</div></div><ArchiveBirdButton expanded={postsExpanded} hasOlder={orderedPosts.length > 6} disabled={Boolean(transitionAction)} transition={() => setTransitionAction({ kind: "diary" })} /></div>
+          <div className="white-diary-index"><div className={`white-diary-list-frame${postsExpanded ? " is-expanded" : ""}`}><div className="white-diary-list" aria-live="polite">{loading && Array.from({ length: 6 }, (_, index) => <div className="white-diary-slip is-placeholder" key={index}><img src={`${base}/note_${["A", "B", "C"][index % 3]}.png`} alt="" /><div><time>ЗАГРУЗКА</time><p>正在翻开档案……</p></div></div>)}{!loading && previewSlots.map((post, index) => post ? <button className={selectedPost?.id === post.id ? "white-diary-slip is-active" : "white-diary-slip"} type="button" key={post.id} onClick={() => setSelectedPost(post)}><img src={`${base}/note_${["A", "B", "C"][index % 3]}.png`} alt="" /><div><time>{formatShortDate(post.createdAt)}</time><p>{post.content.slice(0, 34)}{post.content.length > 34 ? "…" : ""}</p></div></button> : <div className="white-diary-slip is-placeholder" key={`empty-${index}`}><img src={`${base}/note_${["A", "B", "C"][index % 3]}.png`} alt="" /><div><time>ПУСТАЯ ЗАПИСЬ</time><p>尚未写下的白色纸页</p></div></div>)}</div></div><ArchiveBirdButton expanded={postsExpanded} hasOlder={orderedPosts.length > 6} disabled={Boolean(transitionAction)} transition={() => setTransitionAction({ kind: "diary" })} /></div>
           <div className="white-diary-card-frame"><article className="white-diary-card"><img src={`${base}/diary_card.png`} alt="" />{selectedPost ? <div className={selectedPostClass}><time>{formatShortDate(selectedPost.createdAt)}</time><h3>易碎存档</h3><p>{selectedPost.content}</p><small>FRAGMENTS OF THE DAY</small></div> : <div className="white-diary-copy"><span>NO. 000</span><h3>未写下的页面</h3><p>这里暂时保持安静。</p></div>}</article></div>
         </div>
       </section>

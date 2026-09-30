@@ -68,3 +68,11 @@ body:has(.white-site){background:#e8e6e2;color:#4b4948}.white-site{--wi:#4a4847;
 /* Locally hosted display face supplied for the four archive section titles. */
 @font-face{font-family:"Cormorant Upright Local";src:url('/fonts/CormorantUpright-Medium.ttf') format('truetype');font-style:normal;font-weight:500;font-display:swap}
 .white-heading h2{font-family:"Cormorant Upright Local",Georgia,"Times New Roman",serif;font-weight:500;color:#5a5653}
+
+/* Expanded archive stays a compact index rather than stretching the whole page. */
+.white-diary-list-frame.is-expanded{max-height:610px;padding-right:7px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:rgba(112,107,102,.28) transparent}
+.white-diary-list-frame.is-expanded::-webkit-scrollbar{width:4px}.white-diary-list-frame.is-expanded::-webkit-scrollbar-track{background:transparent}.white-diary-list-frame.is-expanded::-webkit-scrollbar-thumb{border-radius:99px;background:rgba(112,107,102,.25)}
+
+/* A phone requesting a desktop UA is still a portrait canvas; keep the hero composed for that shape. */
+@media(orientation:portrait) and (min-width:681px) and (max-width:1100px){.white-hero{min-height:100svh}.white-hero-art{object-position:60% center}.white-hero-title{top:12%;left:8%;max-width:58vw}.white-hero-title h1{max-width:560px;font-size:clamp(4.5rem,8.5vw,6.4rem);line-height:.9;white-space:normal}.white-hero-title p{max-width:420px;line-height:1.8}.white-player{left:9%;right:auto;bottom:8%;width:82%;max-width:720px}.white-enter{display:none}.white-mobile-cross{position:fixed;z-index:20;display:block;top:-2px;right:-42px;width:clamp(180px,26vw,230px);height:auto;opacity:.68;filter:brightness(1.04) contrast(.94) blur(.28px) drop-shadow(0 0 12px rgba(255,255,255,.82)) drop-shadow(0 3px 5px rgba(91,87,83,.15));pointer-events:none}.white-diary-list-frame.is-expanded{max-height:620px}}
+@media(max-width:680px){.white-diary-list-frame.is-expanded{max-height:520px;padding-right:5px}}
