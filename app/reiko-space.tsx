@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
+import Oumagatoki from "./oumagatoki";
 import GreenGarden from "./garden-space";
 import WhiteArchive from "./white-archive";
 import { formatDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
@@ -122,7 +123,7 @@ function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; ca
   useEffect(() => {
     fetch(`/api/posts/${post.id}/comments`)
       .then(async (response) => {
-        const data = await response.json();
+        const data = await response.json() as { error?: string; comments?: Comment[]; comment: Comment };
         if (!response.ok) throw new Error(data.error || "批注暂时无法读取。");
         setComments(Array.isArray(data.comments) ? data.comments : []);
       })
@@ -142,7 +143,7 @@ function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; ca
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      const data = await response.json();
+      const data = await response.json() as { error?: string; comments?: Comment[]; comment: Comment };
       if (!response.ok) throw new Error(data.error || "批注保存失败。");
       setComments((current) => [...current, data.comment]);
       setDraft("");
@@ -287,14 +288,15 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   const [theme, setTheme] = useState<Theme>("white-archive");
 
   useEffect(() => {
-    const saved = window.localStorage.getItem("reiko-theme");
-    if (saved === "room" || saved === "garden" || saved === "white-archive") setTheme(saved);
+    const requested = new URLSearchParams(window.location.search).get("theme");
+    const saved = requested || window.localStorage.getItem("reiko-theme");
+    if (saved === "room" || saved === "garden" || saved === "white-archive" || saved === "oumagatoki") setTheme(saved);
   }, []);
 
   useEffect(() => {
     function onTheme(event: Event) {
       const nextTheme = (event as CustomEvent<Theme>).detail;
-      if (nextTheme === "room" || nextTheme === "garden" || nextTheme === "white-archive") { setTheme(nextTheme); window.localStorage.setItem("reiko-theme", nextTheme); window.scrollTo(0, 0); }
+      if (nextTheme === "room" || nextTheme === "garden" || nextTheme === "white-archive" || nextTheme === "oumagatoki") { setTheme(nextTheme); window.localStorage.setItem("reiko-theme", nextTheme); const url = new URL(window.location.href); url.searchParams.set("theme", nextTheme); url.hash = ""; window.history.replaceState(null, "", url); window.scrollTo(0, 0); }
     }
     window.addEventListener("reiko-theme", onTheme);
     return () => window.removeEventListener("reiko-theme", onTheme);
@@ -309,6 +311,10 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   }, []);
 
   const activeProject = projectKey ? projects[projectKey] : null;
+
+  if (theme === "oumagatoki") {
+    return <Oumagatoki canEdit={canEdit} signInPath={signInPath} orderedPosts={orderedPosts} loading={loading} postsExpanded={postsExpanded} setPostsExpanded={setPostsExpanded} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
+  }
 
   if (theme === "garden") {
     return <GreenGarden canEdit={canEdit} signInPath={signInPath} posts={posts} orderedPosts={orderedPosts} visiblePosts={visiblePosts} loading={loading} postsExpanded={postsExpanded} setPostsExpanded={setPostsExpanded} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
@@ -330,7 +336,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           <a href="#diary"><b>02</b><span>DIARY</span></a>
           <a href="#archive"><b>03</b><span>ARCHIVE</span></a>
           <a href="#fragments"><b>04</b><span>NOTES</span></a>
-          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "white-archive" }))}>WHITE ARCHIVE</button>
+          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "white-archive" }))}>WHITE ARCHIVE</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "oumagatoki" }))}>逢魔の時</button>
         </nav>
         <div className="moon-nav-foot">
           <span>PRIVATE WEB ROOM</span>

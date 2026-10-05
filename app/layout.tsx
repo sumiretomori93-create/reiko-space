@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./white-archive.css";
+import "./oumagatoki.css";
 
 export const metadata: Metadata = {
   title: "REIKO / personal internet room",

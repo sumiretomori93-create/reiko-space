@@ -15,7 +15,7 @@ export function useReikoPosts() {
 
   useEffect(() => {
     fetch("/api/posts")
-      .then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error || "动态暂时无法读取。"); setPosts(Array.isArray(data.posts) ? data.posts : []); })
+      .then(async (response) => { const data = await response.json() as { error?: string; posts?: Post[]; post: Post }; if (!response.ok) throw new Error(data.error || "动态暂时无法读取。"); setPosts(Array.isArray(data.posts) ? data.posts : []); })
       .catch((error) => setMessage(error instanceof Error ? error.message : "动态暂时无法读取。"))
       .finally(() => setLoading(false));
   }, []);
@@ -27,7 +27,7 @@ export function useReikoPosts() {
     setPublishing(true); setMessage("");
     try {
       const response = await fetch("/api/posts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content }) });
-      const data = await response.json();
+      const data = await response.json() as { error?: string; posts?: Post[]; post: Post };
       if (!response.ok) throw new Error(data.error || "发布失败，请再试一次。");
       setPosts((current) => [data.post, ...current]); setDraft(""); setMessage("已经留在这里了。");
     } catch (error) { setMessage(error instanceof Error ? error.message : "发布失败，请再试一次。"); }
