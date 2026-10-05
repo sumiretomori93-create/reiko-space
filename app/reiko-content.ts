@@ -1,7 +1,7 @@
 export type Post = { id: number; content: string; createdAt: string };
 export type Comment = { id: number; postId: number; content: string; createdAt: string };
 export type ProjectKey = "home" | "memory" | "memoirs" | "tidal";
-export type Theme = "room" | "garden" | "white-archive";
+export type Theme = "room" | "garden" | "white-archive" | "oumagatoki";
 
 export type Project = {
   file: string;
