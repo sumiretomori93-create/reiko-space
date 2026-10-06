@@ -8,23 +8,38 @@
 .dusk-nav{z-index:2;text-shadow:0 1px 8px #071021}.dusk-index-copy,.dusk-paper-preview>p,.dusk-diary-leaf>p{overflow-wrap:anywhere}
 @media(max-width:560px){.dusk-brand span,.dusk-title>span{font-size:12px}.dusk-index time{font-size:12px}}
 
-/* Dusk papers: individual woodblock impressions, with quiet writing areas. */
-.dusk-card-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;z-index:0}
+/* Quiet papers and a continuous transition into ink-washed water. */
+.dusk-main{position:relative;isolation:isolate;background:linear-gradient(180deg,#080f1a 0%,#101b27 17%,#1e2e3c 45%,#2d404d 74%,#3b4e58 100%)}
+.dusk-main:before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:url('/reiko-assets/oumagatoki/ink-water.png') center top/1200px auto repeat-y;mix-blend-mode:screen;opacity:.22;mask-image:linear-gradient(transparent 2%,#000 40%,#000 100%)}
+.dusk-footer{background:#3b4e58;color:#d0d8dc}
+.dusk-main .dusk-heading>p,.dusk-main .dusk-work-file{color:#bac6cd}
+.dusk-main .dusk-works p,.dusk-main .dusk-margins p,.dusk-outside-links small{color:#c2ccd3}
+.dusk-notes .dusk-heading>span,.dusk-outside .dusk-heading>span,.dusk-margins>span,.dusk-margins button{color:#d1c3b0}
+.dusk-card-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;z-index:0;filter:saturate(.16) contrast(.8);opacity:.48}
 .dusk-paper-preview>*:not(.dusk-card-art),.dusk-diary-leaf>*:not(.dusk-card-art),.dusk-profile>*:not(.dusk-card-art){position:relative;z-index:1}
 .dusk-paper-preview:after,.dusk-diary-leaf:after,.dusk-profile:after{display:none}
-.dusk-paper-preview{padding:37px 37px 75px;background:transparent;box-shadow:5px 9px 0 #152637,0 22px 45px #0007;min-height:360px}
-.dusk-paper-preview>p{margin-bottom:20px}.dusk-paper-number{color:#766659}
-.dusk-diary-grid{gap:30px;align-items:start}
-.dusk-diary-leaf{min-height:345px;padding:29px 30px 89px;background:transparent!important;box-shadow:4px 6px 0 #172a3c,0 12px 28px #0003;color:#303d4d}
-.dusk-diary-leaf.dusk-leaf-0{transform:rotate(-1.1deg)}.dusk-diary-leaf.dusk-leaf-1{transform:rotate(.7deg);margin-top:13px}.dusk-diary-leaf.dusk-leaf-2{transform:rotate(-.5deg);margin-top:4px}
-.dusk-diary-leaf:hover{transform:translateY(-5px) rotate(0deg)}
-.dusk-leaf-top{color:#67717b;border-bottom:1px solid #69717c35;padding-bottom:15px}
-.dusk-diary-leaf>p{-webkit-line-clamp:4;line-height:1.85;margin-top:20px;margin-bottom:24px}
-.dusk-leaf-bottom{padding-top:12px;color:#795b4d;border-top:1px solid #67717c35}
-.dusk-profile{background:transparent;padding-bottom:105px;box-shadow:5px 8px 0 #17293a,0 15px 30px #0003}
-.dusk-profile .dusk-card-art{object-fit:fill}
-.dusk-dialog{background-color:#e5ddcc;background-image:linear-gradient(#e5ddcced,#e5ddccf7),url('/reiko-assets/oumagatoki/paper-a.png');background-size:cover}
-@media(max-width:560px){.dusk-paper-preview{padding:32px 26px 75px;min-height:345px}.dusk-diary-grid{gap:30px}.dusk-diary-leaf{min-height:340px;padding:28px 29px 90px}.dusk-diary-leaf.dusk-leaf-1,.dusk-diary-leaf.dusk-leaf-2{margin-top:0}.dusk-profile{padding-bottom:108px}}
-.dusk-leaf-1>p{max-width:85%}.dusk-leaf-2{padding-left:22%}.dusk-profile{padding-left:22%;padding-right:9%}.dusk-leaf-bottom{width:max-content;max-width:100%;background:#e6dfd4dc;border:0;padding:7px 9px;font-size:13px;color:#5c5046}.dusk-paper-preview .dusk-paper-number{width:max-content;margin-left:auto;background:#e8dfced9;padding:5px 8px}
-@media(max-width:560px){.dusk-leaf-2,.dusk-profile{padding-left:22%}.dusk-profile{padding-right:9%}}
-.dusk-paper-preview>p{background:#e9dfcbe0;padding:8px 10px}.dusk-profile dl{background:#e8d6bcd9;padding:14px 12px;margin-left:-12px;margin-right:-8px}
+.dusk-kept-page{width:86%;margin-left:auto;margin-top:-52px}
+.dusk-paper-preview{padding:30px 31px 32px;min-height:270px;transform:rotate(-2deg);background:#a6b0ac;box-shadow:2px 4px 0 #26353d,0 12px 25px #0003;color:#293a42;border:1px solid #d5dad342}
+.dusk-paper-preview .dusk-card-art{opacity:.09;filter:grayscale(1) contrast(.6)}
+.dusk-paper-preview h2{font-size:24px;margin:14px 0 18px;letter-spacing:.1em;padding-bottom:16px;border-bottom:1px solid #30414a32}
+.dusk-paper-preview>p{margin-bottom:24px;background:none;padding:0;font-size:16px;line-height:1.9}
+.dusk-paper-preview .dusk-meta,.dusk-paper-number{color:#52646b}
+.dusk-paper-preview .dusk-paper-number{padding:0;background:none;font-size:12px;letter-spacing:.1em}
+.dusk-diary-grid{gap:28px;align-items:start}
+.dusk-diary-leaf{min-height:328px;padding:27px 29px 63px;background:#bac3be!important;color:#2d3d45;box-shadow:2px 4px 0 #23323c,0 8px 20px #0002}
+.dusk-diary-leaf.dusk-leaf-0{transform:rotate(-.6deg)}.dusk-diary-leaf.dusk-leaf-1{transform:rotate(.45deg);margin-top:8px}.dusk-diary-leaf.dusk-leaf-2{transform:rotate(-.3deg);margin-top:3px}
+.dusk-diary-leaf:hover{transform:translateY(-4px) rotate(0deg)}
+.dusk-leaf-top{color:#52616a;font:12px Georgia,serif;border-bottom:1px solid #3346502a;padding-bottom:13px}
+.dusk-diary-leaf>p{-webkit-line-clamp:4;line-height:1.9;margin:20px 0 25px}
+.dusk-leaf-bottom{margin-top:auto;align-self:stretch;width:auto;max-width:100%;padding:13px 0 0;border-top:1px solid #33465030;background:none;color:#3b525c;font-size:14px;letter-spacing:.07em}
+.dusk-profile{background:#b8c1ba;padding:36px 36px 72px;box-shadow:2px 4px 0 #2b3d47,0 10px 24px #0002;color:#293a44}
+.dusk-profile .dusk-card-art{opacity:.33}
+.dusk-profile dl{background:none;padding:18px 0 0;margin:28px 0 0}
+.dusk-profile dt{color:#4e5e63}
+.dusk-dialog{background-color:#d2d6cc;background-image:linear-gradient(#d2d6ccf3,#d2d6ccf3),url('/reiko-assets/oumagatoki/paper-a.png');background-size:cover}
+@media(max-width:850px){.dusk-kept-page{width:94%}.dusk-profile{padding:30px 28px 72px}}
+@media(max-width:560px){.dusk-kept-page{width:89%;margin:0;align-self:center}.dusk-first-pages{gap:42px}.dusk-paper-preview{min-height:260px;padding:27px 27px 28px}.dusk-paper-preview h2{font-size:23px}.dusk-diary-grid{gap:23px}.dusk-diary-leaf{min-height:325px;padding:26px 28px 64px}.dusk-diary-leaf.dusk-leaf-1,.dusk-diary-leaf.dusk-leaf-2{margin-top:0}.dusk-profile{padding:30px 28px 72px}.dusk-main:before{background-size:780px auto;opacity:.18}}
+.dusk-main:before{background-size:100% auto;opacity:.14}
+.dusk-diary-leaf .dusk-card-art,.dusk-profile .dusk-card-art{mask-image:linear-gradient(#000 0%,#000 50%,#0008 100%)}
+.dusk-leaf-bottom{color:#21343e}
+@media(max-width:560px){.dusk-main:before{background-size:780px auto;opacity:.12}}
