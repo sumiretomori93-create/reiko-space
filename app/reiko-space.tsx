@@ -286,7 +286,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   const [commentPost, setCommentPost] = useState<Post | null>(null);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [secretOpen, setSecretOpen] = useState(false);
-  const [theme, setTheme] = useState<Theme>("white-archive");
+  const [theme, setTheme] = useState<Theme>("oumagatoki");
 
   useEffect(() => {
     const requested = new URLSearchParams(window.location.search).get("theme");
