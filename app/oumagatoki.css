@@ -147,3 +147,24 @@
 .dusk-below-hero:before{height:200px;background:linear-gradient(#080f1a,transparent)}
 @media(max-width:560px){.dusk-below-hero:after{background-size:100% auto;opacity:1}}
 .dusk-below-hero:after{filter:brightness(.85) saturate(.9);mask-image:linear-gradient(180deg,transparent 0%,#000 15%)}
+
+/* Original transparent diary artwork: printed title and margins stay visible. */
+.dusk-memory-page{width:min(650px,calc(92dvh * 1072 / 1457),calc(100% - 8px));max-height:none;max-width:none;aspect-ratio:1072/1457;height:auto;padding:0;background:none;box-shadow:none;overflow:visible;color:#3c3934}
+.dusk-memory-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.dusk-memory-page>.dusk-meta{position:absolute;left:26%;top:35%;font-size:11px;color:#685d51}
+.dusk-memory-page>.dusk-close{right:13%;top:10%;z-index:2;color:#534638}
+.dusk-memory-page>.dusk-memory-mark{right:14%;top:39%;font-size:11px}
+.dusk-memory-body{position:absolute;left:24%;right:22%;top:39%;bottom:23%;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#83766570 transparent;padding-right:8px;outline-offset:4px}
+.dusk-memory-page .dusk-full-copy{margin:0;color:#3c3934;font-size:16px;line-height:2}
+.dusk-memory-page .dusk-annotations{margin-top:26px;padding-top:20px;border-color:#78645240}
+.dusk-memory-page .dusk-annotations h3{color:#655b50}
+.dusk-memory-page .dusk-annotations article p{color:#62584e;font-size:14px}
+.dusk-memory-page .dusk-annotations article time{color:#716356}
+.dusk-memory-page .dusk-annotations article{border-color:#8c796440}
+.dusk-memory-page .dusk-annotations textarea{color:#3c3934;background:#fff2;border-color:#78645250}
+.dusk-memory-page .dusk-muted{color:#716356}
+@media(max-width:560px){.dusk-memory-page{padding:0}.dusk-memory-page>.dusk-meta{font-size:9px}.dusk-memory-page>.dusk-memory-mark{font-size:9px;right:14%;top:39%}.dusk-memory-page>.dusk-close{width:32px;height:32px;font-size:22px}.dusk-memory-body{left:23%;right:21%;padding-right:6px}.dusk-memory-page .dusk-full-copy{font-size:14px;line-height:1.9}.dusk-memory-page .dusk-annotations article p{font-size:13px}.dusk-memory-page .dusk-annotations h3{font-size:14px}.dusk-memory-page .dusk-annotations a{font-size:12px}}
+/* The blue recedes into old ink; original crimson survives at the foot. */
+.dusk-below-hero{background:linear-gradient(#080f1a,#03070c 200px)}
+.dusk-below-hero:after{filter:brightness(.68) saturate(.28)}
+.dusk-below-hero:before{inset:0;height:auto;background:url('/reiko-assets/oumagatoki/reiko-blue-mist.png') center bottom/100% auto no-repeat;filter:brightness(.85) saturate(.9);mask-image:linear-gradient(transparent 76%,#000 95%)}
