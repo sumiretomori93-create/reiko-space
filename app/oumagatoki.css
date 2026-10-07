@@ -168,3 +168,6 @@
 .dusk-below-hero{background:linear-gradient(#080f1a,#03070c 200px)}
 .dusk-below-hero:after{filter:brightness(.68) saturate(.28)}
 .dusk-below-hero:before{inset:0;height:auto;background:url('/reiko-assets/oumagatoki/reiko-blue-mist.png') center bottom/100% auto no-repeat;filter:brightness(.85) saturate(.9);mask-image:linear-gradient(transparent 76%,#000 95%)}
+
+/* The personal title keeps its original twilight breathing space. */
+.dusk-title h1{min-height:4.8em}

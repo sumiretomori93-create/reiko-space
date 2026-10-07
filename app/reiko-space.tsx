@@ -342,7 +342,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           <a href="#diary"><b>02</b><span>DIARY</span></a>
           <a href="#archive"><b>03</b><span>ARCHIVE</span></a>
           <a href="#fragments"><b>04</b><span>NOTES</span></a>
-          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "white-archive" }))}>WHITE ARCHIVE</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "oumagatoki" }))}>逢魔の時</button>
+          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "white-archive" }))}>WHITE ARCHIVE</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "oumagatoki" }))}>宵伽</button>
         </nav>
         <div className="moon-nav-foot">
           <span>PRIVATE WEB ROOM</span>
