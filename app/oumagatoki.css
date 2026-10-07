@@ -206,3 +206,21 @@
 .dusk-memory-page>.dusk-memory-mark{right:18%;top:39%}
 .dusk-memory-body{left:27%;right:25%;top:39%;bottom:23%}
 @media(max-width:560px){.dusk-memory-body{left:26%;right:25%}.dusk-memory-page>.dusk-memory-mark{right:18%;top:39%;font-size:9px}}
+
+/* The night scene breathes locally; its camera and architecture stay still. */
+.yoi-scene-stage{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.yoi-scene-still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 50%;filter:brightness(.7) saturate(.7)}
+.yoi-scene-grass{position:absolute;right:-1%;bottom:-2%;width:52%;height:90%;object-fit:contain;object-position:right bottom;opacity:.48;filter:brightness(.65) saturate(.65);transform-origin:94% 96%;animation:yoi-wet-grass 8.5s ease-in-out infinite alternate;will-change:transform}
+.yoi-scene-fog{position:absolute;inset:-15%;background:radial-gradient(ellipse at 29% 59%,#c0c6cf22,transparent 42%),radial-gradient(ellipse at 66% 37%,#8e9faa14,transparent 45%);opacity:.4;animation:yoi-rain-fog 17s ease-in-out infinite alternate;will-change:transform,opacity}
+.yoi-scene-rain{position:absolute;inset:-20%;background:repeating-linear-gradient(100deg,transparent 0,transparent 47px,#ced6df10 48px,transparent 49px,transparent 113px);opacity:.27;mask-image:linear-gradient(transparent,#0009 35%,#000 65%,transparent);animation:yoi-rain-lines 1.6s linear infinite;will-change:transform}
+.yoi-scene-lamp{position:absolute;left:64.5%;top:54%;width:55px;height:67px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,#d8a05918,transparent 70%);mix-blend-mode:screen;animation:yoi-distant-lamp 7.2s ease-in-out infinite}
+.yoi-scene-paused .yoi-scene-stage *{animation-play-state:paused!important;will-change:auto}
+.yoi-scene-controls{display:flex;justify-content:flex-end;margin-top:15px}
+.yoi-scene-controls button{border:0;padding:5px 0;background:transparent;color:#a79786;font:11px Georgia,serif;letter-spacing:.08em;cursor:pointer}
+.yoi-scene-controls button:disabled{opacity:.6;cursor:default}
+@keyframes yoi-wet-grass{0%{transform:rotate(-.35deg) translateX(-1px)}38%{transform:rotate(.25deg) translateX(1px)}67%{transform:rotate(-.1deg) translateX(0)}100%{transform:rotate(.8deg) translateX(3px)}}
+@keyframes yoi-rain-fog{0%{transform:translateX(-1%);opacity:.25}55%{opacity:.58}100%{transform:translateX(5%);opacity:.36}}
+@keyframes yoi-rain-lines{to{transform:translate(-6px,24px)}}
+@keyframes yoi-distant-lamp{0%,100%{opacity:.32}22%{opacity:.5}47%{opacity:.34}63%{opacity:.64}81%{opacity:.43}}
+@media(max-width:560px){.yoi-scene-still{object-position:58% center}.yoi-scene-grass{width:62%;height:75%;opacity:.42}.yoi-scene-lamp{left:73%;top:52%;width:40px;height:48px}.yoi-scene-rain{opacity:.18}.yoi-scene-controls{margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.yoi-scene-stage *{animation:none!important;will-change:auto!important}.yoi-scene-fog{opacity:.22}.yoi-scene-rain{display:none}}
