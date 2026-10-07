@@ -184,3 +184,18 @@
 @media(prefers-reduced-motion:reduce){.yoi-entrance-mist,.yoi-cell span{animation:none}.yoi-play-entrance>img{transition:none}}
 
 .yoi-game-scores>span{flex:1;min-width:0;white-space:nowrap}
+
+/* Reiko's supplied transparent crimson frame and board ornament. */
+.yoi-play-entrance{overflow:visible;isolation:isolate}
+.yoi-play-entrance>img.yoi-entrance-frame{z-index:2;inset:-12px;width:calc(100% + 24px);height:calc(100% + 24px);object-fit:fill;filter:none!important;opacity:.68;pointer-events:none;transition:none}
+.yoi-entrance-copy{padding-left:10%;padding-right:10%}
+.yoi-entrance-record{right:9%;bottom:34px}
+.yoi-play-entrance:after{background:linear-gradient(90deg,#05070b80,transparent 70%),linear-gradient(0deg,#06080ce6,transparent 38%)}
+.yoi-board-wrap{position:relative;isolation:isolate}
+.yoi-board{position:relative;z-index:1}
+.yoi-board-decoration{position:absolute;z-index:2;right:-19px;top:-27px;width:90px;height:90px;object-fit:contain;opacity:.52;pointer-events:none;filter:drop-shadow(0 0 5px var(--dusk-red-haze));mask-image:linear-gradient(135deg,transparent 0%,#000 35%)}
+@media(max-width:560px){.yoi-play-entrance>img.yoi-entrance-frame{inset:-7px;width:calc(100% + 14px);height:calc(100% + 14px);opacity:.64}.yoi-board-decoration{width:72px;height:72px;right:-14px;top:-24px}.yoi-entrance-copy{padding-left:12%}.yoi-entrance-record{font-size:10px}}
+.yoi-play-entrance>img.yoi-entrance-frame{mix-blend-mode:screen}
+.yoi-entrance-copy,.yoi-entrance-record{z-index:3}
+.yoi-board-decoration{width:72px;height:72px;right:-18px;top:-44px;mix-blend-mode:screen}
+@media(max-width:560px){.yoi-board-decoration{width:64px;height:64px;right:-13px;top:-44px}}
