@@ -140,3 +140,10 @@
 .dusk-below-hero:after{content:"";position:absolute;z-index:-2;inset:0;pointer-events:none;background:url('/reiko-assets/oumagatoki/reiko-background.jpg') center bottom/100% auto no-repeat;opacity:.28;mix-blend-mode:luminosity;mask-image:linear-gradient(180deg,transparent 18%,#0006 48%,#000 82%)}
 .dusk-below-hero:before{height:200px;background:linear-gradient(#080f1a,transparent)}
 @media(max-width:560px){.dusk-below-hero:after{background-size:100% auto;opacity:.24}}
+
+/* Reiko's blue mist and crimson traces replace the bamboo background. */
+.dusk-below-hero{background:#03070c}
+.dusk-below-hero:after{background-image:url('/reiko-assets/oumagatoki/reiko-blue-mist.png');background-size:100% auto;background-position:center bottom;opacity:1;mix-blend-mode:normal;mask-image:none}
+.dusk-below-hero:before{height:200px;background:linear-gradient(#080f1a,transparent)}
+@media(max-width:560px){.dusk-below-hero:after{background-size:100% auto;opacity:1}}
+.dusk-below-hero:after{filter:brightness(.85) saturate(.9);mask-image:linear-gradient(180deg,transparent 0%,#000 15%)}
