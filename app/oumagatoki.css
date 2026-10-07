@@ -66,13 +66,30 @@
 .dusk-heading h2{color:#cc858c;font-weight:400;text-shadow:0 0 8px #9d33454a,0 0 23px #8d22302e}
 .dusk-butterfly-transition{position:fixed;inset:0;margin:auto;width:min(320px,70vw);height:min(320px,70vw);padding:0;border:0;outline:none;background:transparent;color:#df9aa8;overflow:visible;max-width:none;max-height:none}
 .dusk-butterfly-transition::backdrop{background:rgba(5,7,13,.2)}
-.dusk-transition-butterfly{display:block;width:100%;height:100%;object-fit:contain;filter:hue-rotate(-13deg) saturate(.78) brightness(1.12) drop-shadow(0 0 8px rgba(186,58,91,.23)) drop-shadow(0 0 24px rgba(172,48,86,.19));animation:dusk-red-breath 1s ease-in-out both}
+.dusk-transition-butterfly{display:block;width:100%;height:100%;object-fit:contain;filter:saturate(.9) brightness(1.04) drop-shadow(0 0 8px var(--dusk-red-glow)) drop-shadow(0 0 24px var(--dusk-red-haze));animation:dusk-red-breath 1s ease-in-out both}
 @keyframes dusk-red-breath{0%{opacity:0;transform:translateY(4px) scale(.97)}18%{opacity:.92}72%{opacity:.95}100%{opacity:0;transform:translateY(-3px) scale(1.02)}}
 @media(prefers-reduced-motion:reduce){.dusk-transition-butterfly{animation:none}}
 
 /* Fixed Ming-style chapter lettering: crimson pigment rather than pink glow. */
-@font-face{font-family:"Dusk Chapter Serif";src:url('/reiko-assets/oumagatoki/fonts/chapter-serif.ttf') format('truetype');font-style:normal;font-weight:500;font-display:swap}
-.dusk-heading h2{position:relative;isolation:isolate;width:fit-content;font-family:"Dusk Chapter Serif","Noto Serif SC","Songti SC",serif;font-size:clamp(28px,3.8vw,48px);font-weight:500;line-height:1.45;letter-spacing:.045em;text-shadow:none;color:#c92726}
-.dusk-heading h2>span{position:relative;z-index:1;display:block;background:linear-gradient(180deg,#980e17 5%,#bd171d 52%,#e4452c 100%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 1px rgba(215,62,49,.2))}
+@font-face{font-family:"Dusk Chapter Serif";src:url('/reiko-assets/oumagatoki/fonts/chapter-serif.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+.dusk-heading h2{position:relative;isolation:isolate;width:fit-content;font-family:"Dusk Chapter Serif","Noto Serif SC","Songti SC",serif;font-size:clamp(28px,3.8vw,48px);font-weight:400;line-height:1.45;letter-spacing:.045em;text-shadow:none;color:#c92726}
+.dusk-heading h2>span{position:relative;z-index:1;display:block;background:linear-gradient(180deg,var(--dusk-red-deep) 5%,var(--dusk-red-ink) 52%,var(--dusk-red-light) 100%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 1px rgba(215,62,49,.2))}
 .dusk-heading h2:before{content:"";position:absolute;pointer-events:none;z-index:0;inset:8% -4% -35%;background:radial-gradient(ellipse at 16% 68%,#be302a48,transparent 24%),radial-gradient(ellipse at 55% 40%,#9d172330,transparent 24%),radial-gradient(ellipse at 87% 65%,#da432e3d,transparent 22%);filter:blur(10px);opacity:.78}
 @media(max-width:560px){.dusk-heading h2{font-size:28px;letter-spacing:.035em}.dusk-heading h2:before{filter:blur(7px);opacity:.65}}
+
+/* One shared crimson accent, with the uploaded profile alpha preserved. */
+:root{--dusk-red-deep:#980e17;--dusk-red-ink:#bd171d;--dusk-red-light:#e4452c;--dusk-red-glow:rgba(189,23,29,.23);--dusk-red-haze:rgba(189,23,29,.15)}
+.dusk-heading h2:before{background:radial-gradient(ellipse at 16% 68%,var(--dusk-red-glow),transparent 24%),radial-gradient(ellipse at 55% 40%,var(--dusk-red-haze),transparent 24%),radial-gradient(ellipse at 87% 65%,var(--dusk-red-glow),transparent 22%)}
+.dusk-butterfly-transition{color:var(--dusk-red-ink)}
+.dusk-seal{color:var(--dusk-red-light);border-color:var(--dusk-red-ink)}
+.dusk-profile{background:transparent;box-shadow:none;color:#e4ded1;aspect-ratio:817/1243;padding:34% 9% 12% 24%;transform:none}
+.dusk-profile .dusk-card-art{object-fit:fill;filter:none;opacity:1;mask-image:none}
+.dusk-profile>.dusk-meta{font-size:10px;letter-spacing:.09em;color:#c9ba9e}
+.dusk-profile h3{font-size:32px;font-weight:400;margin:16px 0}
+.dusk-profile p{font-size:14px;line-height:1.95}
+.dusk-profile dl{margin-top:20px;border-color:#d8c5a330;padding-top:14px}
+.dusk-profile dl>div{display:block;margin:10px 0}
+.dusk-profile dt{color:#c9ba9e;font-size:12px}
+.dusk-profile dd{font-size:13px;margin-top:4px}
+@media(max-width:850px){.dusk-notes-grid{grid-template-columns:minmax(0,1fr) minmax(0,.7fr);gap:6%}.dusk-profile{padding:34% 9% 12% 24%}}
+@media(max-width:560px){.dusk-notes-grid{grid-template-columns:1fr;gap:40px}.dusk-profile{padding:34% 9% 12% 24%;min-height:545px}.dusk-profile h3{font-size:29px}.dusk-profile p{font-size:13px}.dusk-profile dd{font-size:12px}}
