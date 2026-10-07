@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useEffect, useRef, useState } from "react";
+import { runDuskTransition } from "./dusk-transition";
 import Oumagatoki from "./oumagatoki";
 import GreenGarden from "./garden-space";
 import WhiteArchive from "./white-archive";
@@ -296,11 +297,16 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   useEffect(() => {
     function onTheme(event: Event) {
       const nextTheme = (event as CustomEvent<Theme>).detail;
-      if (nextTheme === "room" || nextTheme === "garden" || nextTheme === "white-archive" || nextTheme === "oumagatoki") { setTheme(nextTheme); window.localStorage.setItem("reiko-theme", nextTheme); const url = new URL(window.location.href); url.searchParams.set("theme", nextTheme); url.hash = ""; window.history.replaceState(null, "", url); window.scrollTo(0, 0); }
+      if (nextTheme === theme) return;
+      if (nextTheme === "room" || nextTheme === "garden" || nextTheme === "white-archive" || nextTheme === "oumagatoki") {
+        const change = () => { setTheme(nextTheme); window.localStorage.setItem("reiko-theme", nextTheme); const url = new URL(window.location.href); url.searchParams.set("theme", nextTheme); url.hash = ""; window.history.replaceState(null, "", url); window.scrollTo(0, 0); };
+        if (theme === "oumagatoki" || nextTheme === "oumagatoki") runDuskTransition(change);
+        else change();
+      }
     }
     window.addEventListener("reiko-theme", onTheme);
     return () => window.removeEventListener("reiko-theme", onTheme);
-  }, []);
+  }, [theme]);
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {

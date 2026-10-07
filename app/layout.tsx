@@ -1,3 +1,4 @@
+import DuskTransition from "./dusk-transition";
 import type { Metadata } from "next";
 import "./globals.css";
 import "./white-archive.css";
@@ -22,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>{children}<DuskTransition /></body>
     </html>
   );
 }

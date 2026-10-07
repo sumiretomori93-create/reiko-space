@@ -61,3 +61,11 @@
 .dusk-player>div{min-width:0}.dusk-player p{font-size:14px;overflow-wrap:anywhere}
 @media(max-width:560px){.dusk-paper-preview{aspect-ratio:1280/961;min-height:0;padding:0}.dusk-paper-preview>.dusk-meta{left:19%;top:39%;font-size:12px}.dusk-paper-preview>p{left:19%;top:47%;width:64%;font-size:14px;line-height:1.65;-webkit-line-clamp:2}.dusk-paper-preview>.dusk-paper-number{display:none}.dusk-player{padding-top:7px}.dusk-diary-leaf{padding-bottom:64px}}
 .dusk-kept-page .dusk-paper-preview>p{position:absolute}
+
+/* A cool crimson trace connects chapter titles to the brief butterfly ritual. */
+.dusk-heading h2{color:#cc858c;font-weight:400;text-shadow:0 0 8px #9d33454a,0 0 23px #8d22302e}
+.dusk-butterfly-transition{position:fixed;inset:0;margin:auto;width:min(320px,70vw);height:min(320px,70vw);padding:0;border:0;outline:none;background:transparent;color:#df9aa8;overflow:visible;max-width:none;max-height:none}
+.dusk-butterfly-transition::backdrop{background:rgba(5,7,13,.2)}
+.dusk-transition-butterfly{display:block;width:100%;height:100%;object-fit:contain;filter:hue-rotate(-13deg) saturate(.78) brightness(1.12) drop-shadow(0 0 8px rgba(186,58,91,.23)) drop-shadow(0 0 24px rgba(172,48,86,.19));animation:dusk-red-breath 1s ease-in-out both}
+@keyframes dusk-red-breath{0%{opacity:0;transform:translateY(4px) scale(.97)}18%{opacity:.92}72%{opacity:.95}100%{opacity:0;transform:translateY(-3px) scale(1.02)}}
+@media(prefers-reduced-motion:reduce){.dusk-transition-butterfly{animation:none}}
