@@ -43,3 +43,21 @@
 .dusk-diary-leaf .dusk-card-art,.dusk-profile .dusk-card-art{mask-image:linear-gradient(#000 0%,#000 50%,#0008 100%)}
 .dusk-leaf-bottom{color:#21343e}
 @media(max-width:560px){.dusk-main:before{background-size:780px auto;opacity:.12}}
+
+/* Reiko's supplied background, journal page, and a little color restored. */
+.dusk-below-hero{position:relative;isolation:isolate;background:#050504 url('/reiko-assets/oumagatoki/reiko-background.jpg') center bottom/100% auto no-repeat}
+.dusk-below-hero:before{content:"";position:absolute;inset:0 0 auto;height:160px;z-index:-1;background:linear-gradient(#080f1a,transparent);pointer-events:none}
+.dusk-main,.dusk-footer{background:transparent}
+.dusk-main:before{display:none}
+.dusk-paper-preview{aspect-ratio:1280/961;min-height:0;padding:0;background:none;border:0;box-shadow:none;transform:none;overflow:visible;color:#403a30}
+.dusk-paper-preview .dusk-card-art{position:absolute;inset:0;width:100%;height:100%;filter:none;opacity:1;mask-image:none;clip-path:none}
+.dusk-paper-preview>.dusk-meta{position:absolute;left:22%;top:39%;font-size:12px;color:#6b6254}
+.dusk-paper-preview>h2.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.dusk-paper-preview>p{position:absolute;left:22%;top:45%;width:61%;margin:0;padding:0;font-size:16px;line-height:1.8;-webkit-line-clamp:3;color:#494137}
+.dusk-paper-preview>.dusk-paper-number{position:absolute;right:16%;bottom:24%;background:none;color:#716756;font-size:12px}
+.dusk-diary-leaf{background:#d6d0bf!important}
+.dusk-diary-leaf .dusk-card-art{filter:saturate(.68) contrast(.94);opacity:.78;mask-image:linear-gradient(#000 0%,#000 55%,#000a 100%)}
+.dusk-player{padding-top:4px}
+.dusk-player>div{min-width:0}.dusk-player p{font-size:14px;overflow-wrap:anywhere}
+@media(max-width:560px){.dusk-paper-preview{aspect-ratio:1280/961;min-height:0;padding:0}.dusk-paper-preview>.dusk-meta{left:19%;top:39%;font-size:12px}.dusk-paper-preview>p{left:19%;top:47%;width:64%;font-size:14px;line-height:1.65;-webkit-line-clamp:2}.dusk-paper-preview>.dusk-paper-number{display:none}.dusk-player{padding-top:7px}.dusk-diary-leaf{padding-bottom:64px}}
+.dusk-kept-page .dusk-paper-preview>p{position:absolute}
