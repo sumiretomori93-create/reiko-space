@@ -69,3 +69,10 @@
 .dusk-transition-butterfly{display:block;width:100%;height:100%;object-fit:contain;filter:hue-rotate(-13deg) saturate(.78) brightness(1.12) drop-shadow(0 0 8px rgba(186,58,91,.23)) drop-shadow(0 0 24px rgba(172,48,86,.19));animation:dusk-red-breath 1s ease-in-out both}
 @keyframes dusk-red-breath{0%{opacity:0;transform:translateY(4px) scale(.97)}18%{opacity:.92}72%{opacity:.95}100%{opacity:0;transform:translateY(-3px) scale(1.02)}}
 @media(prefers-reduced-motion:reduce){.dusk-transition-butterfly{animation:none}}
+
+/* Fixed Ming-style chapter lettering: crimson pigment rather than pink glow. */
+@font-face{font-family:"Dusk Chapter Serif";src:url('/reiko-assets/oumagatoki/fonts/chapter-serif.ttf') format('truetype');font-style:normal;font-weight:500;font-display:swap}
+.dusk-heading h2{position:relative;isolation:isolate;width:fit-content;font-family:"Dusk Chapter Serif","Noto Serif SC","Songti SC",serif;font-size:clamp(28px,3.8vw,48px);font-weight:500;line-height:1.45;letter-spacing:.045em;text-shadow:none;color:#c92726}
+.dusk-heading h2>span{position:relative;z-index:1;display:block;background:linear-gradient(180deg,#980e17 5%,#bd171d 52%,#e4452c 100%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 1px rgba(215,62,49,.2))}
+.dusk-heading h2:before{content:"";position:absolute;pointer-events:none;z-index:0;inset:8% -4% -35%;background:radial-gradient(ellipse at 16% 68%,#be302a48,transparent 24%),radial-gradient(ellipse at 55% 40%,#9d172330,transparent 24%),radial-gradient(ellipse at 87% 65%,#da432e3d,transparent 22%);filter:blur(10px);opacity:.78}
+@media(max-width:560px){.dusk-heading h2{font-size:28px;letter-spacing:.035em}.dusk-heading h2:before{filter:blur(7px);opacity:.65}}
