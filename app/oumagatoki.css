@@ -199,3 +199,10 @@
 .yoi-entrance-copy,.yoi-entrance-record{z-index:3}
 .yoi-board-decoration{width:72px;height:72px;right:-18px;top:-44px;mix-blend-mode:screen}
 @media(max-width:560px){.yoi-board-decoration{width:64px;height:64px;right:-13px;top:-44px}}
+
+/* The cleaner annotation sheet preserves the supplied transparent margins. */
+.dusk-memory-page{aspect-ratio:433/577;width:min(650px,calc(92dvh * 433 / 577),calc(100% - 8px))}
+.dusk-memory-page>.dusk-close{right:17%;top:13%}
+.dusk-memory-page>.dusk-memory-mark{right:18%;top:39%}
+.dusk-memory-body{left:27%;right:25%;top:39%;bottom:23%}
+@media(max-width:560px){.dusk-memory-body{left:26%;right:25%}.dusk-memory-page>.dusk-memory-mark{right:18%;top:39%;font-size:9px}}
