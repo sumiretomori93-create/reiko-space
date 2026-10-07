@@ -1,5 +1,6 @@
 "use client";
 
+import NightGame from "./night-game";
 import { runDuskTransition } from "./dusk-transition";
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { formatDate, formatShortDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
@@ -91,6 +92,7 @@ export default function Oumagatoki(props: Props) {
     </header>
     <div className="dusk-below-hero"><main className="dusk-main">
       <section className="dusk-section" id="dusk-works"><header className="dusk-heading"><span>二 / WORKS</span><h2><span>留在此岸的东西</span></h2><p>つくったもの</p></header><div className="dusk-works">{(Object.keys(projects) as ProjectKey[]).map((key, index) => <button type="button" key={key} onClick={() => setSelectedProject(projects[key])}><span className="dusk-work-number">0{index + 1}</span><div><span className="dusk-meta">{projects[key].mark}</span><h3>{projects[key].title}</h3><p>{projects[key].summary}</p></div><span className="dusk-work-file">{projects[key].file}</span></button>)}</div></section>
+      <NightGame />
       <section className="dusk-section dusk-notes" id="dusk-notes"><header className="dusk-heading"><span>三 / NOTES</span><h2><span>灯下的几行字</span></h2><p>わたしについて</p></header><div className="dusk-notes-grid"><article className="dusk-profile"><img className="dusk-card-art" src="/reiko-assets/oumagatoki/reiko-profile.png" alt="" loading="lazy" /><span className="dusk-meta">PRIVATE ROOM / REIKO</span><h3>{profileContent.name}</h3>{profileContent.paragraphs.map(paragraph => <p key={paragraph}>{paragraph}</p>)}<dl>{profileContent.details.map(([term, value]) => <div key={term}><dt>{term}</dt><dd>{value}</dd></div>)}</dl></article><aside className="dusk-margins"><span>余白に残す</span><p>{fragments[0]}</p><p>{fragments[1]}</p><button type="button" aria-expanded={secret} onClick={() => setSecret(!secret)}>{secret ? fragments[2] : "一张折起来的纸"}</button></aside></div></section>
       <section className="dusk-section dusk-outside" id="dusk-outside"><header className="dusk-heading"><span>四 / ELSEWHERE</span><h2><span>夜路，通向别处</span></h2><p>外へ</p></header><div className="dusk-outside-links">{socialLinks.map(link => <a key={link.key} href={link.href} target="_blank" rel="noreferrer"><span>{link.label}</span><small>{link.note}</small></a>)}</div></section>
     </main><footer className="dusk-footer"><span>REIKO / 宵伽</span><a href="#dusk-top">回到黄昏</a></footer></div>
