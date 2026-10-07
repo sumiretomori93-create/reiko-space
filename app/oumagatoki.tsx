@@ -13,14 +13,14 @@ const worlds: { value: Theme; label: string }[] = [
   { value: "room", label: "I · ROOM" }, { value: "garden", label: "II · GARDEN" },
   { value: "white-archive", label: "III · WHITE ARCHIVE" }, { value: "oumagatoki", label: "IV · 逢魔の時" },
 ];
-function PaperDialog({ title, close, children }: { title: string; close: () => void; children: ReactNode }) {
+function PaperDialog({ title, close, children, className = "" }: { title: string; close: () => void; children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current; const previous = document.activeElement as HTMLElement | null;
     dialog?.showModal(); const old = document.body.style.overflow; document.body.style.overflow = "hidden";
     return () => { dialog?.close(); document.body.style.overflow = old; previous?.focus(); };
   }, []);
-  return <dialog ref={ref} className="dusk-dialog" aria-label={title} onCancel={close} onClick={(event) => { if (event.target === event.currentTarget) { const r = event.currentTarget.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) close(); } }}><button type="button" className="dusk-close" aria-label="合上这一页" onClick={close}>×</button>{children}</dialog>;
+  return <dialog ref={ref} className={`dusk-dialog ${className}`} aria-label={title} onCancel={close} onClick={(event) => { if (event.target === event.currentTarget) { const r = event.currentTarget.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) close(); } }}><button type="button" className="dusk-close" aria-label="合上这一页" onClick={close}>×</button>{children}</dialog>;
 }
 function DiaryPage({ post, canEdit, signInPath, close }: { post: Post; canEdit: boolean; signInPath: string; close: () => void }) {
   const [comments, setComments] = useState<Comment[]>([]); const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ function DiaryPage({ post, canEdit, signInPath, close }: { post: Post; canEdit: 
     try { const response = await fetch(`/api/posts/${post.id}/comments`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content: draft.trim() }) }); const data = await response.json() as { error?: string; comments?: Comment[]; comment: Comment }; if (!response.ok) throw new Error(data.error || "批注保存失败。"); setComments(items => [...items, data.comment]); setDraft(""); setMessage("批注已经留下了。"); }
     catch (error) { setMessage(error instanceof Error ? error.message : "批注保存失败。"); } finally { setSaving(false); }
   }
-  return <PaperDialog title="黄昏手记" close={close}><span className="dusk-meta">DIARY / {formatShortDate(post.createdAt)}</span><h2>黄昏の手記</h2><p className="dusk-full-copy">{post.content}</p><section className="dusk-annotations"><h3>页边的批注</h3>{loading && <p>正在翻开批注……</p>}{!loading && !comments.length && <p className="dusk-muted">这一页还没有批注。</p>}{comments.map(comment => <article key={comment.id}><time>{formatDate(comment.createdAt)}</time><p>{comment.content}</p></article>)}{canEdit ? <form onSubmit={annotate}><label htmlFor="dusk-annotation">留下批注</label><textarea id="dusk-annotation" maxLength={500} value={draft} onChange={event => setDraft(event.target.value)} /><button disabled={saving || !draft.trim()}>{saving ? "保存中" : "留下批注"}</button></form> : <a href={signInPath} target="_top">主人登录后写批注</a>}{message && <output role="status">{message}</output>}</section></PaperDialog>;
+  return <PaperDialog title="黄昏手记" close={close} className="dusk-memory-page"><span className="dusk-memory-mark" lang="ja">残された記憶</span><span className="dusk-meta">DIARY / {formatShortDate(post.createdAt)}</span><h2>黄昏の手記</h2><p className="dusk-full-copy">{post.content}</p><section className="dusk-annotations"><h3>页边的批注</h3>{loading && <p>正在翻开批注……</p>}{!loading && !comments.length && <p className="dusk-muted">这一页还没有批注。</p>}{comments.map(comment => <article key={comment.id}><time>{formatDate(comment.createdAt)}</time><p>{comment.content}</p></article>)}{canEdit ? <form onSubmit={annotate}><label htmlFor="dusk-annotation">留下批注</label><textarea id="dusk-annotation" maxLength={500} value={draft} onChange={event => setDraft(event.target.value)} /><button disabled={saving || !draft.trim()}>{saving ? "保存中" : "留下批注"}</button></form> : <a href={signInPath} target="_top">主人登录后写批注</a>}{message && <output role="status">{message}</output>}</section></PaperDialog>;
 }
 function DuskPlayer() {
   const ref = useRef<HTMLAudioElement>(null); const [playing, setPlaying] = useState(false); const [message, setMessage] = useState("");
