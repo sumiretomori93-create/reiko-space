@@ -319,7 +319,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   const activeProject = projectKey ? projects[projectKey] : null;
 
   if (theme === "oumagatoki") {
-    return <Oumagatoki canEdit={canEdit} signInPath={signInPath} orderedPosts={orderedPosts} loading={loading} postsExpanded={postsExpanded} setPostsExpanded={setPostsExpanded} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
+    return <Oumagatoki canEdit={canEdit} signInPath={signInPath} orderedPosts={orderedPosts} loading={loading} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
   }
 
   if (theme === "garden") {
