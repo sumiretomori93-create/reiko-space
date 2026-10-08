@@ -15,3 +15,9 @@ export const postComments = sqliteTable("post_comments", {
   content: text("content").notNull(),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const nightRecords = sqliteTable("night_records", {
+  id: integer("id").primaryKey(),
+  score: integer("score").notNull().default(0),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
