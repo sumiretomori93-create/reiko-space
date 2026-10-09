@@ -237,3 +237,7 @@
 .yoi-game-storage a{text-decoration:underline;text-underline-offset:3px}
 
 @media(max-width:560px){.yoi-game-scores.has-local-record{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px}}
+
+/* Keep the modal dimmer stable: animating backdrop blur flickers on mobile GPUs. */
+.dusk-memory-page::backdrop{background:#030710d9;backdrop-filter:none;animation:none}
+.dusk-butterfly-transition::backdrop{background:transparent}

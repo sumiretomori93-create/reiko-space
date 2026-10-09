@@ -2,7 +2,7 @@
 
 import NightGame from "./night-game";
 import { runDuskTransition } from "./dusk-transition";
-import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatDate, formatShortDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
 
 type Props = {
@@ -16,10 +16,10 @@ const worlds: { value: Theme; label: string }[] = [
 ];
 function PaperDialog({ title, close, children, className = "" }: { title: string; close: () => void; children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const dialog = ref.current; const previous = document.activeElement as HTMLElement | null;
-    dialog?.showModal(); const old = document.body.style.overflow; document.body.style.overflow = "hidden";
-    return () => { dialog?.close(); document.body.style.overflow = old; previous?.focus(); };
+    const old = document.body.style.overflow; document.body.style.overflow = "hidden"; dialog?.showModal();
+    return () => { dialog?.close(); document.body.style.overflow = old; previous?.focus({ preventScroll: true }); };
   }, []);
   return <dialog ref={ref} className={`dusk-dialog ${className}`} aria-label={title} onCancel={close} onClick={(event) => { if (event.target === event.currentTarget) { const r = event.currentTarget.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) close(); } }}><button type="button" className="dusk-close" aria-label="合上这一页" onClick={close}>×</button>{children}</dialog>;
 }
