@@ -241,3 +241,16 @@
 /* Keep the modal dimmer stable: animating backdrop blur flickers on mobile GPUs. */
 .dusk-memory-page::backdrop{background:#030710d9;backdrop-filter:none;animation:none}
 .dusk-butterfly-transition::backdrop{background:transparent}
+
+/* WORK opens on the supplied transparent landscape sheet, without stretching. */
+.dusk-work-page{width:min(880px,calc(92dvh * 577 / 433),calc(100% - 8px));aspect-ratio:577/433;max-height:none;padding:0;background:transparent;box-shadow:none;overflow:hidden;color:#43382d}
+.dusk-work-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.dusk-work-page>.dusk-close{z-index:2;right:12%;top:15%;width:32px;height:32px;color:#574333;font-size:23px}
+.dusk-work-body{position:absolute;left:16%;right:16%;top:20%;bottom:20%;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#806c4c60 transparent;padding-right:8px;outline-offset:-2px}
+.dusk-work-body .dusk-meta{font-size:10px;color:#76634a;letter-spacing:.1em}
+.dusk-work-body h2{font-size:28px;line-height:1.4;margin:12px 0;color:#43382d;font-weight:400}
+.dusk-work-body em{display:block;color:#79684f;font-size:14px;line-height:1.6}
+.dusk-work-body .dusk-full-copy{font-size:15px;line-height:1.95;margin:18px 0;color:#4e4132}
+.dusk-work-body>small{display:block;font-size:11px;color:#79684f;padding-bottom:4px}
+.dusk-work-page::backdrop{background:#030710d9;backdrop-filter:none;animation:none}
+@media(max-width:560px){.dusk-work-body{left:15%;right:15%;top:19%;bottom:19%;padding-right:5px}.dusk-work-body h2{font-size:18px;margin:8px 0}.dusk-work-body em{font-size:11px}.dusk-work-body .dusk-meta,.dusk-work-body>small{font-size:9px}.dusk-work-body .dusk-full-copy{font-size:12px;line-height:1.85;margin:12px 0}.dusk-work-page>.dusk-close{top:14%;right:11%;width:28px;height:28px;font-size:20px}}
