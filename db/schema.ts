@@ -21,3 +21,9 @@ export const nightRecords = sqliteTable("night_records", {
   score: integer("score").notNull().default(0),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const requestLimits = sqliteTable("request_limits", {
+  key: text("key").primaryKey(),
+  windowStart: integer("window_start").notNull(),
+  count: integer("count").notNull(),
+});

@@ -254,3 +254,5 @@
 .dusk-work-body>small{display:block;font-size:11px;color:#79684f;padding-bottom:4px}
 .dusk-work-page::backdrop{background:#030710d9;backdrop-filter:none;animation:none}
 @media(max-width:560px){.dusk-work-body{left:15%;right:15%;top:19%;bottom:19%;padding-right:5px}.dusk-work-body h2{font-size:18px;margin:8px 0}.dusk-work-body em{font-size:11px}.dusk-work-body .dusk-meta,.dusk-work-body>small{font-size:9px}.dusk-work-body .dusk-full-copy{font-size:12px;line-height:1.85;margin:12px 0}.dusk-work-page>.dusk-close{top:14%;right:11%;width:28px;height:28px;font-size:20px}}
+
+.dusk-index-actions{flex-wrap:wrap}.dusk-backup-message{flex-basis:100%;font-size:11px;line-height:1.7;color:#a99f91}

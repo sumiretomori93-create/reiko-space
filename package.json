@@ -2,7 +2,9 @@
   "name": "reiko-space",
   "version": "0.4.1",
   "private": true,
-  "engines": { "node": ">=22.13.0" },
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "scripts": {
     "dev": "node scripts/run-framework.mjs dev",
     "build": "node scripts/run-framework.mjs build",
@@ -11,24 +13,33 @@
   },
   "dependencies": {
     "drizzle-orm": "0.45.2",
-    "next": "16.3.4",
+    "next": "16.4.0",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
-    "@cloudflare/workers-types": "4.20260515.1",
+    "@cloudflare/vite-plugin": "1.64.0",
+    "@cloudflare/workers-types": "5.20261014.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
-    "drizzle-kit": "0.31.10",
+    "@vitejs/plugin-rsc": "0.5.37",
+    "drizzle-kit": "0.31.11",
     "typescript": "5.9.3",
-    "vinext": "1.0.0-beta.5",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0"
+    "vinext": "1.2.0",
+    "vite": "8.3.4",
+    "wrangler": "4.151.0"
   },
   "type": "module",
-  "overrides": { "miniflare": { "sharp": "0.35.4" } }
+  "overrides": {
+    "miniflare": {
+      "sharp": "0.35.5"
+    },
+    "source-map-js": "1.2.2",
+    "fflate": "0.8.3",
+    "@esbuild-kit/core-utils": {
+      "esbuild": "0.25.12"
+    }
+  }
 }

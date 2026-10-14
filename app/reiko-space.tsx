@@ -116,6 +116,8 @@ function ProjectModal({ project, close }: { project: Project; close: () => void 
 
 function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; canEdit: boolean; signInPath: string; close: () => void }) {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [nextAfter,setNextAfter]=useState<number|null>(null);
+  const [loadingMore,setLoadingMore]=useState(false);
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -124,9 +126,9 @@ function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; ca
   useEffect(() => {
     fetch(`/api/posts/${post.id}/comments`)
       .then(async (response) => {
-        const data = await response.json() as { error?: string; comments?: Comment[]; comment: Comment };
+        const data = await response.json() as { error?: string; comments?: Comment[]; nextAfter?:number|null; comment: Comment };
         if (!response.ok) throw new Error(data.error || "批注暂时无法读取。");
-        setComments(Array.isArray(data.comments) ? data.comments : []);
+        setComments(Array.isArray(data.comments) ? data.comments : []);setNextAfter(data.nextAfter??null);
       })
       .catch((error) => setMessage(error instanceof Error ? error.message : "批注暂时无法读取。"))
       .finally(() => setLoading(false));
@@ -144,7 +146,7 @@ function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; ca
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      const data = await response.json() as { error?: string; comments?: Comment[]; comment: Comment };
+      const data = await response.json() as { error?: string; comments?: Comment[]; nextAfter?:number|null; comment: Comment };
       if (!response.ok) throw new Error(data.error || "批注保存失败。");
       setComments((current) => [...current, data.comment]);
       setDraft("");
@@ -156,6 +158,7 @@ function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; ca
     }
   }
 
+  async function moreComments(){if(nextAfter===null||loadingMore)return;setLoadingMore(true);try{const r=await fetch(`/api/posts/${post.id}/comments?after=${nextAfter}`);const d=await r.json() as {comments?:Comment[];nextAfter?:number|null};if(!r.ok)throw new Error("批注暂时无法读取。");setComments(items=>{const ids=new Set(items.map(item=>item.id));return [...items,...(d.comments||[]).filter(item=>!ids.has(item.id))];});setNextAfter(d.nextAfter??null);}catch{setMessage("批注暂时无法读取。");}finally{setLoadingMore(false);}}
   return (
     <div className="moon-modal-backdrop" role="presentation" onMouseDown={close}>
       <article className="moon-comment-modal" role="dialog" aria-modal="true" aria-labelledby="moon-comment-title" onMouseDown={(event) => event.stopPropagation()}>
@@ -165,7 +168,7 @@ function PostCommentModal({ post, canEdit, signInPath, close }: { post: Post; ca
         <div className="moon-comment-list" aria-live="polite">
           {loading && <p className="moon-comment-muted">正在翻开批注页……</p>}
           {!loading && comments.length === 0 && <p className="moon-comment-muted">还没有复读的碎片。</p>}
-          {comments.map((comment) => <div className="moon-comment" key={comment.id}><time>{formatDate(comment.createdAt)}</time><p>{comment.content}</p></div>)}
+          {nextAfter!==null&&<button type="button" disabled={loadingMore} onClick={moreComments}>更多批注</button>}{comments.map((comment) => <div className="moon-comment" key={comment.id}><time>{formatDate(comment.createdAt)}</time><p>{comment.content}</p></div>)}
         </div>
         {canEdit ? (
           <form className="moon-comment-form" onSubmit={saveComment}>

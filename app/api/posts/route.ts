@@ -1,10 +1,9 @@
 import { desc } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { posts } from "../../../db/schema";
-import { getChatGPTUser } from "../../chatgpt-auth";
+import { owner, readJson, limitRequest, requestError } from "../../server-security";
 
 const MAX_POST_LENGTH = 500;
-const OWNER_EMAIL = "sumire.tomori93@gmail.com";
 
 function errorMessage(error: unknown) {
   const message = error instanceof Error ? error.message : "Unexpected error";
@@ -13,30 +12,25 @@ function errorMessage(error: unknown) {
     : "动态暂时无法读取，请稍后再试。";
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    await limitRequest(request, "posts-read", 120);
     const rows = await getDb()
       .select()
       .from(posts)
       .orderBy(desc(posts.createdAt), desc(posts.id))
       .limit(100);
-    return Response.json({ posts: rows });
+    return Response.json({ posts: rows }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    return Response.json({ error: errorMessage(error) }, { status: 500 });
+    return requestError(error) || Response.json({ error: errorMessage(error) }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
-    const user = await getChatGPTUser();
-    if (user?.email.toLowerCase() !== OWNER_EMAIL) {
-      return Response.json(
-        { error: "只有 Reiko 可以发布动态。" },
-        { status: 403 },
-      );
-    }
-
-    const payload = (await request.json()) as { content?: unknown };
+    const user = await owner(request);
+    await limitRequest(request, "posts-write", 10, 60, user.userId);
+    const payload = await readJson(request);
     const content = typeof payload.content === "string" ? payload.content.trim() : "";
 
     if (!content) {
@@ -49,6 +43,6 @@ export async function POST(request: Request) {
     const [post] = await getDb().insert(posts).values({ content }).returning();
     return Response.json({ post }, { status: 201 });
   } catch (error) {
-    return Response.json({ error: errorMessage(error) }, { status: 500 });
+    return requestError(error) || Response.json({ error: errorMessage(error) }, { status: 500 });
   }
 }

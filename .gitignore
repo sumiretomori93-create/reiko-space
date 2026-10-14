@@ -46,3 +46,6 @@ next-env.d.ts
 /work/
 /.sites-package-stage/
 /reiko-space-v*.tar.gz
+
+# Business data backups are private and must never be committed.
+/backups/
