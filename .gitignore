@@ -49,3 +49,6 @@ next-env.d.ts
 
 # Business data backups are private and must never be committed.
 /backups/
+
+# TypeScript compiler cache
+*.tsbuildinfo

@@ -27,3 +27,8 @@ export const requestLimits = sqliteTable("request_limits", {
   windowStart: integer("window_start").notNull(),
   count: integer("count").notNull(),
 });
+
+export const keepsConnections = sqliteTable("keeps_connections", {
+ userId: text("user_id").primaryKey(),
+ encrypted: text("encrypted").notNull(),
+});

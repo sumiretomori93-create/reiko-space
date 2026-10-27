@@ -124,3 +124,11 @@ The portable build runs Vinext directly without a host `timeout` command. The ma
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+
+## 私人留存管理
+
+站主登录后，个人站右下角提供「留存管理」入口，路径 `/keeps`。页面和 `/api/keeps` 均在服务端校验站主身份，公开访问权限不变；其他账号和匿名访问不能读取、写入或配置留存。
+
+首次进入可填写现有 Upstash REST 地址及读写 Token，与纪念日 MCP 服务共用 `reiko:notebook:v1:*` 和 `reiko:anniversaries:v1:records`。Token 使用 AES-256-GCM 加密存入独立的 `keeps_connections` 表，并绑定当前用户 ID；不会回传给客户端或加入备份接口。运行时 secret `KEEPS_CONNECTION_ENCRYPTION_KEY` 为 64 位小写十六进制值，更新部署时必须保留。
+
+支持新增留言、分页阅读已加载留言、关键词过滤、新增纪念日及日期计算。起始当天为第 0 天。暂不提供编辑、删除、自动提醒或 Operit 自动同步。
