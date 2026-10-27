@@ -32,8 +32,9 @@ export function describe(item: any, today: string) {
 }
 export async function redis(config: {url:string;token:string}, args: (string|number)[]) {
  let response: Response;
- try { response = await fetch(validURL(config.url), {method:"POST", headers:{Authorization:`Bearer ${config.token}`,"Content-Type":"application/json"},body:JSON.stringify(args),redirect:"error",signal:AbortSignal.timeout(15000)}); }
+ try { response = await fetch(validURL(config.url), {method:"POST", headers:{Authorization:`Bearer ${config.token}`,"Content-Type":"application/json"},body:JSON.stringify(args),redirect:"manual",signal:AbortSignal.timeout(15000)}); }
  catch {throw Error("数据库暂时连接不上。若在保存，请保留内容后重试。");}
+ if (response.status >= 300 && response.status < 400) throw Error("数据库地址返回了重定向，请使用 Upstash 的原始 REST 地址。");
  if (!response.ok) throw Error("数据库连接失败，请检查地址和读写 Token。");
  const data = await response.json() as any;
  if (data.error) {
