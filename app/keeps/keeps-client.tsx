@@ -30,7 +30,7 @@ export default function KeepsClient(){
  const showSetup=connected===false||setup;
  return <div className="keeps-app"><div className="shell">
   <aside><a className="wordmark" href="/">留存<span>REIKO'S KEEPS</span></a><p className="aside-text">一些话，一些日子。<br/>都可以自己记下来。</p><nav aria-label="记录分类"><button className={tab==="notes"?"active":""} onClick={()=>{setTab("notes");setComposer(false);setNotice("");}}>留言<span>NOTES</span></button><button className={tab==="anniversaries"?"active":""} onClick={()=>{setTab("anniversaries");setComposer(false);setNotice("");}}>纪念日<span>DATES</span></button></nav><div className="aside-bottom"><span className="private-dot"/>私人空间<br/><small>仅你的账号可以打开</small></div></aside>
-  <main><header><span className="eyebrow">YOUR LITTLE ARCHIVE</span><button className="quiet" onClick={()=>{setSetup(!showSetup);setComposer(false);setError("");}}>{connected?"连接设置":"连接数据库"}</button></header>
+  <main><header><a className="back-home" href="/">返回个人站</a><button className="quiet" onClick={()=>{setSetup(!showSetup);setComposer(false);setError("");}}>{connected?"连接设置":"连接数据库"}</button></header>
   <section className="heading"><div><p className="chapter">{tab==="notes"?"01 / NOTES":"02 / ANNIVERSARIES"}</p><h1>{tab==="notes"?"留下想记的话。":"值得记住的日子。"}</h1><p>{tab==="notes"?"你写的，小克写的，都在同一本里。":"记下开始，也看看走过了多久。"}</p></div>{connected&&!showSetup&&<button className="primary" onClick={openComposer}>{tab==="notes"?"写一条留言":"添加纪念日"}</button>}</section>
   {error&&<div role="alert" className="alert">{error}{error.includes("登录")&&<a href="/signin-with-chatgpt?return_to=%2Fkeeps" target="_top">使用 ChatGPT 登录</a>}</div>}
   {notice&&<div role="status" className="notice">{notice}</div>}
