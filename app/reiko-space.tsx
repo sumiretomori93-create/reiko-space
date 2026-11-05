@@ -5,6 +5,7 @@ import { runDuskTransition } from "./dusk-transition";
 import Oumagatoki from "./oumagatoki";
 import GreenGarden from "./garden-space";
 import WhiteArchive from "./white-archive";
+import Abyss from "./abyss";
 import { formatDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
 import { useReikoPosts } from "./use-reiko-posts";
 
@@ -294,14 +295,14 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
   useEffect(() => {
     const requested = new URLSearchParams(window.location.search).get("theme");
     const saved = requested || window.localStorage.getItem("reiko-theme");
-    if (saved === "room" || saved === "garden" || saved === "white-archive" || saved === "oumagatoki") setTheme(saved);
+    if (saved === "room" || saved === "garden" || saved === "white-archive" || saved === "oumagatoki" || saved === "abyss") setTheme(saved);
   }, []);
 
   useEffect(() => {
     function onTheme(event: Event) {
       const nextTheme = (event as CustomEvent<Theme>).detail;
       if (nextTheme === theme) return;
-      if (nextTheme === "room" || nextTheme === "garden" || nextTheme === "white-archive" || nextTheme === "oumagatoki") {
+      if (nextTheme === "room" || nextTheme === "garden" || nextTheme === "white-archive" || nextTheme === "oumagatoki" || nextTheme === "abyss") {
         const change = () => { setTheme(nextTheme); window.localStorage.setItem("reiko-theme", nextTheme); const url = new URL(window.location.href); url.searchParams.set("theme", nextTheme); url.hash = ""; window.history.replaceState(null, "", url); window.scrollTo(0, 0); };
         if (theme === "oumagatoki" || nextTheme === "oumagatoki") runDuskTransition(change);
         else change();
@@ -325,6 +326,10 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
     return <Oumagatoki canEdit={canEdit} signInPath={signInPath} orderedPosts={orderedPosts} loading={loading} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
   }
 
+  if (theme === "abyss") {
+    return <Abyss canEdit={canEdit} signInPath={signInPath} orderedPosts={orderedPosts} loading={loading} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
+  }
+
   if (theme === "garden") {
     return <GreenGarden canEdit={canEdit} signInPath={signInPath} posts={posts} orderedPosts={orderedPosts} visiblePosts={visiblePosts} loading={loading} postsExpanded={postsExpanded} setPostsExpanded={setPostsExpanded} draft={draft} setDraft={setDraft} publishing={publishing} publish={publish} message={message} />;
   }
@@ -345,7 +350,7 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
           <a href="#diary"><b>02</b><span>DIARY</span></a>
           <a href="#archive"><b>03</b><span>ARCHIVE</span></a>
           <a href="#fragments"><b>04</b><span>NOTES</span></a>
-          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "white-archive" }))}>WHITE ARCHIVE</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "oumagatoki" }))}>宵伽</button>
+          <a href="#elsewhere"><b>05</b><span>OUTSIDE</span></a><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "garden" }))}>GARDEN</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "white-archive" }))}>WHITE ARCHIVE</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "oumagatoki" }))}>宵伽</button><button className="moon-theme-switch" type="button" onClick={() => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: "abyss" }))}>深海</button>
         </nav>
         <div className="moon-nav-foot">
           <span>PRIVATE WEB ROOM</span>
