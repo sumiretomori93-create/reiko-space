@@ -10,17 +10,14 @@ const ease=(t:number)=>1-Math.pow(1-Math.max(0,Math.min(1,t)),3);
 function spine(base:Point,tip:Point,lag:Point,curl:number):Point[] {
   const dx=tip.x-base.x,dy=tip.y-base.y,distance=Math.max(1,Math.hypot(dx,dy));
   const axis={x:dx/distance,y:dy/distance},normal={x:-axis.y,y:axis.x};
-  const sway=Math.min(68,distance*.18)+(lag.x*normal.x+lag.y*normal.y)*.18;
-  const c1={x:base.x+dx*.38+normal.x*sway,y:base.y+dy*.38+normal.y*sway};
-  const reach=Math.min(130,distance*.26),hook=Math.min(32,distance*.13)*curl;
+  const sway=Math.min(22,distance*.055)+(lag.x*normal.x+lag.y*normal.y)*.12;
+  const c1={x:base.x+dx*.4,y:base.y};
+  const reach=Math.min(130,distance*.26),hook=Math.min(18,distance*.06)*curl;
   const c2={x:tip.x-axis.x*reach+normal.x*(sway*.6+hook)-lag.x*.16,y:tip.y-axis.y*reach+normal.y*(sway*.6+hook)-lag.y*.16};
-  const end={x:tip.x-axis.x*hook*.85+normal.x*hook*.8,y:tip.y-axis.y*hook*.85+normal.y*hook*.8};
-  const bend={x:tip.x+axis.x*hook*.9+normal.x*hook*1.4,y:tip.y+axis.y*hook*.9+normal.y*hook*1.4};
   const points:Point[]=[];
   for(let i=0;i<=64;i++){
-    const t=i/64;
-    if(t<=.82){const u=t/.82,v=1-u;points.push({x:v*v*v*base.x+3*v*v*u*c1.x+3*v*u*u*c2.x+u*u*u*end.x,y:v*v*v*base.y+3*v*v*u*c1.y+3*v*u*u*c2.y+u*u*u*end.y});}
-    else {const u=(t-.82)/.18,v=1-u;points.push({x:v*v*end.x+2*v*u*bend.x+u*u*tip.x,y:v*v*end.y+2*v*u*bend.y+u*u*tip.y});}
+    const u=i/64,v=1-u;
+    points.push({x:v*v*v*base.x+3*v*v*u*c1.x+3*v*u*u*c2.x+u*u*u*tip.x,y:v*v*v*base.y+3*v*v*u*c1.y+3*v*u*u*c2.y+u*u*u*tip.y});
   }
   return points;
 }
@@ -44,7 +41,7 @@ function triangle(ctx:CanvasRenderingContext2D,image:HTMLImageElement,s:Point[],
 }
 
 function drawSkin(ctx:CanvasRenderingContext2D,image:HTMLImageElement,points:Point[],distance:number){
-  const height=Math.min(300,Math.max(170,distance*.52));
+  const height=Math.min(240,Math.max(125,distance*.43));
   const top:Point[]=[],bottom:Point[]=[];
   points.forEach((p,i)=>{
     const a=points[Math.max(0,i-1)],b=points[Math.min(points.length-1,i+1)],len=Math.max(.001,Math.hypot(b.x-a.x,b.y-a.y));
@@ -90,7 +87,19 @@ export function useShadowHand(){
       else {const t=Math.max(0,(now-released-90)/620);if(t>=1){stop();return;}const out=ease(t);currentTip=mix(releaseTip,base,out);curl*=1-Math.min(1,t*3);opacity=(1-out)*.92;}
       const points=spine(base,currentTip,{x:target.x-follower.x,y:target.y-follower.y},curl);
       ctx!.setTransform(scale,0,0,scale,0,0);ctx!.clearRect(0,0,node!.width/scale,node!.height/scale);
-      if(skin.complete&&skin.naturalWidth)drawSkin(ctx!,skin,points,Math.hypot(currentTip.x-base.x,currentTip.y-base.y));
+      if(skin.complete&&skin.naturalWidth){
+        drawSkin(ctx!,skin,points,Math.hypot(target.x-base.x,target.y-base.y));
+        // Submerge the root in the scene instead of casting a sticker-like shadow.
+        ctx!.globalCompositeOperation="source-atop";
+        const shade=ctx!.createLinearGradient(base.x,base.y,currentTip.x,currentTip.y);
+        shade.addColorStop(0,"rgba(3,18,24,.7)");shade.addColorStop(.65,"rgba(5,22,29,.25)");shade.addColorStop(1,"rgba(5,22,29,.08)");
+        ctx!.fillStyle=shade;ctx!.fillRect(0,0,node!.width/scale,node!.height/scale);
+        ctx!.globalCompositeOperation="destination-in";
+        const depth=ctx!.createLinearGradient(base.x,base.y,currentTip.x,currentTip.y);
+        depth.addColorStop(0,"rgba(0,0,0,.18)");depth.addColorStop(.35,"rgba(0,0,0,.58)");depth.addColorStop(.85,"rgba(0,0,0,.94)");depth.addColorStop(1,"rgba(0,0,0,.94)");
+        ctx!.fillStyle=depth;ctx!.fillRect(0,0,node!.width/scale,node!.height/scale);
+        ctx!.globalCompositeOperation="source-over";
+      }
       node!.style.opacity=String(opacity);frame=requestAnimationFrame(paint);
     }
     function release(){
@@ -112,8 +121,10 @@ export function useShadowHand(){
       window.dispatchEvent(new Event("abyss-contact-start"));
       timer=setTimeout(()=>{
         timer=undefined;if(phase!=="armed")return;
-        const w=window.innerWidth,h=window.innerHeight;
-        base=[{x:-80,y:Math.min(h+35,point.y+100),d:point.x},{x:w+80,y:Math.min(h+35,point.y+100),d:w-point.x},{x:point.x-80,y:-80,d:point.y},{x:point.x+80,y:h+80,d:h-point.y}].sort((a,b)=>a.d-b.d)[0];
+        const w=window.innerWidth;
+        // Always enter horizontally; keep the chosen side through the whole hold.
+        base={x:point.x<=w/2?-90:w+90,y:point.y};
+        node!.dataset.side=point.x<=w/2?"left":"right";
         currentTip={...base};phase="holding";holding.current=true;host!.dataset.handHeld="true";node!.dataset.phase="holding";
         started=performance.now();last=started;fit();frame=requestAnimationFrame(paint);
       },200);
