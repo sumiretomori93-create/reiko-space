@@ -5,6 +5,7 @@ import { useJellyClick } from "./abyss-jelly-click";
 import { useShadowHand } from "./abyss-shadow-hand";
 import { useSeaMotion } from "./abyss-motion";
 import SeaAtmosphere from "./abyss-atmosphere";
+import SeaDust from "./abyss-dust";
 import { FormEvent, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatDate, formatShortDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
 
@@ -227,7 +228,7 @@ export default function Abyss(props: Props) {
   const filtered = orderedPosts.filter(post => !query.trim() || post.content.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()) || formatShortDate(post.createdAt).includes(query.trim()));
 
   return <div className="abyss-site" id="abyss-top" data-sea-motion={motion.enabled?"on":"off"} onClickCapture={jelly.capture}>
-    <SeaAtmosphere motion={motion.enabled}/>
+    <SeaAtmosphere motion={motion.enabled}/><SeaDust motion={motion.enabled}/>
     {hand.overlay}
     {jelly.overlay}
     <div className="abyss-front">

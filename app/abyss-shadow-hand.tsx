@@ -5,6 +5,8 @@ import { useCallback, useEffect, useRef } from "react";
 type Point = { x:number; y:number };
 const mix=(a:Point,b:Point,t:number):Point=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
 const ease=(t:number)=>1-Math.pow(1-Math.max(0,Math.min(1,t)),3);
+// 伸到指尖时带一点冲劲，再往回收一点点
+const reach=(t:number)=>{const k=Math.max(0,Math.min(1,t))-1,c=1.15;return 1+(c+1)*k*k*k+c*k*k;};
 
 export function useShadowHand(motion=true){
   const canvas=useRef<HTMLCanvasElement>(null);
@@ -51,7 +53,7 @@ export function useShadowHand(motion=true){
       follower=mix(follower,target,1-Math.exp(-dt/.18));
       const entrance=ease((now-started)/460);
       let curl=ease((entrance-.55)/.45),opacity=entrance;
-      if(phase==="holding")currentTip=mix(base,target,entrance);
+      if(phase==="holding")currentTip=mix(base,target,reach((now-started)/520));
       else {const t=Math.max(0,(now-released-90)/620);if(t>=1){stop();return;}const out=ease(t);currentTip=mix(releaseTip,base,out);curl*=1-Math.min(1,t*3);opacity=(1-out)*.92;}
       engine?.paint(base,currentTip,{x:target.x-follower.x,y:target.y-follower.y},curl);
       node!.style.opacity=String(opacity);frame=requestAnimationFrame(paint);
