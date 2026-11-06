@@ -1,0 +1,14 @@
+.abyss-click-visitor{position:fixed;z-index:90;width:0;height:0;pointer-events:none;isolation:isolate}
+.abyss-click-swimmer{position:absolute;width:70px;height:98px;margin:-34px 0 0 -35px;transform-origin:50% 34px;animation:abyss-click-arrive var(--jelly-duration) cubic-bezier(.16,.5,.32,1) both;filter:drop-shadow(0 0 7px #b5c3ee77) drop-shadow(0 0 18px #9cabd244)}
+.abyss-click-jelly{display:block;width:100%;height:100%;overflow:visible;transform:rotate(var(--jelly-angle));transform-origin:50% 34px}
+.abyss-click-bell{transform-origin:50px 52px;animation:abyss-click-pulse .7s ease-in-out infinite}
+.abyss-click-threads{transform-origin:50px 57px;animation:abyss-click-trail 1.1s ease-in-out infinite alternate}
+.abyss-click-ripple{position:absolute;left:-10px;top:-10px;width:20px;height:20px;border:1px solid #c6d6eb99;border-radius:50%;opacity:0;box-shadow:0 0 14px #b4c9ed33}
+.abyss-click-visitor.is-arrived .abyss-click-ripple{animation:abyss-click-ring .55s ease-out both}
+.abyss-click-visitor.is-arrived .abyss-click-jelly{animation:abyss-click-vanish .55s ease-out both}
+@keyframes abyss-click-arrive{0%{opacity:0;transform:translate3d(var(--jelly-from-x),var(--jelly-from-y),0) scale(.8)}15%{opacity:.9}55%{transform:translate3d(var(--jelly-bend-x),var(--jelly-bend-y),0) scale(1)}100%{opacity:1;transform:translate3d(0,0,0) scale(.95)}}
+@keyframes abyss-click-pulse{0%,100%{transform:scale(1)}45%{transform:scale(.92,1.06)}}
+@keyframes abyss-click-trail{from{transform:skewX(-6deg)}to{transform:skewX(7deg)}}
+@keyframes abyss-click-ring{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(3.6)}}
+@keyframes abyss-click-vanish{0%{opacity:1}100%{opacity:0;transform:rotate(var(--jelly-angle)) translateY(-14px) scale(.88)}}
+@media(prefers-reduced-motion:reduce){.abyss-click-visitor{display:none}}

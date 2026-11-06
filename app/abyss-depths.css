@@ -1,0 +1,81 @@
+/* The submerged archive continues the chapel, rather than starting a new page. */
+.abyss-site>main{width:min(100%,1122px);margin:0 auto;isolation:isolate;background:#10212b url('/reiko-assets/abyss/depths-v1.webp') center top/100% 100% no-repeat}
+.abyss-site>main:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#09121966,transparent 15%,#06101722 75%,#060f17d9)}
+.abyss-site>main>.abyss-lace{display:none}
+.abyss-site>main .abyss-section{position:relative;width:100%;padding:80px 7% 90px;background:none;scroll-margin-top:30px}
+.abyss-site>main .abyss-heading{margin-bottom:42px;padding-left:10px;text-shadow:0 2px 12px #041016}
+.abyss-site>main .abyss-heading h2{font-size:38px;letter-spacing:.18em}
+.abyss-site>main .abyss-heading h2:after{height:10px;bottom:-4px;right:-60px;border-bottom:1px solid #bfc5b65c;background:linear-gradient(90deg,transparent,#c9cbb68c 45%,transparent 47%,transparent 53%,#c9cbb68c 55%,transparent) center/100% 1px no-repeat}
+.abyss-site>main .abyss-zone{color:#c6cec6;font-size:9px;gap:12px}
+.abyss-site>main .abyss-heading-sub{color:#c6ccc2;line-height:1.9}
+.abyss-site>main .abyss-z2{padding-top:70px;padding-bottom:110px}
+.abyss-site>main .abyss-works{grid-template-columns:1.1fr 1fr;gap:35px 20px;padding:0 10px 50px;align-items:start;border:0;background:none}
+.abyss-site>main .abyss-work{isolation:isolate;min-height:240px;position:relative;padding:38px 40px;border:0;background:none;box-shadow:none;backdrop-filter:none;gap:17px;transform:rotate(-3deg);filter:drop-shadow(0 8px 12px #020b1033);transition:transform .35s ease;cursor:pointer;width:94%;color:#dce0d7}
+.abyss-site>main .abyss-work:before{inset:0;width:auto;height:auto;border:0;background:url('/reiko-assets/abyss/paper.webp') center/100% 100% no-repeat;z-index:-1;opacity:.23;filter:grayscale(1) brightness(.85);clip-path:polygon(2% 3%,16% 2%,32% 4%,51% 0,70% 3%,97% 1%,99% 29%,97% 47%,100% 68%,97% 98%,76% 96%,56% 100%,36% 97%,3% 99%,1% 68%,3% 42%)}
+.abyss-site>main .abyss-work:after{content:"";inset:48px auto auto 20px;width:1px;height:75px;border:0;border-radius:0;background:linear-gradient(transparent,#d6dbcb99,transparent);opacity:.65}
+.abyss-site>main .abyss-work:nth-child(2){min-height:275px;width:88%;margin-left:auto;transform:translateY(70px) rotate(4deg)}
+.abyss-site>main .abyss-work:nth-child(2):before{opacity:.14;transform:scaleX(-1);clip-path:polygon(0 2%,20% 0,44% 3%,65% 1%,97% 4%,100% 34%,97% 57%,99% 97%,75% 100%,53% 97%,32% 99%,1% 96%,3% 70%,0 43%)}
+.abyss-site>main .abyss-work:nth-child(3){width:85%;min-height:250px;margin-left:15px;transform:translateY(-3px) rotate(2deg)}
+.abyss-site>main .abyss-work:nth-child(3):before{opacity:.13;transform:rotate(180deg)}
+.abyss-site>main .abyss-work:nth-child(4){width:98%;min-height:235px;transform:translateY(60px) rotate(-3deg)}
+.abyss-site>main .abyss-work:nth-child(4):before{opacity:.25;transform:scaleY(-1)}
+.abyss-site>main .abyss-work:hover,.abyss-site>main .abyss-work:focus-visible{transform:translateY(-5px) rotate(0);z-index:2;background:none}
+.abyss-site>main .abyss-work:nth-child(2n):hover,.abyss-site>main .abyss-work:nth-child(2n):focus-visible{transform:translateY(55px) rotate(0)}
+.abyss-site>main .abyss-work:focus-visible{outline:1px solid #d8d6b6;outline-offset:5px}
+.abyss-site>main .abyss-work-file{font:9px/1.5 Georgia,serif;color:#c9d0c6;letter-spacing:.16em;padding-bottom:9px;border-bottom:1px solid #c3cbbb33;position:relative}
+.abyss-site>main .abyss-work h3{font:400 27px/1.35 var(--ab-display);letter-spacing:.045em;color:#e1e2d7;margin:0;text-shadow:0 2px 9px #06151f}
+.abyss-site>main .abyss-work p{font-size:14px;line-height:1.95;color:#d2d9d2;text-shadow:0 1px 6px #06151f}
+.abyss-site>main .abyss-work-mark{font:italic 13px/1.5 AbyssReference,Georgia,serif;color:#becabf;padding-top:8px;margin-top:auto}
+.abyss-site>main .abyss-work-mark>span{margin-right:2px}
+.abyss-site>main .abyss-z3{padding-top:30px;padding-bottom:110px}
+.abyss-site>main .abyss-notes-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,.8fr);gap:32px;align-items:center;padding:15px 0}
+.abyss-site>main .abyss-profile{padding:45px 44px 50px;transform:rotate(-3deg)}
+.abyss-site>main .abyss-profile:before{inset:-2% -3%;filter:grayscale(1) brightness(.85);opacity:.2}
+.abyss-site>main .abyss-profile h3{font-family:AbyssReference,Georgia,serif;font-style:italic;font-size:55px;color:#dedfd3}
+.abyss-site>main .abyss-profile p{font-size:14px;color:#d0d8d0}
+.abyss-site>main .abyss-profile .abyss-label-line{color:#bac7bd}.abyss-site>main .abyss-profile dt{color:#becac0}.abyss-site>main .abyss-profile dl{border-color:#bbc7bc44}.abyss-site>main .abyss-profile dd{color:#cbd4cc;line-height:1.9}
+.abyss-site>main .abyss-fragments{position:relative;isolation:isolate;transform:translateY(70px) rotate(4deg);padding:50px 28px 45px;gap:18px;filter:drop-shadow(0 8px 18px #0005)}
+.abyss-site>main .abyss-fragments:before{content:"";position:absolute;inset:0 -5%;z-index:-1;background:url('/reiko-assets/abyss/paper.webp') center/100% 100% no-repeat;filter:grayscale(1) brightness(.7);opacity:.13}
+.abyss-site>main .abyss-fragments p{font-size:17px;line-height:2;color:#e2e3d8;letter-spacing:.05em;text-shadow:0 1px 3px #142d32}
+.abyss-site>main .abyss-fragments .abyss-text-button{color:#e3e3d3;border-color:#c9cbbb88;text-align:left;font-size:13px;line-height:1.9}
+.abyss-site>main .abyss-z4{padding-top:40px;padding-bottom:110px}
+.abyss-site>main .abyss-outside{padding:5px 28px 10px;border-top:0;background:#091b2344;box-shadow:0 0 45px #04101844;backdrop-filter:blur(2px)}
+.abyss-site>main .abyss-outside a{border-bottom-color:#bbc5b040;color:#d2d7c9;text-shadow:0 1px 6px #020c13}
+.abyss-site>main .abyss-outside small{color:#c0c9bd}
+.abyss-site .abyss-footer{width:min(100%,1122px);margin:auto;background:#060f17;border-top:0}
+@media(max-width:700px){
+ .abyss-site>main{background-size:auto 100%;background-position:58% top}
+ .abyss-site>main .abyss-section{padding:50px 7% 65px}
+ .abyss-site>main .abyss-heading h2{font-size:31px}
+ .abyss-site>main .abyss-zone{font-size:8px;gap:8px;flex-wrap:wrap}
+ .abyss-site>main .abyss-works{grid-template-columns:1fr;max-width:450px;margin:auto;gap:24px;padding:0 6px}
+ .abyss-site>main .abyss-work{min-height:225px;padding:30px 34px;gap:14px}
+ .abyss-site>main .abyss-work:nth-child(n){transform:rotate(-2deg);min-height:225px;width:94%;margin:0}
+ .abyss-site>main .abyss-work:nth-child(2n){transform:rotate(2deg);width:90%;margin-left:auto}
+ .abyss-site>main .abyss-work:nth-child(n):hover,.abyss-site>main .abyss-work:nth-child(n):focus-visible{transform:rotate(0)}
+ .abyss-site>main .abyss-notes-grid{grid-template-columns:1fr;gap:28px}
+ .abyss-site>main .abyss-profile{padding:40px 32px;max-width:100%}
+ .abyss-site>main .abyss-profile p{font-size:13px}
+ .abyss-site>main .abyss-profile .abyss-label-line{color:#bac7bd}.abyss-site>main .abyss-profile dt{color:#becac0}.abyss-site>main .abyss-profile dl{border-color:#bbc7bc44}.abyss-site>main .abyss-profile dd{font-size:12px}
+ .abyss-site>main .abyss-fragments{transform:rotate(3deg);max-width:85%;margin-left:auto;padding:45px 30px}
+ .abyss-site>main .abyss-outside{padding:0 10px;backdrop-filter:none}
+ .abyss-site>main .abyss-outside a{grid-template-columns:1fr auto}
+ .abyss-site>main .abyss-outside small{grid-column:1;grid-row:2}
+}
+@media(prefers-reduced-motion:reduce){.abyss-site>main .abyss-work{transition:none}}
+
+/* Descent dims scenery while the paper and navigation stay readable. */
+.abyss-site>main:before{background:linear-gradient(180deg,#06121a22 0%,#04101855 32%,#030c14b3 68%,#02060bf7 100%)}
+.abyss-site>main:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:#02070e;opacity:calc(var(--ab-descent,0)*.22)}
+.abyss-site .abyss-footer{position:relative;isolation:isolate;overflow:hidden;min-height:420px;padding:310px 9% 60px;background:#02060b;align-items:flex-end}
+.abyss-footer>.abyss-signature,.abyss-footer>a{position:relative;z-index:2;text-shadow:0 2px 8px #000}
+.abyss-deep-creature{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 2.5s ease}
+.abyss-deep-creature[data-awake="true"]{opacity:.8}
+.abyss-deep-arm{position:absolute;bottom:-18px;width:54%;height:420px;background-image:url('/reiko-assets/abyss/deep-arms-v1.webp');background-size:200% 100%;background-repeat:no-repeat;transform-origin:50% 100%;will-change:transform;animation:abyss-deep-sway-left 19s ease-in-out infinite;animation-play-state:paused;mask-image:linear-gradient(#000 80%,transparent);-webkit-mask-image:linear-gradient(#000 80%,transparent)}
+.abyss-deep-arm-left{left:-3%;background-position:left center}
+.abyss-deep-arm-right{right:-3%;background-position:right center;animation-name:abyss-deep-sway-right;animation-duration:25s;animation-delay:-8s}
+.abyss-deep-creature[data-awake="true"] .abyss-deep-arm{animation-play-state:running}
+@keyframes abyss-deep-sway-left{0%,100%{transform:translate3d(0,8px,0) rotate(-2deg)}50%{transform:translate3d(12px,-8px,0) rotate(2deg)}}
+@keyframes abyss-deep-sway-right{0%,100%{transform:translate3d(0,-4px,0) rotate(2deg)}50%{transform:translate3d(-10px,10px,0) rotate(-2deg)}}
+@media(max-width:700px){.abyss-site .abyss-footer{min-height:340px;padding:235px 9% 55px;gap:22px}.abyss-deep-arm{height:310px;width:70%}.abyss-deep-arm-left{left:-18%}.abyss-deep-arm-right{right:-18%}.abyss-footer .abyss-signature{max-width:85%}}
+@media(prefers-reduced-motion:reduce){.abyss-deep-arm{animation:none;will-change:auto}.abyss-deep-creature{transition:none}}

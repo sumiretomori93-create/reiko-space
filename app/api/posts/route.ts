@@ -1,4 +1,4 @@
-import { desc } from "drizzle-orm";
+import { desc, isNull } from "drizzle-orm";
 import { getDb } from "../../../db";
 import { posts } from "../../../db/schema";
 import { owner, readJson, limitRequest, requestError } from "../../server-security";
@@ -18,6 +18,7 @@ export async function GET(request: Request) {
     const rows = await getDb()
       .select()
       .from(posts)
+      .where(isNull(posts.deletedAt))
       .orderBy(desc(posts.createdAt), desc(posts.id))
       .limit(100);
     return Response.json({ posts: rows }, { headers: { "Cache-Control": "no-store" } });

@@ -6,6 +6,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 export const posts = sqliteTable("posts", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   content: text("content").notNull(),
+  deletedAt: text("deleted_at"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 

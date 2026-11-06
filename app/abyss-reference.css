@@ -1,0 +1,60 @@
+@font-face{font-family:AbyssReference;src:url('/fonts/CormorantGaramond-Italic.ttf') format('truetype');font-weight:300 700;font-style:italic;font-display:swap}
+.abyss-front{position:relative;width:min(100%,1122px);aspect-ratio:1122/1402;margin-inline:auto;container-type:inline-size;isolation:isolate}
+.abyss-front .abyss-scene{inset:0;height:100%;z-index:-2;background:url('/reiko-assets/abyss/reference-plate.webp') center/100% 100% no-repeat}
+.abyss-front:after{content:"";position:absolute;inset:auto 0 0;height:5%;background:linear-gradient(transparent,#091219);pointer-events:none}
+.abyss-front .abyss-hero{position:absolute;inset:0 0 auto;height:60%;min-height:0;max-height:none;padding:0;background:none;overflow:visible}
+.abyss-front .abyss-canvas{opacity:.12;mask-image:linear-gradient(90deg,transparent,#000);-webkit-mask-image:linear-gradient(90deg,transparent,#000)}
+.abyss-front .abyss-nav{position:absolute;top:1%;left:6.5%;right:4.8%;height:4%;padding:0;margin:0;border:0;gap:2cqw;flex-wrap:nowrap;align-items:center}
+.abyss-front .abyss-nav:after{display:none}
+.abyss-front .abyss-brand{font:italic 300 3cqw/1 AbyssReference,Georgia,serif;letter-spacing:.01em;color:#d9d6cb}
+.abyss-front .abyss-brand span{display:none}
+.abyss-front .abyss-nav-links{margin-left:auto;gap:3cqw;width:auto;order:initial;justify-content:normal}
+.abyss-front .abyss-nav-links a{font-size:1.55cqw;letter-spacing:.15em;padding:0;color:#c5c8be;white-space:nowrap}
+.abyss-front .abyss-world{position:absolute;right:0;top:170%;margin:0;opacity:.7}
+.abyss-front .abyss-world select{font-size:.8cqw;letter-spacing:.02em;padding:3px 0;max-width:9cqw;border-bottom:0;background:#0d1d2855}
+.abyss-front .abyss-hero-copy{position:absolute;left:17.2%;top:32.8%;padding:0;max-width:none;width:55%;gap:1cqw;filter:none}
+.abyss-front .abyss-title-ornament,.abyss-front .abyss-eyebrow{display:none}
+.abyss-front .abyss-hero-copy h1{gap:1.35cqw;margin:0}
+.abyss-front .abyss-hero-copy h1>span:first-child{font:italic 300 13.3cqw/.9 AbyssReference,Georgia,serif;letter-spacing:-.045em;color:#d9d5c8;text-shadow:0 2px 18px #0d1b2144}
+.abyss-front .abyss-title-zh{font-size:2.1cqw;line-height:1.6;letter-spacing:.38em;color:#c9cabe;font-weight:400}
+.abyss-front .abyss-lede{font: .86cqw/1.7 Georgia,serif;letter-spacing:.24em;margin:0;color:#c3c5b9}
+.abyss-front .abyss-dive{margin-top:2.9cqw;font-size:1.4cqw;line-height:1.5;min-width:0;width:7.7cqw;letter-spacing:.2em;border:0;padding:0;color:#d2d0c3;justify-content:space-between}
+.abyss-front .abyss-dive span{font-size:1.3cqw;transform:rotate(-90deg)}
+.abyss-front .abyss-depth-rail{right:2.75%;top:18.9%;bottom:38.1%;background:none;width:1px}
+.abyss-front .abyss-depth-rail:before,.abyss-front .abyss-depth-rail:after,.abyss-front .abyss-depth-rail span:after{display:none}
+.abyss-front .abyss-depth-rail span{font:italic 1.05cqw Georgia,serif;margin-right:1cqw;color:#c1c6bc}
+.abyss-front .abyss-z1{position:absolute;top:54.6%;left:0;width:100%;height:45.4%;max-width:none;margin:0;padding:0;scroll-margin-top:0}
+.abyss-front .abyss-heading{position:absolute;left:5.1%;top:0;gap:0;margin:0;padding:0}
+.abyss-front .abyss-heading .abyss-zone,.abyss-front .abyss-heading-sub{display:none}
+.abyss-front .abyss-heading h2{font-size:3.5cqw;line-height:1.4;letter-spacing:.2em;padding:0;color:#d4d1c1}
+.abyss-front .abyss-heading h2:after{display:none}
+.abyss-front .abyss-heading h2>span{font:1.75cqw/1.4 Georgia,serif;letter-spacing:.2em;margin-left:.7cqw}
+.abyss-front .abyss-specimens{position:absolute;inset:0;display:block;margin:0;padding:0;gap:0}
+.abyss-front .abyss-specimen{position:absolute;left:5.5%;top:14.2%;width:39%;height:47%;padding:5.2cqw 5.8cqw 3cqw;aspect-ratio:auto;min-height:0;max-width:none;margin:0;transform:none;filter:none;display:flex;flex-direction:column;gap:1.65cqw;isolation:auto;background:none;border:0;color:#d6d8d5;text-align:left;box-shadow:none;transition:background .25s;clip-path:polygon(0 0,100% 4%,94% 88%,0 100%)}
+.abyss-front .abyss-specimen:before{display:none}
+.abyss-front .abyss-specimen:nth-child(3n+2){left:32%;top:36%;width:43%;height:47%;padding:6cqw 6cqw 3cqw;transform:rotate(-6deg);z-index:2;color:#343b3a;clip-path:polygon(0 8%,95% 0,100% 93%,2% 100%)}
+.abyss-front .abyss-specimen:nth-child(3n){left:65%;top:51%;width:32%;height:35%;padding:5cqw 3.8cqw 2cqw;transform:rotate(-6deg);color:#d0d0cd;clip-path:polygon(0 0,100% 0,96% 97%,0 100%)}
+.abyss-front .abyss-specimen time{font:italic 300 1.9cqw/1.3 AbyssReference,Georgia,serif;color:inherit;border-top:0;border-bottom:1px solid #d0d3ce55;margin:0;padding:0 0 .6cqw;letter-spacing:.08em;flex-shrink:0}
+.abyss-front .abyss-specimen:nth-child(3n+2) time{border-color:#46514a55}
+.abyss-front .abyss-specimen-text{font-size:1.75cqw;line-height:1.8;color:inherit;flex:0 1 auto;max-height:5.4em;-webkit-line-clamp:3;font-weight:400}
+.abyss-front .abyss-specimen-no{margin-top:auto;font: .7cqw/1.2 Georgia,serif;letter-spacing:.1em;opacity:0;transition:opacity .2s}
+.abyss-front .abyss-specimen:nth-child(3n) time{font-size:1.4cqw}
+.abyss-front .abyss-specimen:nth-child(3n) .abyss-specimen-text{font-size:1.35cqw;-webkit-line-clamp:2}
+.abyss-front .abyss-specimen:hover{background:#e4e7de08;transform:none;z-index:3}
+.abyss-front .abyss-specimen:nth-child(3n+2):hover,.abyss-front .abyss-specimen:nth-child(3n):hover{transform:rotate(-6deg)}
+.abyss-front .abyss-specimen:hover .abyss-specimen-no,.abyss-front .abyss-specimen:focus-visible .abyss-specimen-no{opacity:.8}
+.abyss-front .abyss-specimen:focus-visible{outline:2px solid #e3dfc7;outline-offset:-8px}
+.abyss-front .abyss-actions{position:absolute;bottom:.8%;left:5.8%;right:5%;margin:0;gap:2cqw;z-index:3}
+.abyss-front .abyss-actions .abyss-text-button{font:1cqw/1.7 Georgia,'Noto Serif SC',serif;color:#d4d5cc;border-color:#c0c5bd66;letter-spacing:.06em}
+.abyss-front .abyss-message{position:absolute;bottom:0;left:6%;font-size:11px}
+.abyss-site>main{position:relative;z-index:1;background:linear-gradient(#091219,#050a10)}
+@media(max-width:600px){.abyss-front{width:100%;min-height:0;aspect-ratio:1122/1402}.abyss-front .abyss-nav{left:6.5%;right:5%;gap:2cqw}.abyss-front .abyss-brand{font-size:4.3cqw}.abyss-front .abyss-nav-links{gap:2.5cqw}.abyss-front .abyss-nav-links a{font-size:2.5cqw;letter-spacing:.1em}.abyss-front .abyss-world{top:190%}.abyss-front .abyss-world select{font-size:2cqw;max-width:17cqw}.abyss-front .abyss-hero-copy{top:32%;left:17%;width:65%}.abyss-front .abyss-hero-copy h1>span:first-child{font-size:14.5cqw}.abyss-front .abyss-title-zh{font-size:2.8cqw;letter-spacing:.23em}.abyss-front .abyss-lede{font-size:1.6cqw;letter-spacing:.08em}.abyss-front .abyss-dive{font-size:2.5cqw;width:13cqw;margin-top:2cqw}.abyss-front .abyss-depth-rail span{font-size:1.8cqw}.abyss-front .abyss-heading h2{font-size:4.8cqw}.abyss-front .abyss-heading h2>span{font-size:2.3cqw}.abyss-front .abyss-specimen{padding:4.9cqw 5cqw 2cqw;gap:1cqw}.abyss-front .abyss-specimen time{font-size:2.7cqw}.abyss-front .abyss-specimen-text{font-size:2.9cqw;line-height:1.6;-webkit-line-clamp:2;max-height:3.2em}.abyss-front .abyss-specimen:nth-child(3n+2){padding:5cqw 5cqw 2cqw}.abyss-front .abyss-specimen:nth-child(3n){padding:4cqw 3cqw 1cqw}.abyss-front .abyss-specimen:nth-child(3n) time{font-size:2.3cqw}.abyss-front .abyss-specimen:nth-child(3n) .abyss-specimen-text{font-size:2.6cqw}.abyss-front .abyss-actions{bottom:-1%;gap:4cqw}.abyss-front .abyss-actions .abyss-text-button{font-size:2.5cqw}.abyss-gauge{opacity:.7;font-size:8px;padding:5px 9px}.abyss-gauge-depth{font-size:15px}}
+@media(min-width:601px){.abyss-front .abyss-hero-copy h1>span:first-child{font-size:14.2cqw;transform:scaleX(1.15);transform-origin:left center}.abyss-front .abyss-hero-copy{top:32.6%}}
+@media(min-width:601px){.abyss-front .abyss-specimen:nth-child(3n+2){padding-left:9cqw}}
+.abyss-front .abyss-title-zh{display:flex;justify-content:space-between;width:27cqw;letter-spacing:0}.abyss-front .abyss-title-zh>span{font:inherit;color:inherit;letter-spacing:0}
+@media(min-width:601px){.abyss-front .abyss-dive{margin-top:1.4cqw}}
+@media(max-width:600px){.abyss-front .abyss-title-zh{width:34cqw}}
+
+/* Preserve the reference headline as artwork, including its fine strokes. */
+.abyss-front .abyss-hero-copy h1>.abyss-title-word:first-child{display:block;width:30cqw;height:11cqw;margin-left:-3cqw;font-size:0;line-height:0;letter-spacing:0;transform:none;text-shadow:none}
+.abyss-title-word img{display:block;width:100%;height:100%;max-width:none;object-fit:fill}

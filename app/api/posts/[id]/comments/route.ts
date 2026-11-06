@@ -1,4 +1,4 @@
-import { and, asc, eq, gt } from "drizzle-orm";
+import { and, asc, eq, gt, isNull } from "drizzle-orm";
 import { getDb } from "../../../../../db";
 import { postComments, posts } from "../../../../../db/schema";
 import { owner, readJson, limitRequest, requestError } from "../../../../server-security";
@@ -23,7 +23,7 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
 
   try {
     await limitRequest(_request, "comments-read", 120);
-    const [post] = await getDb().select({ id: posts.id }).from(posts).where(eq(posts.id, id)).limit(1);
+    const [post] = await getDb().select({ id: posts.id }).from(posts).where(and(eq(posts.id, id), isNull(posts.deletedAt))).limit(1);
     if (!post) return Response.json({ error: "这条动态不存在。" }, { status: 404 });
     const cursor = new URL(_request.url).searchParams.get("after");
     const after = cursor ? Number(cursor) : 0;
@@ -46,7 +46,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     const content = typeof payload.content === "string" ? payload.content.trim() : "";
     if (!content) return Response.json({ error: "先写点批注。" }, { status: 400 });
     if (content.length > MAX_COMMENT_LENGTH) return Response.json({ error: `批注最多 ${MAX_COMMENT_LENGTH} 字。` }, { status: 400 });
-    const [post] = await getDb().select({ id: posts.id }).from(posts).where(and(eq(posts.id, id))).limit(1);
+    const [post] = await getDb().select({ id: posts.id }).from(posts).where(and(eq(posts.id, id), isNull(posts.deletedAt))).limit(1);
     if (!post) return Response.json({ error: "这条动态不存在。" }, { status: 404 });
     const [comment] = await getDb().insert(postComments).values({ postId: id, content }).returning();
     return Response.json({ comment }, { status: 201 });

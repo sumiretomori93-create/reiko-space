@@ -13,8 +13,8 @@ type Props = {
   publish: (event: FormEvent) => void; message: string;
 };
 const worlds: { value: Theme; label: string }[] = [
-  { value: "room", label: "I · ROOM" }, { value: "garden", label: "II · GARDEN" },
-  { value: "white-archive", label: "III · WHITE ARCHIVE" }, { value: "oumagatoki", label: "IV · 宵伽" },
+  { value: "room", label: "I · ROOM" },
+  { value: "white-archive", label: "III · WHITE ARCHIVE" }, { value: "oumagatoki", label: "IV · 宵伽" }, {value:"abyss",label:"V · 深海"},
 ];
 function PaperDialog({ title, close, children, className = "" }: { title: string; close: () => void; children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDialogElement>(null);

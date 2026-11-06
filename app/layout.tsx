@@ -1,15 +1,16 @@
 import DuskTransition from "./dusk-transition";
 import type { Metadata } from "next";
 import "./globals.css";
+import "./abyss.css";
+import "./abyss-reference.css";
+import "./abyss-depths.css";
+import "./abyss-jelly-click.css";
 import "./white-archive.css";
 import "./oumagatoki.css";
 
 export const metadata: Metadata = {
   title: "REIKO / personal internet room",
   description: "Reiko 的个人网络空间：她做的东西、反复回到的意象，以及散落的句子。",
-  other: {
-    "codex-preview": "development",
-  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
