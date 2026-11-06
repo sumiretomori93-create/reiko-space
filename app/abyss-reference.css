@@ -1,5 +1,5 @@
 @font-face{font-family:AbyssReference;src:url('/fonts/CormorantGaramond-Italic.ttf') format('truetype');font-weight:300 700;font-style:italic;font-display:swap}
-.abyss-front{position:relative;width:min(100%,1122px);aspect-ratio:1122/1402;margin-inline:auto;container-type:inline-size;isolation:isolate}
+.abyss-front{position:relative;width:100%;aspect-ratio:1122/1402;margin-inline:auto;container-type:inline-size;isolation:isolate}
 .abyss-front .abyss-scene{inset:0;height:100%;z-index:-2;background:url('/reiko-assets/abyss/reference-plate.webp') center/100% 100% no-repeat}
 .abyss-front:after{content:"";position:absolute;inset:auto 0 0;height:5%;background:linear-gradient(transparent,#091219);pointer-events:none}
 .abyss-front .abyss-hero{position:absolute;inset:0 0 auto;height:60%;min-height:0;max-height:none;padding:0;background:none;overflow:visible}
@@ -58,3 +58,22 @@
 /* Preserve the reference headline as artwork, including its fine strokes. */
 .abyss-front .abyss-hero-copy h1>.abyss-title-word:first-child{display:block;width:30cqw;height:11cqw;margin-left:-3cqw;font-size:0;line-height:0;letter-spacing:0;transform:none;text-shadow:none}
 .abyss-title-word img{display:block;width:100%;height:100%;max-width:none;object-fit:fill}
+
+/* Full-bleed artwork keeps its original proportions; type stops growing on wide screens. */
+@media(min-width:601px){
+.abyss-front .abyss-brand{font-size:min(3cqw,42px)}
+.abyss-front .abyss-nav-links a{font-size:min(1.55cqw,20px)}
+.abyss-front .abyss-world select{font-size:min(.8cqw,12px)}
+.abyss-front .abyss-hero-copy h1>.abyss-title-word:first-child{width:min(30cqw,520px);height:min(11cqw,191px);margin-left:max(-3cqw,-52px)}
+.abyss-front .abyss-title-zh{width:min(27cqw,468px);font-size:min(2.1cqw,28px)}
+.abyss-front .abyss-lede{font-size:min(.86cqw,13px)}
+.abyss-front .abyss-dive{font-size:min(1.4cqw,19px);width:min(7.7cqw,112px)}
+.abyss-front .abyss-depth-rail span{font-size:min(1.05cqw,15px)}
+.abyss-front .abyss-heading h2{font-size:min(3.5cqw,48px)}
+.abyss-front .abyss-heading h2>span{font-size:min(1.75cqw,23px)}
+.abyss-front .abyss-specimen time{font-size:min(1.9cqw,25px)}
+.abyss-front .abyss-specimen-text{font-size:min(1.75cqw,22px)}
+.abyss-front .abyss-specimen:nth-child(3n) time{font-size:min(1.4cqw,20px)}
+.abyss-front .abyss-specimen:nth-child(3n) .abyss-specimen-text{font-size:min(1.35cqw,19px)}
+.abyss-front .abyss-actions .abyss-text-button{font-size:min(1cqw,15px)}
+}

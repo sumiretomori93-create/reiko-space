@@ -1,8 +1,8 @@
 /* The submerged archive continues the chapel, rather than starting a new page. */
-.abyss-site>main{width:min(100%,1122px);margin:0 auto;isolation:isolate;background:#10212b url('/reiko-assets/abyss/depths-v2.webp') center top/100% 100% no-repeat}
+.abyss-site>main{width:100%;margin:0 auto;isolation:isolate;background:#10212b url('/reiko-assets/abyss/depths-v2.webp') center top/cover no-repeat}
 .abyss-site>main:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#09121966,transparent 15%,#06101722 75%,#060f17d9)}
 .abyss-site>main>.abyss-lace{display:none}
-.abyss-site>main .abyss-section{position:relative;width:100%;padding:80px 7% 90px;background:none;scroll-margin-top:30px}
+.abyss-site>main .abyss-section{position:relative;width:min(100%,1122px);margin-inline:auto;padding:80px clamp(24px,7vw,78px) 90px;background:none;scroll-margin-top:30px}
 .abyss-site>main .abyss-heading{margin-bottom:42px;padding-left:10px;text-shadow:0 2px 12px #041016}
 .abyss-site>main .abyss-heading h2{font-size:38px;letter-spacing:.18em}
 .abyss-site>main .abyss-heading h2:after{height:10px;bottom:-4px;right:-60px;border-bottom:1px solid #bfc5b65c;background:linear-gradient(90deg,transparent,#c9cbb68c 45%,transparent 47%,transparent 53%,#c9cbb68c 55%,transparent) center/100% 1px no-repeat}
@@ -42,7 +42,7 @@
 .abyss-site>main .abyss-outside{padding:5px 28px 10px;border-top:0;background:#091b2344;box-shadow:0 0 45px #04101844;backdrop-filter:blur(2px)}
 .abyss-site>main .abyss-outside a{border-bottom-color:#bbc5b040;color:#d2d7c9;text-shadow:0 1px 6px #020c13}
 .abyss-site>main .abyss-outside small{color:#c0c9bd}
-.abyss-site .abyss-footer{width:min(100%,1122px);margin:auto;background:#060f17;border-top:0}
+.abyss-site .abyss-footer{width:100%;margin:auto;background:#060f17;border-top:0}
 @media(max-width:700px){
  .abyss-site>main{background-size:auto 100%;background-position:58% top}
  .abyss-site>main .abyss-section{padding:50px 7% 65px}
@@ -67,7 +67,7 @@
 /* Descent dims scenery while the paper and navigation stay readable. */
 .abyss-site>main:before{background:linear-gradient(180deg,#06121a22 0%,#04101855 32%,#030c14b3 68%,#02060bf7 100%)}
 .abyss-site>main:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:#02070e;opacity:calc(var(--ab-descent,0)*.22)}
-.abyss-site .abyss-footer{position:relative;isolation:isolate;overflow:hidden;min-height:420px;padding:310px 9% 60px;background:#02060b;align-items:flex-end}
+.abyss-site .abyss-footer{position:relative;isolation:isolate;overflow:hidden;min-height:420px;padding:310px max(9%,calc((100% - 922px)/2)) 60px;background:#02060b;align-items:flex-end}
 .abyss-footer>.abyss-signature,.abyss-footer>a{position:relative;z-index:2;text-shadow:0 2px 8px #000}
 .abyss-deep-creature{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 2.5s ease}
 .abyss-deep-creature[data-awake="true"]{opacity:.8}
