@@ -1,6 +1,7 @@
 "use client";
 
 import { type FormEvent, useEffect, useRef, useState } from "react";
+import { runAbyssTransition } from "./abyss-transition";
 import { runDuskTransition } from "./dusk-transition";
 import Abyss from "./abyss";
 import Oumagatoki from "./oumagatoki";
@@ -301,7 +302,11 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
       url.hash = "";
       window.history.replaceState(null, "", url);
     }
-    if (saved === "room" || saved === "white-archive" || saved === "oumagatoki" || saved === "abyss") setTheme(saved);
+    if (saved === "abyss") {
+      // 直接打开深海：每次打开浏览器只潜一回
+      let first = true; try { first = !sessionStorage.getItem("reiko-abyss-dived"); sessionStorage.setItem("reiko-abyss-dived", "1"); } catch {}
+      if (first) runAbyssTransition(() => setTheme("abyss")); else setTheme("abyss");
+    } else if (saved === "room" || saved === "white-archive" || saved === "oumagatoki") setTheme(saved);
   }, []);
 
   useEffect(() => {
@@ -310,7 +315,8 @@ export default function ReikoSpace({ canEdit, signInPath }: { canEdit: boolean; 
       if (nextTheme === theme) return;
       if (nextTheme === "room" || nextTheme === "white-archive" || nextTheme === "oumagatoki" || nextTheme === "abyss") {
         const change = () => { setTheme(nextTheme); window.localStorage.setItem("reiko-theme", nextTheme); const url = new URL(window.location.href); url.searchParams.set("theme", nextTheme); url.hash = ""; window.history.replaceState(null, "", url); window.scrollTo(0, 0); };
-        if (theme === "oumagatoki" || nextTheme === "oumagatoki") runDuskTransition(change);
+        if (nextTheme === "abyss") runAbyssTransition(change);
+        else if (theme === "oumagatoki" || nextTheme === "oumagatoki") runDuskTransition(change);
         else change();
       }
     }
