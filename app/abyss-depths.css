@@ -1,5 +1,5 @@
 /* The submerged archive continues the chapel, rather than starting a new page. */
-.abyss-site>main{width:min(100%,1122px);margin:0 auto;isolation:isolate;background:#10212b url('/reiko-assets/abyss/depths-v1.webp') center top/100% 100% no-repeat}
+.abyss-site>main{width:min(100%,1122px);margin:0 auto;isolation:isolate;background:#10212b url('/reiko-assets/abyss/depths-v2.webp') center top/100% 100% no-repeat}
 .abyss-site>main:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(#09121966,transparent 15%,#06101722 75%,#060f17d9)}
 .abyss-site>main>.abyss-lace{display:none}
 .abyss-site>main .abyss-section{position:relative;width:100%;padding:80px 7% 90px;background:none;scroll-margin-top:30px}
