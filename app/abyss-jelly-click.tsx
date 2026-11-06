@@ -4,7 +4,7 @@ import { MouseEvent as ReactMouseEvent, useCallback, useEffect, useRef, useState
 
 type Visit = { id:number; x:number; y:number; fromX:number; fromY:number; bendX:number; bendY:number; duration:number; angle:number };
 
-export function useJellyClick() {
+export function useJellyClick(suppressClick?:()=>boolean) {
   const [visit,setVisit] = useState<Visit|null>(null);
   const [arrived,setArrived] = useState(false);
   const pending = useRef<ReturnType<typeof setTimeout>|null>(null);
@@ -23,10 +23,12 @@ export function useJellyClick() {
     window.addEventListener("resize",cancel);
     window.addEventListener("keydown",escape);
     document.addEventListener("visibilitychange",hide);
-    return ()=>{if(pending.current)clearTimeout(pending.current);if(fading.current)clearTimeout(fading.current);window.removeEventListener("scroll",cancel);window.removeEventListener("resize",cancel);window.removeEventListener("keydown",escape);document.removeEventListener("visibilitychange",hide);};
+    window.addEventListener("abyss-contact-start",cancel);
+    return ()=>{if(pending.current)clearTimeout(pending.current);if(fading.current)clearTimeout(fading.current);window.removeEventListener("scroll",cancel);window.removeEventListener("resize",cancel);window.removeEventListener("keydown",escape);document.removeEventListener("visibilitychange",hide);window.removeEventListener("abyss-contact-start",cancel);};
   },[cancel]);
   const capture = useCallback((event:ReactMouseEvent<HTMLDivElement>)=>{
     if(event.defaultPrevented||event.button!==0||event.detail===0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
+    if(suppressClick?.()){event.preventDefault();event.stopPropagation();cancel();return;}
     const origin=event.target instanceof Element?event.target:null;
     if(!origin||origin.closest("dialog,form,input,textarea,select,[contenteditable=true]"))return;
     const control=origin.closest<HTMLElement>("a,button,[role=button]");
@@ -47,7 +49,7 @@ export function useJellyClick() {
       if(control?.isConnected){control.focus({preventScroll:true});control.click();}
       fading.current=setTimeout(()=>{setVisit(null);setArrived(false);fading.current=null;},550);
     },duration);
-  },[cancel]);
+  },[cancel,suppressClick]);
   return {capture,overlay:visit?<JellyVisit key={visit.id} visit={visit} arrived={arrived}/>:null};
 }
 

@@ -1,0 +1,5 @@
+.abyss-shadow-hand{position:fixed;inset:0;width:100%;height:100%;z-index:80;opacity:0;pointer-events:none;overflow:hidden;contain:strict}
+.abyss-shadow-hand-soft{fill:#01060d;opacity:.24;filter:blur(8px)}
+.abyss-shadow-hand-body{fill:#010911;opacity:.74;filter:blur(2.8px)}
+.abyss-site[data-hand-held=true]{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+@media(prefers-reduced-motion:reduce){.abyss-shadow-hand{display:none}}

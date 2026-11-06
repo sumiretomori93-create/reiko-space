@@ -2,6 +2,7 @@
 
 import BackupButton from "./backup-button";
 import { useJellyClick } from "./abyss-jelly-click";
+import { useShadowHand } from "./abyss-shadow-hand";
 import { FormEvent, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatDate, formatShortDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
 
@@ -215,13 +216,15 @@ export default function Abyss(props: Props) {
   const [composing, setComposing] = useState(false);
   const [secret, setSecret] = useState(false);
   const [query, setQuery] = useState("");
-  const jelly = useJellyClick();
+  const hand = useShadowHand();
+  const jelly = useJellyClick(hand.suppressClick);
   const hero = useRef<HTMLElement>(null); const canvas = useRef<HTMLCanvasElement>(null);
   useSeaCanvas(hero, canvas);
   const numberOf = (post: Post) => orderedPosts.length - orderedPosts.indexOf(post);
   const filtered = orderedPosts.filter(post => !query.trim() || post.content.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()) || formatShortDate(post.createdAt).includes(query.trim()));
 
   return <div className="abyss-site" id="abyss-top" onClickCapture={jelly.capture}>
+    {hand.overlay}
     {jelly.overlay}
     <div className="abyss-front">
     <div className="abyss-scene" aria-hidden="true" />
