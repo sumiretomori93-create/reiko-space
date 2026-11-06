@@ -1,0 +1,122 @@
+/* 深海 · 测深绳版：只留开头一张画，往下是越来越黑的水和一根绳 */
+.abyss-site{--dive-rope:rgba(214,206,190,.42);--dive-paper:#c9c4b4;--dive-ink:#d9d6cb;--dive-dim:#8e97a3;--dive-glow:#cfc6e6;--dive-coral:#d96a5a;background:#020408}
+
+/* 开头：干净的教堂，两边用同一张图糊开，不留黑边 */
+.dive-bleed{position:absolute;inset:0 0 auto;height:calc(min(100vw,1122px) * 1.25);z-index:0;background:url('/reiko-assets/abyss/chapel.webp') center top/cover no-repeat;filter:blur(38px) brightness(.45) saturate(.8);transform:scale(1.08);pointer-events:none;mask-image:linear-gradient(#000 70%,transparent);-webkit-mask-image:linear-gradient(#000 70%,transparent)}
+.abyss-site>.abyss-front.is-dive{position:relative;z-index:1;aspect-ratio:1122/1402}
+.abyss-front.is-dive .abyss-scene{background:linear-gradient(180deg,transparent 62%,#06101a 92%,#050b13 100%),url('/reiko-assets/abyss/chapel.webp') center top/100% auto no-repeat}
+.abyss-front.is-dive .abyss-hero{height:72%}
+.abyss-front.is-dive:after{height:10%;background:linear-gradient(transparent,#050b13)}
+
+/* 往下：没有背景画，只有越来越深的水 */
+.abyss-site>main.dive{position:relative;z-index:1;width:100%;max-width:none;margin:0;padding:40px 0 0;background:linear-gradient(180deg,#050b13 0%,#04080f 35%,#020509 70%,#010204 100%);overflow:hidden}
+.dive-rope{position:absolute;top:0;bottom:240px;left:50%;width:1px;background:linear-gradient(180deg,var(--dive-rope),rgba(214,206,190,.2) 70%,rgba(214,206,190,.08));pointer-events:none}
+.dive-rope:before{content:"";position:absolute;inset:0 -3px;background:repeating-linear-gradient(180deg,transparent 0 139px,rgba(214,206,190,.35) 139px 142px,transparent 142px 140px);opacity:.6}
+
+.dive-line{position:relative;max-width:1080px;margin:0 auto;padding:30px max(16px,4vw) 60px}
+.dive-rule{margin:0 auto 10px;width:fit-content;padding:6px 14px;background:#050b13;font:italic 15px/1.6 Georgia,serif;letter-spacing:.12em;color:var(--dive-dim);text-align:center}
+.dive-tools{display:flex;justify-content:center;gap:24px;margin-bottom:10px;background:transparent}
+.dive-tools>*{background:#050b13!important;padding-inline:8px!important}
+.dive-empty{text-align:center;padding:60px 0}
+.dive-entries{list-style:none;margin:0;padding:0}
+
+.dive-zone{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:4px 16px;width:fit-content;max-width:100%;margin-inline:auto;padding:8px 18px;background:#04080f;border:1px solid rgba(214,206,190,.18);font:12px/1.7 Georgia,serif;letter-spacing:.16em;color:#c8ccd2;position:relative;z-index:1}
+.dive-zone span:first-child{font-size:15px;letter-spacing:.08em;color:#ece2e6}
+.dive-zone span:nth-child(2){color:#ece2e6}
+.dive-zone-center{margin-bottom:28px}
+
+.dive-entry{position:relative;display:flex;width:50%}
+.dive-entry.left{justify-content:flex-end;padding-right:44px}
+.dive-entry.right{margin-left:50%;padding-left:44px}
+.dive-entry:before{content:"";position:absolute;top:30px;width:44px;height:1px;background:var(--dive-rope)}
+.dive-entry.left:before{right:0}
+.dive-entry.right:before{left:0}
+.dive-entry:after{content:"";position:absolute;top:27px;width:7px;height:7px;border-radius:50%;background:#d9d6cb;box-shadow:0 0 8px rgba(217,214,203,.5)}
+.dive-entry.left:after{right:-3px}
+.dive-entry.right:after{left:-4px}
+
+.dive-tag{position:relative;display:flex;flex-direction:column;gap:10px;width:min(100%,380px);min-width:0;padding:18px 22px 16px;border:0;border-radius:1px;background:linear-gradient(170deg,#d7d1c1,#bdb7a6);color:#2b2a27;text-align:left;cursor:pointer;box-shadow:0 14px 34px rgba(0,0,0,.55);transition:transform .5s ease,box-shadow .5s ease}
+.dive-entry.left .dive-tag{transform:rotate(-1.4deg)}
+.dive-entry.right .dive-tag{transform:rotate(1.2deg)}
+.dive-tag:hover{transform:rotate(0) translateY(-3px)!important;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+.dive-tag:before{content:"";position:absolute;inset:0;background:url('/reiko-assets/abyss/paper.webp') center/cover;opacity:.35;mix-blend-mode:multiply;pointer-events:none}
+.dive-tag:after{content:"";position:absolute;top:24px;width:9px;height:9px;border-radius:50%;background:#2b2a27;opacity:.55}
+.dive-entry.left .dive-tag:after{right:12px}
+.dive-entry.right .dive-tag:after{left:12px}
+.dive-depth{position:relative;display:flex;align-items:baseline;gap:10px;font:15px Georgia,serif;letter-spacing:.06em;color:#6b3a33}
+.dive-depth small{font:italic 13px Georgia,serif;color:#6d6a62}
+.dive-text{position:relative;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;font-size:16px;line-height:1.85;white-space:pre-wrap;overflow-wrap:anywhere}
+.dive-tag time{position:relative;padding-top:8px;border-top:1px dashed rgba(43,42,39,.25);font:12px Georgia,serif;letter-spacing:.1em;color:#5f5c55}
+.dive-more{display:block;margin:46px auto 0;background:#04080f!important;padding-inline:10px!important}
+
+/* 漂流瓶：卡在绳子半截 */
+.dive-bottle{position:relative;max-width:640px;margin:120px auto 0;padding:0 max(16px,4vw)}
+.dive-mark{width:fit-content;margin:0 auto 18px;padding:4px 12px;background:#03070d;font:italic 14px Georgia,serif;letter-spacing:.1em;color:var(--dive-dim)}
+.dive-bottle-glass{position:relative;padding:34px clamp(22px,5vw,44px) 30px;border:1px solid rgba(207,198,230,.28);border-radius:40px 40px 10px 10px;background:linear-gradient(180deg,rgba(150,170,200,.12),rgba(30,45,70,.35));box-shadow:inset 0 0 40px rgba(207,198,230,.08),0 20px 60px rgba(0,0,0,.6);color:var(--dive-ink)}
+.dive-bottle-glass:before{content:"";position:absolute;top:-22px;left:50%;width:56px;height:24px;transform:translateX(-50%);border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#8a6a4c,#5d4532);box-shadow:0 2px 0 rgba(0,0,0,.4)}
+.dive-bottle-glass h2{margin:12px 0 16px;font:italic 40px/1 Georgia,serif;font-weight:400;color:#eee9de}
+.dive-bottle-glass p{margin:0 0 10px;font-size:16px;line-height:1.95}
+.dive-bottle-glass dl{display:flex;flex-direction:column;gap:10px;margin:22px 0 0;padding-top:16px;border-top:1px solid rgba(214,206,190,.2)}
+.dive-bottle-glass dl>div{display:flex;gap:16px}
+.dive-bottle-glass dt{min-width:64px;font:italic 15px Georgia,serif;color:var(--dive-glow)}
+.dive-bottle-glass dd{margin:0;font-size:14px;line-height:1.8}
+.dive-fragments{display:flex;flex-direction:column;gap:6px;margin-top:22px;padding-top:16px;border-top:1px dashed rgba(214,206,190,.2)}
+.dive-fragments p{margin:0;font-size:17px;color:#c9cdd6}
+
+/* 海床：作品横躺一排 */
+.dive-seabed{position:relative;margin:180px 0 0;padding:0 max(16px,4vw) 0}
+.dive-title{margin:0 auto 30px;width:fit-content;padding:0 12px;background:#02050a;font:400 clamp(24px,3.6vw,34px)/1.4 "Noto Serif SC","Songti SC",serif;letter-spacing:.22em;color:#d9d6cb;position:relative}
+.dive-relics{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;max-width:1180px;margin:0 auto;align-items:end}
+.dive-relic{display:flex;flex-direction:column;gap:10px;min-width:0;padding:22px 18px 18px;border:1px solid rgba(214,206,190,.16);background:linear-gradient(180deg,rgba(20,30,44,.9),rgba(8,13,22,.95));color:var(--dive-ink);text-align:left;cursor:pointer;transition:border-color .4s,transform .4s}
+.dive-relic:nth-child(odd){transform:rotate(-1deg) translateY(6px)}
+.dive-relic:nth-child(even){transform:rotate(.8deg)}
+.dive-relic:hover{border-color:rgba(207,198,230,.5);transform:translateY(-4px)}
+.dive-relic h3{margin:0;font-weight:400;font-size:19px;letter-spacing:.06em;color:#ece8dd}
+.dive-relic p{margin:0;font-size:14px;line-height:1.85;color:#a9b0bb}
+.dive-relic-no{margin-top:auto;padding-top:10px;font:italic 14px Georgia,serif;color:var(--dive-glow)}
+.dive-sand{height:70px;margin-top:-22px;background:radial-gradient(ellipse 60% 100% at 50% 100%,rgba(120,110,95,.22),transparent 70%)}
+
+/* 海沟：绳子到头，触手接住，三点光是出口 */
+.dive-trench{position:relative;min-height:520px;margin-top:120px;padding:0 max(16px,4vw) 60px;overflow:hidden}
+.dive-trench .abyss-deep-creature{inset:auto 0 0;height:420px}
+.dive-exits{position:relative;z-index:2;display:flex;justify-content:center;flex-wrap:wrap;gap:20px clamp(28px,8vw,90px);margin-top:70px}
+.dive-exits a{display:flex;flex-direction:column;align-items:center;gap:8px;color:#d9d6cb;text-decoration:none}
+.dive-exits i{width:12px;height:12px;border-radius:50%;background:var(--dive-glow);box-shadow:0 0 16px 4px rgba(207,198,230,.55),0 0 50px 10px rgba(207,198,230,.18);animation:dive-pulse 4s ease-in-out infinite}
+.dive-exits a:nth-child(2) i{animation-delay:-1.3s}
+.dive-exits a:nth-child(3) i{animation-delay:-2.6s}
+.dive-exits span{font:14px Georgia,serif;letter-spacing:.2em}
+.dive-exits small{font:italic 13px Georgia,serif;color:var(--dive-dim)}
+.dive-exits a:hover i{background:var(--dive-coral);box-shadow:0 0 18px 5px rgba(217,106,90,.55)}
+.dive-end{position:relative;z-index:2;margin:110px auto 0;width:fit-content;font-size:15px;letter-spacing:.14em;color:#c9cdd6}
+.dive-end span{margin-left:10px;font:italic 15px Georgia,serif;color:var(--dive-dim)}
+@keyframes dive-pulse{0%,100%{opacity:.55}50%{opacity:1}}
+
+.abyss-site>.abyss-footer{position:relative;z-index:1;background:#010204}
+
+@media (max-width:760px){
+  .dive-rope{left:22px}
+  .dive-line{padding-left:0;padding-right:16px}
+  .dive-rule,.dive-tools,.dive-more,.dive-zone{margin-left:12px;margin-right:0}
+  .dive-zone{justify-content:flex-start;font-size:11px}
+  .dive-entry,.dive-entry.right{width:auto;margin-left:22px;padding-left:30px;padding-right:0;justify-content:flex-start}
+  .dive-entry.left:before,.dive-entry.right:before{left:0;right:auto;width:30px}
+  .dive-entry.left:after,.dive-entry.right:after{left:-4px;right:auto}
+  .dive-entry.left .dive-tag:after{right:auto;left:12px}
+  .dive-tag{width:100%;padding:16px 18px 14px}
+  .dive-bottle{margin-top:90px;padding-left:44px;padding-right:16px}
+  .dive-relics{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding:6px 16px 12px 44px;margin:0 -16px;align-items:stretch}
+  .dive-relic{flex:0 0 76%;scroll-snap-align:start}
+  .dive-seabed .dive-zone-center,.dive-trench .dive-zone-center{margin-left:44px}
+  .dive-title{margin-left:44px}
+  .dive-exits{flex-direction:column;align-items:flex-start;margin-left:44px}
+  .dive-exits a{flex-direction:row;align-items:center;gap:12px}
+  .dive-end{margin-left:44px}
+}
+@media (prefers-reduced-motion:reduce){.dive-exits i{animation:none}.dive-tag,.dive-relic{transition:none}}
+
+/* 纸条上的字一律深色，盖过其他主题样式 */
+.abyss-site .dive-tag,.abyss-site .dive-tag .dive-text{color:#2b2a27;text-shadow:none;font-family:"Noto Serif SC","Songti SC",serif}
+.abyss-site .dive-tag .dive-depth{color:#7a3b31}
+/* 页脚收紧，全宽 */
+.abyss-site>footer.abyss-footer{width:100%;max-width:none;min-height:0;height:auto;margin:0;padding:28px max(16px,4vw) calc(28px + env(safe-area-inset-bottom,0px));background:#010204;border-top:1px solid rgba(214,206,190,.12)}
+@media (max-width:760px){.abyss-site .dive-entry .dive-tag:after{left:auto;right:12px}}

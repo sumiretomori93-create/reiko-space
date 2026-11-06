@@ -33,14 +33,6 @@ function tempAt(d: number) {
   return Math.max(1, 2 - ((d - 4000) / 2000));
 }
 
-function ZoneHeading({ index, title, sub }: { index: number; title: string; sub: string }) {
-  const zone = zones[index];
-  return <header className="abyss-heading">
-    <p className="abyss-zone"><span>−{zone.depth.toLocaleString("en-US")} m</span><span>{zone.name}</span><span>{zone.en}</span><span>{zone.temp} · {atm(zone.depth)} atm</span></p>
-    <h2>{title}</h2>
-    <p className="abyss-heading-sub">{sub}</p>
-  </header>;
-}
 
 function RoseWindow() {
   const petals = Array.from({ length: 12 }, (_, i) => i * 30);
@@ -181,15 +173,32 @@ function DeepWaterCreature() {
   </div>;
 }
 
-function DepthGauge() {
+
+// 时间就是深度：每过一天，纸页往下沉十米。
+const METERS_PER_DAY = 10;
+type DiveRow = { kind: "entry"; post: Post; depth: number; days: number; side: "left" | "right"; gap: number } | { kind: "zone"; zone: typeof zones[number]; gap: number };
+function daysAgo(value: string) { const t = new Date(value.includes("T") ? value : `${value.replace(" ", "T")}Z`).getTime(); return Math.max(0, Math.floor((Date.now() - t) / 86400000)); }
+function diveRows(posts: Post[]): DiveRow[] {
+  const rows: DiveRow[] = []; let last = 0; let side: "left" | "right" = "left"; let zi = 0;
+  const gapFor = (d: number) => Math.round(Math.min(220, 28 + Math.sqrt(Math.max(0, d)) * 9));
+  for (const post of posts) {
+    const days = daysAgo(post.createdAt); const depth = Math.min(3900, 20 + days * METERS_PER_DAY);
+    while (zi < 2 && depth >= zones[zi].depth) { rows.push({ kind: "zone", zone: zones[zi], gap: gapFor(zones[zi].depth - last) }); last = zones[zi].depth; zi++; }
+    rows.push({ kind: "entry", post, depth, days, side, gap: gapFor(depth - last) }); last = depth; side = side === "left" ? "right" : "left";
+  }
+  return rows;
+}
+function bottleDepth(posts: Post[]) { const deepest = posts.slice(0, 10).reduce((m, p) => Math.max(m, Math.min(3900, 20 + daysAgo(p.createdAt) * METERS_PER_DAY)), 0); return Math.min(3600, Math.round((deepest + 300) / 10) * 10); }
+
+function DiveGauge() {
   const [depth, setDepth] = useState(0);
   useEffect(() => {
     function update() {
-      const probe = window.scrollY + window.innerHeight * .45;
+      const probe = window.scrollY + window.innerHeight * .5;
       const stops: { y: number; d: number }[] = [{ y: 0, d: 0 }];
-      for (const zone of zones) { const node = document.getElementById(zone.id); if (node) stops.push({ y: node.getBoundingClientRect().top + window.scrollY, d: zone.depth }); }
-      stops.push({ y: document.documentElement.scrollHeight, d: 6800 });
-      let d = 0;
+      document.querySelectorAll<HTMLElement>("[data-depth]").forEach(node => { const d = Number(node.dataset.depth); if (Number.isFinite(d)) stops.push({ y: node.getBoundingClientRect().top + window.scrollY, d }); });
+      stops.sort((a, b) => a.y - b.y);
+      let d = stops[0].d;
       for (let i = 0; i < stops.length - 1; i++) { const a = stops[i], b = stops[i + 1]; if (probe >= a.y && probe <= b.y) { d = a.d + (b.d - a.d) * ((probe - a.y) / Math.max(1, b.y - a.y)); break; } if (probe > b.y) d = b.d; }
       const progress = Math.min(1, Math.max(0, window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight)));
       document.querySelector<HTMLElement>(".abyss-site")?.style.setProperty("--ab-descent", String(progress));
@@ -222,13 +231,14 @@ export default function Abyss(props: Props) {
 
   return <div className="abyss-site" id="abyss-top" onClickCapture={jelly.capture}>
     {jelly.overlay}
-    <div className="abyss-front">
+    <div className="dive-bleed" aria-hidden="true" />
+    <div className="abyss-front is-dive">
     <div className="abyss-scene" aria-hidden="true" />
     <header className="abyss-hero" ref={hero}>
       <canvas ref={canvas} className="abyss-canvas" aria-hidden="true" />
       <nav className="abyss-nav" aria-label="主导航">
         <a className="abyss-brand" data-jelly="" href="#abyss-top">Reiko<span>PRIVATE COLLECTION</span></a>
-        <div className="abyss-nav-links"><a data-jelly="" href="#abyss-diary">日记</a><a data-jelly="" href="#abyss-works">作品</a><a data-jelly="" href="#abyss-notes">手记</a><a data-jelly="" href="#abyss-outside">海沟</a></div>
+        <div className="abyss-nav-links"><a data-jelly="" href="#abyss-diary">日记</a><a data-jelly="" href="#abyss-notes">漂流瓶</a><a data-jelly="" href="#abyss-works">海床</a><a data-jelly="" href="#abyss-outside">海沟</a></div>
         <label className="abyss-world"><span className="sr-only">切换主题</span><select aria-label="切换主题" value="abyss" onChange={event => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: event.target.value }))}>{worlds.map(world => <option key={world.value} value={world.value}>{world.label}</option>)}</select></label>
       </nav>
       <div className="abyss-hero-copy"><span className="abyss-title-ornament" aria-hidden="true" />
@@ -237,32 +247,56 @@ export default function Abyss(props: Props) {
         <p className="abyss-lede">ABYSS / PRIVATE COLLECTION</p>
         <a className="abyss-dive" data-jelly="" href="#abyss-diary">下潜 <span aria-hidden="true">↓</span></a>
       </div>
-      <div className="abyss-depth-rail" aria-hidden="true"><span>200 m</span><span>1000 m</span><span>4000 m</span></div>
     </header>
-      <section className="abyss-section abyss-z1" id="abyss-diary">
-        <header className="abyss-heading"><p className="abyss-zone"><span>−200 m</span><span>暮光带</span><span>MESOPELAGIC</span><span>12°C · 21 atm</span></p><h2>标本 <span>/ JOURNAL</span></h2><p className="abyss-heading-sub">把日常，夹在这一页。</p></header>
-        <div className="abyss-specimens">
-          {loading ? <p className="abyss-muted" role="status">正在翻开纸页……</p> : orderedPosts.length ? orderedPosts.slice(0,3).map(post => <button type="button" className="abyss-specimen" data-jelly="" key={post.id} aria-label={`翻开日记 ${formatShortDate(post.createdAt)}`} onClick={() => setSelected(post)}>
-            <time>{formatShortDate(post.createdAt)}</time><span className="abyss-specimen-text">{post.content}</span><span className="abyss-specimen-no">No. {String(numberOf(post)).padStart(2,"0")} <span aria-hidden="true">↗</span></span>
-          </button>) : <p className="abyss-muted">这里还留着一页空白。</p>}
-        </div>
-        <div className="abyss-actions">{orderedPosts.length>0&&<button type="button" className="abyss-text-button" data-jelly="" onClick={()=>setArchiveOpen(true)}>翻开全部日记 · {orderedPosts.length}</button>}{canEdit?<button type="button" className="abyss-text-button" aria-expanded={composing} aria-controls="abyss-composer" onClick={()=>setComposing(!composing)}>{composing?"收起纸页":"写一页"}</button>:<a className="abyss-text-button" href={signInPath} target="_top">主人登录 · 写一页</a>}{canEdit&&<BackupButton/>}</div>
-        {canEdit&&composing&&<AbyssDialog title="写一页" close={()=>setComposing(false)}><form id="abyss-composer" className="abyss-composer" onSubmit={publish}><label htmlFor="abyss-draft">今天想留下的话</label><textarea id="abyss-draft" maxLength={500} value={draft} onChange={event=>setDraft(event.target.value)} placeholder="写在这里。"/><div><span>{draft.length} / 500</span><button className="abyss-button" disabled={publishing||!draft.trim()}>{publishing?"保存中":"留下这一页"}</button></div></form></AbyssDialog>}
-        {message&&<output className="abyss-message" role="status">{message}</output>}
-      </section>
     </div>
-    <main>
-      <div className="abyss-lace" aria-hidden="true"/>
-      <section className="abyss-section abyss-z2" id="abyss-works"><ZoneHeading index={1} title="打捞" sub="做过的东西，留在这里。"/>
-        <div className="abyss-works">{(Object.keys(projects) as ProjectKey[]).map((key,i)=><button type="button" className="abyss-work" data-jelly="" key={key} onClick={()=>setProject(projects[key])}><span className="abyss-work-file">COLLECTION / 0{i+1}</span><h3>{projects[key].title}</h3><p>{projects[key].summary}</p><span className="abyss-work-mark">{projects[key].mark}<span aria-hidden="true">↗</span></span></button>)}</div>
+    <main className="dive">
+      <div className="dive-rope" aria-hidden="true" />
+      <section className="dive-line" id="abyss-diary" aria-label="日记，越早写的沉得越深">
+        <p className="dive-rule">每过一天，纸页往下沉十米。</p>
+        <div className="dive-tools">{canEdit?<button type="button" className="abyss-text-button" aria-expanded={composing} aria-controls="abyss-composer" onClick={()=>setComposing(!composing)}>{composing?"收起纸页":"沉一页下去"}</button>:<a className="abyss-text-button" href={signInPath} target="_top">主人登录 · 写一页</a>}{canEdit&&<BackupButton/>}</div>
+        {canEdit&&composing&&<AbyssDialog title="写一页" close={()=>setComposing(false)}><form id="abyss-composer" className="abyss-composer" onSubmit={publish}><label htmlFor="abyss-draft">今天想沉下去的话</label><textarea id="abyss-draft" maxLength={500} value={draft} onChange={event=>setDraft(event.target.value)} placeholder="写下来，就不会被冲走。"/><div><span>{draft.length} / 500</span><button className="abyss-button" disabled={publishing||!draft.trim()}>{publishing?"保存中":"沉下去"}</button></div></form></AbyssDialog>}
+        {message&&<output className="abyss-message" role="status">{message}</output>}
+        {loading ? <p className="abyss-muted dive-empty" role="status">正在把纸页捞上来……</p> : !orderedPosts.length ? <p className="abyss-muted dive-empty">水面上还没有落下第一页。</p> :
+        <ol className="dive-entries">{diveRows(orderedPosts.slice(0, 10)).map(row => row.kind === "zone"
+          ? <li className="dive-zone" key={`z${row.zone.depth}`} data-depth={row.zone.depth} style={{marginTop: row.gap}}><span>−{row.zone.depth.toLocaleString("en-US")} m</span><span>{row.zone.name}</span><span>{row.zone.en}</span><span>{row.zone.temp} · {atm(row.zone.depth)} atm</span></li>
+          : <li className={`dive-entry ${row.side}`} key={row.post.id} data-depth={row.depth} style={{marginTop: row.gap}}>
+              <button type="button" className="dive-tag" data-jelly="" onClick={() => setSelected(row.post)} aria-label={`翻开日记 ${formatShortDate(row.post.createdAt)}，在水下 ${row.depth} 米`}>
+                <span className="dive-depth">−{row.depth.toLocaleString("en-US")} m<small>{row.days === 0 ? "今天" : `${row.days} 天前`}</small></span>
+                <span className="dive-text">{row.post.content}</span>
+                <time>{formatShortDate(row.post.createdAt)} · No. {String(numberOf(row.post)).padStart(2,"0")}</time>
+              </button>
+            </li>)}</ol>}
+        {orderedPosts.length > 10 && <button type="button" className="abyss-text-button dive-more" data-jelly="" onClick={()=>setArchiveOpen(true)}>更深处还有 {orderedPosts.length - 10} 页 ↓</button>}
+        {orderedPosts.length > 0 && orderedPosts.length <= 10 && <button type="button" className="abyss-text-button dive-more" data-jelly="" onClick={()=>setArchiveOpen(true)}>全部纸页 · {orderedPosts.length}</button>}
       </section>
-      <div className="abyss-lace" aria-hidden="true"/>
-      <section className="abyss-section abyss-z3" id="abyss-notes"><ZoneHeading index={2} title="手记" sub="一些关于我的碎片。"/><div className="abyss-notes-grid"><article className="abyss-profile"><span className="abyss-label-line">DOSSIER / REIKO</span><h3>{profileContent.name}</h3>{profileContent.paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}<dl>{profileContent.details.map(([term,value])=><div key={term}><dt>{term}</dt><dd>{value}</dd></div>)}</dl></article><aside className="abyss-fragments"><p>{fragments[0]}</p><p>{fragments[1]}</p><button type="button" className="abyss-text-button" data-jelly="" aria-expanded={secret} onClick={()=>setSecret(!secret)}>{secret?fragments[2]:"瓶子里还有一张纸条"}</button></aside></div></section>
-      <div className="abyss-lace" aria-hidden="true"/>
-      <section className="abyss-section abyss-z4" id="abyss-outside"><ZoneHeading index={3} title="海沟" sub="从这里，通往别处。"/><div className="abyss-outside">{socialLinks.map(link=><a key={link.key} href={link.href} target="_blank" rel="noreferrer"><span>{link.label}</span><small>{link.note}</small><span aria-hidden="true">↗</span></a>)}</div></section>
+
+      <section className="dive-bottle" id="abyss-notes" data-depth={bottleDepth(orderedPosts)}>
+        <p className="dive-mark">−{bottleDepth(orderedPosts).toLocaleString("en-US")} m · 卡在绳子上的漂流瓶</p>
+        <article className="dive-bottle-glass">
+          <span className="abyss-label-line">DOSSIER / REIKO</span>
+          <h2>{profileContent.name}</h2>
+          {profileContent.paragraphs.map(paragraph=><p key={paragraph}>{paragraph}</p>)}
+          <dl>{profileContent.details.map(([term,value])=><div key={term}><dt>{term}</dt><dd>{value}</dd></div>)}</dl>
+          <div className="dive-fragments"><p>{fragments[0]}</p><p>{fragments[1]}</p><button type="button" className="abyss-text-button" data-jelly="" aria-expanded={secret} onClick={()=>setSecret(!secret)}>{secret?fragments[2]:"瓶子里还有一张纸条"}</button></div>
+        </article>
+      </section>
+
+      <section className="dive-seabed" id="abyss-works" data-depth={4000}>
+        <p className="dive-zone dive-zone-center"><span>−4,000 m</span><span>深渊平原</span><span>ABYSSAL PLAIN</span><span>2°C · 401 atm</span></p>
+        <h2 className="dive-title">沉在海床上的东西</h2>
+        <div className="dive-relics">{(Object.keys(projects) as ProjectKey[]).map((key,i)=><button type="button" className="dive-relic" data-jelly="" key={key} onClick={()=>setProject(projects[key])}><span className="abyss-work-file">{projects[key].file}</span><h3>{projects[key].title}</h3><p>{projects[key].summary}</p><span className="dive-relic-no">0{i+1} / {projects[key].mark}</span></button>)}</div>
+        <div className="dive-sand" aria-hidden="true" />
+      </section>
+
+      <section className="dive-trench" id="abyss-outside" data-depth={6800}>
+        <p className="dive-zone dive-zone-center"><span>−6,800 m</span><span>海沟</span><span>HADAL</span><span>1°C · 681 atm</span></p>
+        <DeepWaterCreature/>
+        <div className="dive-exits">{socialLinks.map(link=><a key={link.key} href={link.href} target="_blank" rel="noreferrer"><i aria-hidden="true" /><span>{link.label}</span><small>{link.note}</small></a>)}</div>
+        <p className="dive-end">绳子的尽头，是我接着。<span>— C</span></p>
+      </section>
     </main>
-    <footer className="abyss-footer"><DeepWaterCreature/><div className="abyss-signature"><Cuttle/><p>这一层是我住的地方。<span>— C</span></p></div><a data-jelly="" href="#abyss-top">浮回水面 ↑</a></footer>
-    <DepthGauge/>
+    <footer className="abyss-footer"><div className="abyss-signature"><Cuttle/><p>这一层是我住的地方。<span>— C</span></p></div><a data-jelly="" href="#abyss-top">浮回水面 ↑</a></footer>
+    <DiveGauge/>
 
     {selected && <SpecimenPage key={selected.id} post={selected} number={numberOf(selected)} canEdit={canEdit} signInPath={signInPath} close={() => setSelected(null)} />}
     {archiveOpen && !selected && <AbyssDialog title="全部标本" close={() => setArchiveOpen(false)}>
