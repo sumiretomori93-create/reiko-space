@@ -1,0 +1,24 @@
+.abyss-water-light{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;mix-blend-mode:screen;opacity:.85}
+.abyss-site>main{background-color:#071622;background-size:100% auto;background-position:center top}
+.abyss-site>main:before{background:radial-gradient(ellipse 85% 12% at 50% 0%,#99cfde33,transparent 75%),linear-gradient(180deg,#06121a00 0%,#04101844 27%,#030c14b3 68%,#02060bf7 100%)}
+.abyss-site .abyss-motion-switch{position:absolute;right:0;top:295%;padding:5px 0;min-height:30px;border:0;border-bottom:1px solid #bbd2d144;background:transparent;font:10px/1.5 Georgia,'Songti SC',serif;letter-spacing:.08em;white-space:nowrap;color:#b8c9ca;z-index:4}
+.abyss-site[data-sea-motion=off] .abyss-click-visitor,.abyss-site[data-sea-motion=off] .abyss-shadow-hand{display:none}
+.abyss-site[data-sea-motion=on] .abyss-click-visitor{display:block}
+.abyss-site[data-sea-motion=on] .abyss-shadow-hand{display:block}
+.abyss-site[data-sea-motion=off] .abyss-deep-arm{animation:none;will-change:auto}
+.abyss-site[data-sea-motion=on] .abyss-deep-arm-left{animation:abyss-deep-sway-left 9s ease-in-out infinite;animation-play-state:paused}
+.abyss-site[data-sea-motion=on] .abyss-deep-arm-right{animation:abyss-deep-sway-right 12s ease-in-out -4s infinite;animation-play-state:paused}
+.abyss-site[data-sea-motion=on] .abyss-deep-creature[data-awake=true] .abyss-deep-arm{animation-play-state:running}
+@keyframes abyss-deep-sway-left{0%,100%{transform:translate3d(-9px,8px,0) rotate(-4deg)}50%{transform:translate3d(16px,-13px,0) rotate(4deg)}}
+@keyframes abyss-deep-sway-right{0%,100%{transform:translate3d(8px,-5px,0) rotate(4deg)}50%{transform:translate3d(-16px,13px,0) rotate(-4deg)}}
+@media(max-width:700px){.abyss-site>main{background-size:100% auto;background-position:center top}.abyss-water-light{opacity:.9}.abyss-site .abyss-motion-switch{top:320%;font-size:9px}}
+
+/* Fade the architecture into deeper water; never leave a rectangular image edge. */
+.abyss-site>main{background-image:radial-gradient(ellipse at 50% 0%,#173b49 0%,#071622 38%,#02060b 100%);background-repeat:no-repeat}
+.abyss-depth-scene{position:absolute;inset:0 0 auto;height:max(150vw,1100px);max-height:1600px;background:url('/reiko-assets/abyss/depths-v2.webp') center top/cover no-repeat;z-index:-2;pointer-events:none;mask-image:linear-gradient(#000 0 55%,transparent 100%);-webkit-mask-image:linear-gradient(#000 0 55%,transparent 100%)}
+@media(max-width:700px){
+ .abyss-site .abyss-footer{min-height:390px;padding-top:280px}
+ .abyss-deep-arm{height:360px;width:70%}
+ .abyss-deep-arm-left{left:0}
+ .abyss-deep-arm-right{right:0}
+}

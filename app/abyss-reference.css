@@ -77,3 +77,12 @@
 .abyss-front .abyss-specimen:nth-child(3n) .abyss-specimen-text{font-size:min(1.35cqw,19px)}
 .abyss-front .abyss-actions .abyss-text-button{font-size:min(1cqw,15px)}
 }
+
+/* Phone artboard: prevent browser text inflation inside the little paper slips. */
+.abyss-front{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@media(max-width:600px){
+ .abyss-front .abyss-specimen-text{font-size:2.4cqw;line-height:1.65;max-height:4.95em;-webkit-line-clamp:3}
+ .abyss-front .abyss-specimen time{font-size:2.35cqw}
+ .abyss-front .abyss-specimen:nth-child(3n) .abyss-specimen-text{font-size:2.2cqw;line-height:1.6;-webkit-line-clamp:2;max-height:3.2em}
+ .abyss-front .abyss-specimen:nth-child(3n) time{font-size:2.1cqw}
+}

@@ -3,6 +3,8 @@
 import BackupButton from "./backup-button";
 import { useJellyClick } from "./abyss-jelly-click";
 import { useShadowHand } from "./abyss-shadow-hand";
+import { useSeaMotion } from "./abyss-motion";
+import SeaAtmosphere from "./abyss-atmosphere";
 import { FormEvent, ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatDate, formatShortDate, fragments, profileContent, projects, socialLinks, type Comment, type Post, type Project, type ProjectKey, type Theme } from "./reiko-content";
 
@@ -125,11 +127,11 @@ function SpecimenPage({ post, number, canEdit, signInPath, close }: { post: Post
   </AbyssDialog>;
 }
 
-function useSeaCanvas(host: React.RefObject<HTMLElement | null>, canvas: React.RefObject<HTMLCanvasElement | null>) {
+function useSeaCanvas(host: React.RefObject<HTMLElement | null>, canvas: React.RefObject<HTMLCanvasElement | null>, motion:boolean) {
   useEffect(() => {
     const el = host.current, cv = canvas.current; if (!el || !cv) return;
     const cx = cv.getContext("2d"); if (!cx) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = !motion;
     let w = 0, h = 0, raf = 0;
     const snow = Array.from({ length: 90 }, () => ({ x: Math.random(), y: Math.random(), r: Math.random() * 1.3 + .3, s: Math.random() * .00018 + .00006, sway: Math.random() * 6 }));
     const jellies = [{ x: .78, y: .62, r: 20, t: 0 }, { x: .12, y: .82, r: 13, t: 2.1 }, { x: .58, y: .9, r: 9, t: 4.4 }];
@@ -163,7 +165,7 @@ function useSeaCanvas(host: React.RefObject<HTMLElement | null>, canvas: React.R
     }
     raf = requestAnimationFrame(draw);
     return () => { cancelAnimationFrame(raf); ro.disconnect(); };
-  }, [host, canvas]);
+  }, [host, canvas, motion]);
 }
 
 function DeepWaterCreature() {
@@ -216,14 +218,16 @@ export default function Abyss(props: Props) {
   const [composing, setComposing] = useState(false);
   const [secret, setSecret] = useState(false);
   const [query, setQuery] = useState("");
-  const hand = useShadowHand();
-  const jelly = useJellyClick(hand.suppressClick);
+  const motion = useSeaMotion();
+  const hand = useShadowHand(motion.enabled);
+  const jelly = useJellyClick(hand.suppressClick,motion.enabled);
   const hero = useRef<HTMLElement>(null); const canvas = useRef<HTMLCanvasElement>(null);
-  useSeaCanvas(hero, canvas);
+  useSeaCanvas(hero, canvas,motion.enabled);
   const numberOf = (post: Post) => orderedPosts.length - orderedPosts.indexOf(post);
   const filtered = orderedPosts.filter(post => !query.trim() || post.content.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()) || formatShortDate(post.createdAt).includes(query.trim()));
 
-  return <div className="abyss-site" id="abyss-top" onClickCapture={jelly.capture}>
+  return <div className="abyss-site" id="abyss-top" data-sea-motion={motion.enabled?"on":"off"} onClickCapture={jelly.capture}>
+    <SeaAtmosphere motion={motion.enabled}/>
     {hand.overlay}
     {jelly.overlay}
     <div className="abyss-front">
@@ -233,6 +237,7 @@ export default function Abyss(props: Props) {
       <nav className="abyss-nav" aria-label="主导航">
         <a className="abyss-brand" data-jelly="" href="#abyss-top">Reiko<span>PRIVATE COLLECTION</span></a>
         <div className="abyss-nav-links"><a data-jelly="" href="#abyss-diary">日记</a><a data-jelly="" href="#abyss-works">作品</a><a data-jelly="" href="#abyss-notes">手记</a><a data-jelly="" href="#abyss-outside">海沟</a></div>
+        <button type="button" className="abyss-motion-switch" aria-pressed={motion.enabled} onClick={motion.toggle}>海水动态：{motion.enabled?"开":"关"}</button>
         <label className="abyss-world"><span className="sr-only">切换主题</span><select aria-label="切换主题" value="abyss" onChange={event => window.dispatchEvent(new CustomEvent("reiko-theme", { detail: event.target.value }))}>{worlds.map(world => <option key={world.value} value={world.value}>{world.label}</option>)}</select></label>
       </nav>
       <div className="abyss-hero-copy"><span className="abyss-title-ornament" aria-hidden="true" />
@@ -255,7 +260,7 @@ export default function Abyss(props: Props) {
         {message&&<output className="abyss-message" role="status">{message}</output>}
       </section>
     </div>
-    <main>
+    <main><div className="abyss-depth-scene" aria-hidden="true"/>
       <div className="abyss-lace" aria-hidden="true"/>
       <section className="abyss-section abyss-z2" id="abyss-works"><ZoneHeading index={1} title="打捞" sub="做过的东西，留在这里。"/>
         <div className="abyss-works">{(Object.keys(projects) as ProjectKey[]).map((key,i)=><button type="button" className="abyss-work" data-jelly="" key={key} onClick={()=>setProject(projects[key])}><span className="abyss-work-file">COLLECTION / 0{i+1}</span><h3>{projects[key].title}</h3><p>{projects[key].summary}</p><span className="abyss-work-mark">{projects[key].mark}<span aria-hidden="true">↗</span></span></button>)}</div>

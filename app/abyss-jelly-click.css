@@ -12,3 +12,6 @@
 @keyframes abyss-click-ring{0%{opacity:.8;transform:scale(.4)}100%{opacity:0;transform:scale(3.6)}}
 @keyframes abyss-click-vanish{0%{opacity:1}100%{opacity:0;transform:rotate(var(--jelly-angle)) translateY(-14px) scale(.88)}}
 @media(prefers-reduced-motion:reduce){.abyss-click-visitor{display:none}}
+/* A visible bell on small screens; light comes from the animal, not a UI ring. */
+.abyss-click-swimmer{width:86px;height:120px;margin:-42px 0 0 -43px;background:radial-gradient(ellipse at 50% 30%,#c0dcff24,transparent 62%);filter:drop-shadow(0 0 8px #c6deffbb) drop-shadow(0 0 19px #a3c9f577)}
+.abyss-click-swimmer,.abyss-click-jelly{transform-origin:50% 42px}

@@ -4,12 +4,14 @@ import { MouseEvent as ReactMouseEvent, useCallback, useEffect, useRef, useState
 
 type Visit = { id:number; x:number; y:number; fromX:number; fromY:number; bendX:number; bendY:number; duration:number; angle:number };
 
-export function useJellyClick(suppressClick?:()=>boolean) {
+export function useJellyClick(suppressClick:(()=>boolean)|undefined,motion=true) {
   const [visit,setVisit] = useState<Visit|null>(null);
   const [arrived,setArrived] = useState(false);
   const pending = useRef<ReturnType<typeof setTimeout>|null>(null);
   const fading = useRef<ReturnType<typeof setTimeout>|null>(null);
   const serial = useRef(0);
+  const replaying=useRef(false);
+  const pointer=useRef({time:0,x:0,y:0});
   const cancel = useCallback(() => {
     if(pending.current) clearTimeout(pending.current);
     if(fading.current) clearTimeout(fading.current);
@@ -17,39 +19,49 @@ export function useJellyClick(suppressClick?:()=>boolean) {
     setVisit(null); setArrived(false);
   },[]);
   useEffect(()=>{
+    let width=window.innerWidth;
+    const pointerUp=(event:PointerEvent)=>{pointer.current={time:Date.now(),x:event.clientX,y:event.clientY};};
+    const touchEnd=(event:TouchEvent)=>{const p=event.changedTouches[0];if(p)pointer.current={time:Date.now(),x:p.clientX,y:p.clientY};};
+    const resized=()=>{if(window.innerWidth!==width){width=window.innerWidth;cancel();}};
+    window.addEventListener("pointerup",pointerUp,{passive:true});window.addEventListener("touchend",touchEnd,{passive:true});
     const hide=()=>{if(document.hidden)cancel();};
-    const escape=(event:KeyboardEvent)=>{if(event.key==="Escape")cancel();};
+    const escape=(event:KeyboardEvent)=>{if(event.key==="Enter"||event.key===" ")pointer.current.time=0;if(event.key==="Escape")cancel();};
     window.addEventListener("scroll",cancel,{passive:true});
-    window.addEventListener("resize",cancel);
+    window.addEventListener("resize",resized);
     window.addEventListener("keydown",escape);
     document.addEventListener("visibilitychange",hide);
     window.addEventListener("abyss-contact-start",cancel);
-    return ()=>{if(pending.current)clearTimeout(pending.current);if(fading.current)clearTimeout(fading.current);window.removeEventListener("scroll",cancel);window.removeEventListener("resize",cancel);window.removeEventListener("keydown",escape);document.removeEventListener("visibilitychange",hide);window.removeEventListener("abyss-contact-start",cancel);};
+    return ()=>{if(pending.current)clearTimeout(pending.current);if(fading.current)clearTimeout(fading.current);window.removeEventListener("scroll",cancel);window.removeEventListener("resize",resized);window.removeEventListener("pointerup",pointerUp);window.removeEventListener("touchend",touchEnd);window.removeEventListener("keydown",escape);document.removeEventListener("visibilitychange",hide);window.removeEventListener("abyss-contact-start",cancel);};
   },[cancel]);
+  useEffect(()=>{if(!motion)cancel();},[motion,cancel]);
   const capture = useCallback((event:ReactMouseEvent<HTMLDivElement>)=>{
-    if(event.defaultPrevented||event.button!==0||event.detail===0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
+    if(replaying.current||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
+    // Some mobile/switch browsers report a real tap with detail=0. Only a
+    // zero-detail activation without a recent pointer is a keyboard click.
+    const recentPointer=Date.now()-pointer.current.time<1000;
+    if(event.detail===0&&!recentPointer)return;
     if(suppressClick?.()){event.preventDefault();event.stopPropagation();cancel();return;}
     const origin=event.target instanceof Element?event.target:null;
     if(!origin||origin.closest("dialog,form,input,textarea,select,[contenteditable=true]"))return;
     const control=origin.closest<HTMLElement>("a,button,[role=button]");
     if(control&&!control.hasAttribute("data-jelly"))return;
     if(control?.matches(":disabled,[aria-disabled=true]"))return;
-    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    if(!motion)return;
     if(control){event.preventDefault();event.stopPropagation();}
     cancel();
-    const x=event.clientX,y=event.clientY,w=window.innerWidth,h=window.innerHeight;
+    const x=event.clientX||pointer.current.x,y=event.clientY||pointer.current.y,w=window.innerWidth,h=window.innerHeight;
     const edge=[{x:-75,y:Math.max(35,Math.min(h-35,y-110)),d:x},{x:w+75,y:Math.max(35,Math.min(h-35,y+90)),d:w-x},{x:Math.max(35,Math.min(w-35,x-100)),y:-75,d:y},{x:Math.max(35,Math.min(w-35,x+100)),y:h+75,d:h-y}].sort((a,b)=>a.d-b.d)[0];
     const dx=edge.x-x,dy=edge.y-y,distance=Math.hypot(dx,dy);
-    const duration=Math.round(Math.min(1000,Math.max(650,520+distance*.9)));
+    const duration=1050;
     const id=++serial.current;
     setVisit({id,x,y,fromX:dx,fromY:dy,bendX:dx*.45+dy*.12,bendY:dy*.45-dx*.12,duration,angle:Math.atan2(-dy,-dx)*180/Math.PI+90});
     pending.current=setTimeout(()=>{
       pending.current=null;setArrived(true);
-      // Programmatic click has detail=0, so it passes through this capture once.
-      if(control?.isConnected){control.focus({preventScroll:true});control.click();}
+      // Explicit replay guard, independent of mobile browser click detail.
+      if(control?.isConnected){replaying.current=true;try{control.focus({preventScroll:true});control.click();}finally{replaying.current=false;}}
       fading.current=setTimeout(()=>{setVisit(null);setArrived(false);fading.current=null;},550);
-    },duration);
-  },[cancel,suppressClick]);
+    },duration+70);
+  },[cancel,suppressClick,motion]);
   return {capture,overlay:visit?<JellyVisit key={visit.id} visit={visit} arrived={arrived}/>:null};
 }
 
