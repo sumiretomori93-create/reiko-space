@@ -1,20 +1,14 @@
 /* 深海 · 测深绳版：只留开头一张画，往下是越来越黑的水和一根绳 */
 .abyss-site{--dive-rope:rgba(214,206,190,.42);--dive-paper:#c9c4b4;--dive-ink:#d9d6cb;--dive-dim:#8e97a3;--dive-glow:#cfc6e6;--dive-coral:#d96a5a;background:#020408}
 
-/* 开头：干净的教堂，两边用同一张图糊开，不留黑边 */
-.dive-bleed{position:absolute;inset:0 0 auto;height:calc(min(100vw,1122px) * 1.25);z-index:0;background:url('/reiko-assets/abyss/chapel.webp') center top/cover no-repeat;filter:blur(38px) brightness(.45) saturate(.8);transform:scale(1.08);pointer-events:none;mask-image:linear-gradient(#000 70%,transparent);-webkit-mask-image:linear-gradient(#000 70%,transparent)}
-.abyss-site>.abyss-front.is-dive{position:relative;z-index:1;aspect-ratio:1122/1402}
-.abyss-front.is-dive .abyss-scene{background:linear-gradient(180deg,transparent 62%,#06101a 92%,#050b13 100%),url('/reiko-assets/abyss/chapel.webp') center top/100% auto no-repeat}
-.abyss-front.is-dive .abyss-hero{height:72%}
-.abyss-front.is-dive:after{height:10%;background:linear-gradient(transparent,#050b13)}
 
 /* 往下：没有背景画，只有越来越深的水 */
-.abyss-site>main.dive{position:relative;z-index:1;width:100%;max-width:none;margin:0;padding:40px 0 0;background:linear-gradient(180deg,#050b13 0%,#04080f 35%,#020509 70%,#010204 100%);overflow:hidden}
+.abyss-site>main.dive{position:relative;z-index:1;width:100%;max-width:none;margin:0;padding:40px 0 0;background:linear-gradient(180deg,#091219 0%,#050b13 12%,#04080f 35%,#020509 70%,#010204 100%);overflow:hidden}
 .dive-rope{position:absolute;top:0;bottom:240px;left:50%;width:1px;background:linear-gradient(180deg,var(--dive-rope),rgba(214,206,190,.2) 70%,rgba(214,206,190,.08));pointer-events:none}
 .dive-rope:before{content:"";position:absolute;inset:0 -3px;background:repeating-linear-gradient(180deg,transparent 0 139px,rgba(214,206,190,.35) 139px 142px,transparent 142px 140px);opacity:.6}
 
 .dive-line{position:relative;max-width:1080px;margin:0 auto;padding:30px max(16px,4vw) 60px}
-.dive-rule{margin:0 auto 10px;width:fit-content;padding:6px 14px;background:#050b13;font:italic 15px/1.6 Georgia,serif;letter-spacing:.12em;color:var(--dive-dim);text-align:center}
+.dive-rule{margin:0 auto 10px;width:fit-content;padding:6px 14px;background:#07101a;font:italic 15px/1.6 Georgia,serif;letter-spacing:.12em;color:var(--dive-dim);text-align:center}
 .dive-tools{display:flex;justify-content:center;gap:24px;margin-bottom:10px;background:transparent}
 .dive-tools>*{background:#050b13!important;padding-inline:8px!important}
 .dive-empty{text-align:center;padding:60px 0}
