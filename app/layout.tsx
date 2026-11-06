@@ -1,4 +1,5 @@
 import DuskTransition from "./dusk-transition";
+import AbyssTransition from "./abyss-transition";
 import type { Metadata } from "next";
 import "./globals.css";
 import "./abyss.css";
@@ -26,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}<DuskTransition /></body>
+      <body>{children}<DuskTransition /><AbyssTransition /></body>
     </html>
   );
 }
