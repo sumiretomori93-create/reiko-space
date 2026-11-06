@@ -13,8 +13,9 @@ type Props = {
 
 const worlds: { value: Theme; label: string }[] = [
   { value: "room", label: "I · ROOM" },
-  { value: "white-archive", label: "III · WHITE ARCHIVE" }, { value: "oumagatoki", label: "IV · 宵伽" },
-  { value: "abyss", label: "V · 深海" },
+  { value: "abyss", label: "II · 深海" },
+  { value: "white-archive", label: "III · WHITE ARCHIVE" },
+  { value: "oumagatoki", label: "IV · 宵伽" },
 ];
 
 // 每一节对应一层真实的海洋分层，深度、温度、压强都按真实量级写。
