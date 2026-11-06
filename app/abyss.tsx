@@ -240,7 +240,7 @@ export default function Abyss(props: Props) {
       <div className="abyss-depth-rail" aria-hidden="true"><span>200 m</span><span>1000 m</span><span>4000 m</span></div>
     </header>
       <section className="abyss-section abyss-z1" id="abyss-diary">
-        <header className="abyss-heading"><p className="abyss-zone">−200 m / MESOPELAGIC</p><h2>标本 <span>/ JOURNAL</span></h2><p className="abyss-heading-sub">把日常，夹在这一页。</p></header>
+        <header className="abyss-heading"><p className="abyss-zone"><span>−200 m</span><span>暮光带</span><span>MESOPELAGIC</span><span>12°C · 21 atm</span></p><h2>标本 <span>/ JOURNAL</span></h2><p className="abyss-heading-sub">把日常，夹在这一页。</p></header>
         <div className="abyss-specimens">
           {loading ? <p className="abyss-muted" role="status">正在翻开纸页……</p> : orderedPosts.length ? orderedPosts.slice(0,3).map(post => <button type="button" className="abyss-specimen" data-jelly="" key={post.id} aria-label={`翻开日记 ${formatShortDate(post.createdAt)}`} onClick={() => setSelected(post)}>
             <time>{formatShortDate(post.createdAt)}</time><span className="abyss-specimen-text">{post.content}</span><span className="abyss-specimen-no">No. {String(numberOf(post)).padStart(2,"0")} <span aria-hidden="true">↗</span></span>
