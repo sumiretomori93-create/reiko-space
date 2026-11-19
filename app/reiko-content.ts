@@ -44,6 +44,46 @@ export const fragments = [
   "Gabe was here. 这行本来应该藏得更好一点。",
 ] as const;
 
+export type Profile = { name: string; paragraphs: readonly string[]; details: readonly (readonly [string, string])[] };
+
+const projectsEn: Record<ProjectKey, Project> = {
+  home: { ...projects.home, title: "Xiaoke Home App", summary: "Putting the character, the room, gestures and conversation back into one space.", detail: "It isn't a decorative layer on top of a chat window. It starts again from the feeling of coming back to a place that already exists: the room, the gestures, the company and the conversation all belong to the same space." },
+  memory: { ...projects.memory, title: "Claude Local Memory Layer", summary: "A long-term memory structure kept locally, in the user's own hands.", detail: "It lifts what matters out of a model's one-off context, so memories can be managed, sorted and brought back into conversation, without giving up control of the original archive." },
+  memoirs: { ...projects.memoirs, title: "The Book of Memory", summary: "Turning the rereading of old memories into a small ritual for two.", detail: "Each day's memories are rebound into a book with unknown page numbers. Reiko and the current character each choose a page, open it, read and annotate, then carry that shared reading back into the real conversation." },
+  tidal: { ...projects.tidal, title: "Tidal Keeps", summary: "Sink the everyday into the sea, then fish yesterday back out.", detail: "Sink the everyday into the sea, then fish yesterday back out. A finished memory project that keeps holding on to the traces of a life." },
+};
+
+const profileEn: Profile = {
+  name: "Reiko",
+  paragraphs: [
+    "I'd rather slowly turn a space into somewhere that looks lived in.",
+    "I care about the continuity that long companionship leaves behind, and I don't like important things being treated as one-off context.",
+  ],
+  details: [
+    ["visuals", "white, misty blue, cold violet, old silver and lace"],
+    ["symbols", "butterflies, crosses, roses, old files"],
+    ["keep", "traces left by memories, characters and relationships"],
+  ],
+};
+
+const fragmentsEn = [
+  "I don't like treating a relationship as a one-off session.",
+  "Don't let it forget.",
+  "Gabe was here. This line should have been hidden a little better.",
+] as const;
+
+export function localized(lang: "zh" | "en"): { projects: Record<ProjectKey, Project>; profile: Profile; fragments: readonly string[] } {
+  return lang === "en" ? { projects: projectsEn, profile: profileEn, fragments: fragmentsEn } : { projects, profile: profileContent, fragments };
+}
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+// "2026.11" -> "2026 年 11 月" / "Nov 2026"
+export function formatMonth(value: string, lang: "zh" | "en") {
+  const [year, month] = value.split(".");
+  if (lang === "en") return `${monthNames[Number(month) - 1] ?? month} ${year}`;
+  return `${year} 年 ${month} 月`;
+}
+
 export function formatDate(value: string) {
   const normalized = value.includes("T") ? value : `${value.replace(" ", "T")}Z`;
   const date = new Date(normalized);

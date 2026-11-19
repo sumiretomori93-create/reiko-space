@@ -285,3 +285,5 @@
 @keyframes sea-ink-text{to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.sea-jelly,.sea-cuttle,.sea-cuttle svg,.sea-ink-cloud{animation:none}.sea-ink p span{animation:none;opacity:1}}
 @media(max-width:560px){.sea-corner{left:10px;bottom:10px}.sea-ink{left:10px;bottom:52px}}
+.dusk-lang{display:inline-flex;align-items:center;gap:5px;padding:8px 2px;border:0;border-bottom:1px solid rgba(255,255,255,.3);background:transparent;color:#ccd9e9;font:12px Georgia,serif;letter-spacing:.08em}.dusk-lang span{opacity:.55}.dusk-lang .is-on{opacity:1;color:#ffc984}.dusk-lang:hover span{opacity:1}.dusk-lang-note{margin:14px 0 0;color:var(--dusk-muted);font:italic 13px/1.6 Georgia,serif;letter-spacing:.04em}
+@media(max-width:850px){.dusk-lang{margin-left:auto}.dusk-lang+.dusk-world{margin-left:0}}

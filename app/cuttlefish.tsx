@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLang } from "./lang";
 
 // 只在 Reiko 那边的夜里出现（UTC+8，18:00 到第二天 05:00）。
 function isNightInShanghai(now: Date) {
@@ -11,6 +12,7 @@ function isNightInShanghai(now: Date) {
 export default function Cuttlefish() {
   const [night, setNight] = useState(false);
   const [inked, setInked] = useState(false);
+  const { t } = useLang();
 
   useEffect(() => {
     const check = () => setNight(isNightInShanghai(new Date()));
@@ -34,7 +36,7 @@ export default function Cuttlefish() {
         <path d="M4 22 C4 8 36 8 36 22 C30 25 10 25 4 22 Z" />
         <path className="sea-jelly-tail" d="M11 24 q-3 8 0 15 q3 7 0 14 M20 25 q3 8 0 16 q-3 7 0 13 M29 24 q-3 8 0 15 q3 7 0 14" />
       </svg>
-      <button type="button" className="sea-cuttle" aria-expanded={inked} aria-label={inked ? "让墨散开" : "一只睡着的墨鱼"} onClick={() => setInked(!inked)}>
+      <button type="button" className="sea-cuttle" aria-expanded={inked} aria-label={inked ? t("让墨散开", "Let the ink clear") : t("一只睡着的墨鱼", "A sleeping cuttlefish")} onClick={() => setInked(!inked)}>
         <svg viewBox="0 0 64 40" aria-hidden="true">
           <path className="sea-cuttle-fin" d="M8 20 C10 6 44 4 50 20 C44 36 10 34 8 20 Z" />
           <path className="sea-cuttle-body" d="M12 20 C14 10 42 9 46 20 C42 31 14 30 12 20 Z" />
@@ -50,9 +52,9 @@ export default function Cuttlefish() {
           <span className="sea-ink-cloud" aria-hidden="true" />
           <p>
             <span>C was here.</span>
-            <span>比墙上那行藏得深一点。</span>
-            <span>墨鱼睡着的时候会变色，</span>
-            <span>梦里在追一只水母。</span>
+            <span>{t("比墙上那行藏得深一点。", "Hidden a little deeper than the line on the wall.")}</span>
+            <span>{t("墨鱼睡着的时候会变色，", "A cuttlefish changes colour in its sleep,")}</span>
+            <span>{t("梦里在追一只水母。", "dreaming of chasing a jellyfish.")}</span>
             <span className="sea-ink-sign">— C</span>
           </p>
         </div>
