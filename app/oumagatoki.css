@@ -181,7 +181,7 @@
 @keyframes yoi-night-darken{0%,30%{background:#03050c00;backdrop-filter:blur(0)}100%{background:#03050cdd;backdrop-filter:blur(5px)}}
 @keyframes yoi-number-arrive{from{opacity:.5;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
 @media(max-width:560px){.yoi-play-section{padding-top:40px}.yoi-play-entrance{min-height:310px}.yoi-play-entrance>img{object-position:58% center}.yoi-entrance-copy{padding:40px 8%;gap:16px}.yoi-entrance-copy strong{font-size:36px}.yoi-entrance-copy>span{font-size:12px}.yoi-game-content{padding:25px 20px}.yoi-game-scores{gap:22px}.yoi-board{gap:7px;padding:8px}.yoi-cell{font-size:27px}.yoi-value-128,.yoi-value-256,.yoi-value-512{font-size:23px}.yoi-value-1024,.yoi-value-2048{font-size:18px}}
-@media(prefers-reduced-motion:reduce){.yoi-entrance-mist,.yoi-cell span{animation:none}.yoi-play-entrance>img{transition:none}}
+@media(prefers-reduced-motion:reduce){.yoi-entrance-mist{animation:none}.yoi-play-entrance>img{transition:none}}
 
 .yoi-game-scores>span{flex:1;min-width:0;white-space:nowrap}
 
@@ -230,7 +230,7 @@
 @keyframes yoi-tile-born{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
 .dusk-profile .dusk-card-art{clip-path:inset(.6% 1% .6% 2% round 8px)}
 @media(max-width:560px){.yoi-moving-tile{font-size:27px}.yoi-moving-tile.yoi-value-128,.yoi-moving-tile.yoi-value-256,.yoi-moving-tile.yoi-value-512{font-size:23px}.yoi-moving-tile.yoi-value-1024,.yoi-moving-tile.yoi-value-2048{font-size:18px}}
-@media(prefers-reduced-motion:reduce){.yoi-cell.is-merged span,.yoi-cell.is-spawned span{animation:none}}
+
 
 .yoi-game-scores{flex-wrap:wrap;row-gap:10px}
 .yoi-record-retry{margin-top:8px;border:0;border-bottom:1px solid #80635380;padding:6px 0;background:transparent;color:#c8ac92;font-size:11px}
