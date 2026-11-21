@@ -32,7 +32,7 @@ export default function NightGame({canEdit,signInPath}:{canEdit:boolean;signInPa
   const board=spawn(result.board),spawned=board.findIndex((v,i)=>v!==result.board[i]);
   const round={board,score:state.round.score+result.gained};
   setMergedCells([]);setSpawnedCell(-1);
-  if(!reducedMotion&&boardElement.current){
+  if(boardElement.current){
    const bounds=boardElement.current.getBoundingClientRect(),cells=[...boardElement.current.querySelectorAll(".yoi-cell")].map(e=>e.getBoundingClientRect());
    setMoving(result.movements.map(tile=>{const from=cells[tile.from],to=cells[tile.to];return {...tile,left:from.left-bounds.left-boardElement.current!.clientLeft,top:from.top-bounds.top-boardElement.current!.clientTop,width:from.width,height:from.height,dx:to.left-from.left,dy:to.top-from.top};}));busy.current=true;
    timers.current.push(window.setTimeout(()=>{setMoving([]);setMergedCells(result.merges);setSpawnedCell(spawned);busy.current=false;},160));
